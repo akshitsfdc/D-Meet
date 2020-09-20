@@ -1,0 +1,97 @@
+#parent-div{
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+.queue-list{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+.list-item{
+    height: fit-content;
+}
+#queueComponent{
+    margin: 10px;
+    height: fit-content;
+    width: 100%;
+}
+
+.live-image{
+    width: 10px;
+    height: 10px;
+}
+.queue-box-container{
+    height: fit-content;
+}
+#row1{
+    flex: 1 1 100%;
+    height: fit-content;
+}
+#dateTimeLabel{
+    flex: 1 1 auto;
+}
+#liveLabel{
+    color: #ffffff;
+    width: fit-content;
+    height: fit-content;
+    background-color: #DB4437;
+    padding: 4px 7px 4px 7px;
+    border-radius: 4px;
+}
+.live-indicator{
+    width: fit-content;
+    height: fit-content;
+}
+.content-text-label{
+    font-family: 'roboto-regular';
+     flex: 1 1 40%;
+
+}
+.content-text-value{
+    font-family: 'roboto-regular';
+    flex: 1 1 70%;
+    align-self: flex-start;
+}
+.content-text-div-left{
+    flex: 1 1 50%;
+}
+.content-text-div-right{
+    flex: 1 1 50%;
+}
+.content-header-label{
+    font-family: 'roboto-bold';
+}
+.live-status-class{
+    color: #ffffff;
+   
+    background-color: #DB4437;
+    padding: 2px 7px 2px 7px;
+    border-radius: 4px;
+    /* flex: 1 1 70%; */
+}
+.live-status-container{
+    flex: 1 1 70%;
+}
+.create-queue-fab{
+    background-color: #0F9D58;
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+}
+.create-queue-container{
+    height: 100%;
+    width: 100%;
+    padding : 20px 50px 20px 50px; 
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+
+}
+.cancel-queue-button{
+    background-color: whitesmoke;
+}
+.next-patient-button-button{
+    background-color: #0F9D58;
+    color: white;
+}

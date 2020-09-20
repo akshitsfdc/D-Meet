@@ -1,0 +1,123 @@
+<div class="header-div">
+    <mat-toolbar fxLayout="row wrap" fxLayout.xs="column" class="mat-toolbar">
+        <span>Doctor Booking</span>
+        <span class="header-spacer"></span>
+
+        <form [formGroup]="loginForm" #f="ngForm" (ngSubmit)="loginSubmit(f)">
+            <div fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="8px" id="loginFormContainer">
+                <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="10px" id="loginInputBox">
+                    <div fxLayout="column">
+                        <mat-label class="label-login-top">Username</mat-label>
+                        <input required name="username" id="username" type="text" class="login-header-input"
+                            (change)=loginInputChanged() formControlName="lEmail" />
+                        <mat-error *ngIf="invalidCredentials" id="invalidCredentialsAlert">
+                            Invalid email or password
+                        </mat-error>
+                    </div>
+                    <div fxLayout="column">
+                        <mat-label class="label-login-top">Password</mat-label>
+                        <input required name="password" id="password" type="password" class="login-header-input"
+                            (change)=loginInputChanged() formControlName="lPassword" />
+                        <a id="forgotPassword" href="https://www.google.com/" target="_blank">Forgot password?</a>
+                    </div>
+                    <button mat-raised-button fxFlexAlign="center" color="primary" id="loginButton">Login</button>
+                </div>
+            </div>
+        </form>
+        <span id="rightSpacer"></span>
+    </mat-toolbar>
+</div>
+<div fxLayout="column" class="content-div">
+
+    <div fxLayout="row wrap" class="sign-up-content">
+
+        <div fxFlex="1 1 55%" fxLayout="column" class="content-div-left item-left">
+            <div fxFlex="1 1 80%" fxLayout="column">
+                <mat-label class="left-description">
+                    Docforce helps you connect your doctor in a very convenient way and doctors to take better care of
+                    thier
+                    patients.
+                </mat-label>
+                <img src="assets/imgs/fb_sign_up_image.png" class="sign-up-desc-image" />
+            </div>
+
+        </div>
+
+
+        <div fxFlex="1 1 45%" fxLayout="column" fxLayoutAlign="start start" class="content-div-right item-right">
+
+            <mat-label class="sign-up-description-label">Create an account</mat-label>
+            <mat-label class="sign-up-base-label">Save time, be smarter.</mat-label>
+            <div fxFlex="1 1 80%" fxLayout="column" class="register-form-container">
+
+                <form [formGroup]="registerForm" #f="ngForm" (ngSubmit)="onSubmit(f)" fxFlex="1 1 80%"
+                    fxLayout="column">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Your Name</mat-label>
+                        <input matInput placeholder="Enter Your Name" formControlName="name">
+                        <mat-error *ngIf="name.touched && name.invalid">
+                            This is required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field class="form-input" appearance="outline">
+                        <mat-label>Email</mat-label>
+                        <input matInput placeholder="Enter your valid email address" type="email"
+                            formControlName="email">
+                        <mat-error *ngIf="emailAdress.touched && emailAdress.invalid">
+                            <mat-error *ngIf="emailAdress.errors.required">
+                                Email is required
+                            </mat-error>
+                            <mat-error *ngIf="!emailAdress.errors.emptyText && emailAdress.errors.email">
+                                Please enter a valid email address
+                            </mat-error>
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Password</mat-label>
+
+                        <input matInput [type]="hide ? 'password' : 'text'" placeholder="Create new password"
+                            formControlName="password">
+                        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                            [attr.aria-pressed]="hide">
+                            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                        </button>
+                        <mat-error *ngIf="pwd.invalid">
+                            <mat-error *ngIf="pwd.errors.emptyText">
+                                Password is required
+                            </mat-error>
+                            <mat-error *ngIf="!pwd.errors.emptyText && pwd.errors.invalidLength">
+                                Password must be {{pwd.errors.requiredLength}} letters long
+                            </mat-error>
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Confirm Password</mat-label>
+                        <input matInput placeholder="re-enter your password" formControlName="reEnterPassword">
+                        <mat-error *ngIf="reEnterPwd.invalid">
+                            <mat-error *ngIf="reEnterPwd.errors.emptyText">
+                                Confirm password is required
+                            </mat-error>
+                            <mat-error *ngIf="!reEnterPwd.errors.emptyText && reEnterPwd.errors.validateEqual">
+                                Not matching with password
+                            </mat-error>
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-checkbox fxAlignSelf="end" class="example-margin" id="doctorCheckBox">I am a doctor (do not
+                        check if you are a
+                        patient)
+                    </mat-checkbox>
+
+                    <button mat-raised-button type="submit" color="primary">Sign Up</button>
+
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="footer-div">
+
+</div>

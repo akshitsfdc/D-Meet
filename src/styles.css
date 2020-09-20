@@ -1,0 +1,19 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import "~bootstrap/dist/css/bootstrap.css";
+
+html, body { height: 99vh; }
+body { margin: 0;
+overflow: hidden;
+}
+
+
+@font-face {
+  font-family: 'roboto-regular';
+  src: url(/assets/fonts/roboto/Roboto-Regular.ttf) format("truetype");
+}
+@font-face {
+  font-family: 'roboto-bold';
+  src: url(/assets/fonts/roboto/Roboto-Bold.ttf) format("truetype");
+}
+

@@ -1,0 +1,19 @@
+<h1 mat-dialog-title>Consult Later</h1>
+<div mat-dialog-content class="content-div">
+  <p>You can move this patient to other position in the queue so that you can meet this patient later when available. We recommend to shift the patient only if patient is not available for consultation for any reason.
+  </p>
+  <mat-form-field>
+    <mat-label>Enter Position</mat-label>
+    <input matInput type="number" [(ngModel)]="dialogData.position" min="2" max="10"  placeholder="Position" [formControl]="positionControl">
+    <mat-error *ngIf="positionControl.touched && positionControl.invalid">
+        Invalid Position 
+
+    </mat-error>
+  </mat-form-field>
+  
+</div>
+<div mat-dialog-actions fxLayout="row">
+  <button mat-button (click)="onNoClick()" faxFlex="1 1 auto">Cancel</button>
+  <button mat-button  cdkFocusInitial (click)="onLastClick()" faxFlex="1 1 auto">Move To Last</button>
+  <button mat-button  (click)="onMoveClick()" faxFlex="1 1 auto">Move To {{dialogData.position}}</button>
+</div>

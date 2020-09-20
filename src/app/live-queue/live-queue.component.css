@@ -1,0 +1,59 @@
+#queueComponent{
+    margin: 10px;
+}
+.live-image{
+    width: 10px;
+    height: 10px;
+}
+.queue-box-container{
+    height: fit-content;
+}
+#row1{
+    flex: 1 1 100%;
+    height: fit-content;
+}
+#dateTimeLabel{
+    flex: 1 1 auto;
+}
+#liveLabel{
+    color: #ffffff;
+    width: fit-content;
+    height: fit-content;
+    background-color: #DB4437;
+    padding: 4px 7px 4px 7px;
+    border-radius: 4px;
+}
+.live-indicator{
+    width: fit-content;
+    height: fit-content;
+}
+.content-text-label{
+    font-family: 'roboto-regular';
+     flex: 1 1 40%;
+
+}
+.content-text-value{
+    font-family: 'roboto-regular';
+    flex: 1 1 70%;
+    align-self: flex-start;
+}
+.content-text-div-left{
+    flex: 1 1 50%;
+}
+.content-text-div-right{
+    flex: 1 1 50%;
+}
+.content-header-label{
+    font-family: 'roboto-bold';
+}
+.live-status-class{
+    color: #ffffff;
+   
+    background-color: #DB4437;
+    padding: 2px 7px 2px 7px;
+    border-radius: 4px;
+    /* flex: 1 1 70%; */
+}
+.live-status-container{
+    flex: 1 1 70%;
+}

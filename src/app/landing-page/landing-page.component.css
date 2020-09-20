@@ -1,0 +1,98 @@
+.mat-toolbar{
+  height: fit-content;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.header-spacer{
+  flex: 1 1 auto;
+}
+.login-header-input{
+  
+  max-width: 150px;
+  max-height: 25px;
+  font-size: 12px;
+
+}
+#loginInputBox{
+  height: fit-content;
+  border-radius: 10px;
+}
+#loginButton{
+  max-height: 25px;
+  font-size: 12px;
+  line-height: 24px;
+}
+.content-div{
+  height: 100%;
+  width: 100%;
+ 
+}
+.sign-up-content{
+ height: 95%;
+ width: 100%;
+}
+.item-right{
+  height: 100%;
+}
+.form-row{
+  height: fit-content;
+}
+.content-div-right{
+  padding-left: 2%;
+  padding-top: 2%;
+}
+.content-div-left{
+  padding-left: 2%;
+  padding-right: 2%;
+  padding-top: 5%;
+}
+.register-form-container{
+
+  width: 80%;
+}
+.sign-up-description-label{
+  font-size: 20px;
+  font-weight: bold;
+}
+.sign-up-base-label{
+  font-size: 12px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.left-description{
+  font-size: 20px;
+  font-weight: 800;
+  font-family: 'Times New Roman', Times, serif;
+}
+.sign-up-desc-image{
+  width: 537px;
+  height: 195px;
+  margin-top: 25px;
+}
+
+.sign-up-content{
+  background-color: #ffffff;
+}
+.content-div-left{
+}
+#forgotPassword{
+  font-size: 12px;
+  font-family: 'Times New Roman', Times, serif;
+  color: black;
+  margin-left: 5px;
+}
+.label-login-top{
+  font-size: 12px;
+  margin-left: 2px;
+  font-family: 'Times New Roman', Times, serif;
+}
+#rightSpacer{
+  flex-basis: 8%;
+}
+#doctorCheckBox{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+#invalidCredentialsAlert{
+  font-size: 11px;
+}

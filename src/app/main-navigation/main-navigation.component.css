@@ -1,0 +1,34 @@
+.sidenav-container {
+ display: flex;
+}
+
+.sidenav {
+  width: 150px;
+   background: inherit;
+}
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 100;
+  z-index: 1;
+  height: 10vh;
+}
+mat-sidenav-content{
+  height: 90vh;
+  width: 100%;
+  overflow: auto;
+}
+mat-sidenav-content::-webkit-scrollbar {
+  width: 10px;
+}
+mat-sidenav-content::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  /* box-shadow: inset 0 0 6px rgba(0,0,0,.3); */
+  background-color: #A9A9A9;
+  /* border: 1px solid #000; */
+
+}
+#parent{
+  display: flex;
+  flex-direction: column;
+}
