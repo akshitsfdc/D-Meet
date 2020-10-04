@@ -169,5 +169,7 @@ grid-row: 1; */
     background-color: #D3D3D3;
     height: 100px;
 }
-
+::ng-deep.mat-dialog-container {
+    background-color: white;
+}
     

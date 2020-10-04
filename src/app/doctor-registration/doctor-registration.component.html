@@ -1,0 +1,191 @@
+
+<div id="parent" fxLayout="row">
+  <div id="leftContainer" fxFlex="1 1 50%" fxLayoutAlign="start center">
+    <form [formGroup]="registrationForm" #f="ngForm" (ngSubmit)="onSubmit(f)" class="registration-form" fxLayout="column" fxLayoutGap="20px" fxFlex="1 1 auto">
+     
+      <mat-label fxLayoutAlign="center center"  class="header-label">Doctor Registration</mat-label>
+
+      <span fxFlex="1 1 10px"></span>
+      <div id="emailPasswordContainer" fxLayout="row wrap" fxLayoutGap="10px">
+        <mat-form-field appearance="outline" fxFlex="1 1 auto">
+          <mat-label>Email Address</mat-label>
+          <input matInput type="email" placeholder="Enter your valid email address" formControlName="emailAddress">
+          <mat-error *ngIf="emailAddress.touched && emailAddress.errors?.required">
+            You must provide your email address
+          </mat-error>
+          <mat-error *ngIf="emailAddress.touched && emailAddress.errors?.email">
+            You must provide a valid email address
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" fxFlex="1 1 auto">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" placeholder="Create your password" formControlName="password" [type]="hide ? 'password' : 'text'" (change)="passwordChanged()">
+          <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+          <mat-error *ngIf="password.touched && password.errors?.required">
+            You must provide password
+          </mat-error>
+          <mat-error *ngIf="password.touched && password.errors?.invalidPassword">
+            Password must contain minimum 8 characters, at least one letter, one number and one special character
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div id="nameUsernameContainer" fxLayout="row wrap" fxLayoutGap="10px">
+          <mat-form-field appearance="outline" fxFlex="1 1 auto">
+            <mat-label>Your Full Name</mat-label>
+            <input matInput placeholder="Enter your full name" formControlName="fullName">
+            <mat-error *ngIf="fullName.touched && fullName.errors?.required">
+              Please provide your name
+            </mat-error>
+        </mat-form-field>
+          <mat-form-field appearance="outline" fxFlex="1 1 auto">
+            <mat-label>Dr. Profile Id</mat-label>
+            <input matInput placeholder="Create your unique profile id" formControlName="profileId" (change)="validateProfileId()" (keyup)="onProfileIdEdited()">
+            <mat-icon matSuffix *ngIf="isValidProfileId" [ngStyle]="{'color':'#0F9D58'}">check_circle</mat-icon>
+            <mat-error *ngIf="profileId.touched && profileId.errors?.required">
+              You must enter profile ID
+            </mat-error>
+            <mat-error *ngIf="profileId.touched && profileId.errors?.minlength">
+             Must be atleast 4 characters
+          </mat-error>
+          <mat-error *ngIf="showInvalidProfileId">
+           "{{profileId.value}}" has been taken by someone else, please try different Id
+        </mat-error>
+            
+          </mat-form-field>
+      </div>
+      <div id="registrationIdContainer" fxLayout="row wrap" fxLayoutGap="10px">
+        
+        <mat-form-field appearance="outline" fxFlex="1 1 auto">
+          <mat-label>Your Registration Number</mat-label>
+          <input matInput  placeholder="Enter your practice registration number" formControlName="registrationNumber">
+          <mat-error *ngIf="registrationNumber.touched && registrationNumber.errors?.required">
+            You must provide your registration number
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" fxFlex="1 1 auto">
+          <mat-label>Years Of Experience</mat-label>
+          <input matInput type="number" placeholder="Enter years of experience" formControlName="experience">
+          <mat-error *ngIf="experience.touched && experience.errors?.required">
+            Please provide your experience years
+          </mat-error>
+      </mat-form-field>
+        
+      </div>
+      <div id="specilizationContainer" fxLayout="row wrap" fxLayoutGap="10px">
+        
+          <mat-form-field appearance="outline" fxFlex="1 1 auto">
+            <mat-label>Select Your Degree</mat-label>
+            <input matInput  placeholder="Enter your practice registration number" [formControl]="degree"
+            [matAutocomplete]="autoDegree" >
+            <mat-autocomplete #autoDegree="matAutocomplete" (optionSelected)="onDegreeSelected($event.option.value)" >
+              <mat-option *ngFor="let de of filteredOptionsDegree | async" [value]="de">
+                {{de}}
+              </mat-option>
+            </mat-autocomplete>
+            <mat-error *ngIf="degree.touched && degree.errors?.required">
+              Please select your degree
+            </mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" fxFlex="1 1 auto">
+            <mat-label>Your Speciality</mat-label>
+            <input matInput  placeholder="Enter your speciality" [formControl]="speciality" [matAutocomplete]="autoSpeciality">
+            <mat-autocomplete #autoSpeciality="matAutocomplete" (optionSelected)="onSpecialitySelected($event.option.value)" >
+              <mat-option *ngFor="let sp of filteredOptionsSpeciality | async" [value]="sp">
+                {{sp}} 
+
+              </mat-option>
+            <mat-error *ngIf="speciality.touched && speciality.errors?.required">
+              Please select your speciality
+            </mat-error>
+          </mat-autocomplete>
+        </mat-form-field>
+        
+      </div>
+  
+      <div id="clinicNameContainer" fxLayout="row wrap" fxLayoutGap="10px">
+        
+        <mat-form-field appearance="outline" fxFlex="1 1 auto">
+          <mat-label>Your Clinic/Hospital Name</mat-label>
+          <input matInput  placeholder="Enter your Clinic/Hospital name" formControlName="clinicName" >
+          <mat-error *ngIf="clinicName.touched && clinicName.errors?.required">
+            Please provide clinic/hospital name
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="country-picket-text" fxFlex="1 1 auto">
+          <input type="text"
+                 placeholder="Select Country"
+                 aria-label="Country"
+                 matInput            
+                 [formControl]="country"
+                 [matAutocomplete]="autoCountry">
+          <mat-autocomplete #autoCountry="matAutocomplete" (optionSelected)="onCountrySelected($event.option.value)" >
+            <mat-option *ngFor="let con of filteredOptionsCountry | async" [value]="con">
+              {{con}}
+            </mat-option>
+          </mat-autocomplete>
+          <mat-error *ngIf="country.touched && country.errors?.required">
+            Please select your country
+          </mat-error>
+        </mat-form-field>
+      
+    </div>
+  
+  <mat-form-field appearance="outline">
+    <mat-label>Full Address Of Clinic</mat-label>
+    <input matInput  placeholder="Enter full address of your clinic/hospital/office with PIN code" formControlName="fullAddress">
+    <mat-error *ngIf="fullAddress.touched && fullAddress.errors?.required">
+      You must provide clinic/hospital address
+    </mat-error>
+    <mat-error *ngIf="fullAddress.touched && fullAddress.errors?.minlength">
+      Address must be atleast 15 characters long
+  </mat-error>
+  </mat-form-field>
+  <div id="stateCityContainer" fxLayout="row wrap" fxLayoutGap="10px">
+   
+    <mat-form-field appearance="outline" class="state-picket-text" fxFlex="1 1 auto">
+        <input type="text"
+               placeholder="Select State"
+               aria-label="State"
+               matInput            
+               [formControl]="state"
+               [matAutocomplete]="autoState">
+        <mat-autocomplete #autoState="matAutocomplete" (optionSelected)="onStateSelected($event.option.value)" >
+          <mat-option *ngFor="let s of filteredOptionsState | async" [value]="s">
+            {{s}}
+          </mat-option>
+        </mat-autocomplete>
+        
+        <mat-error *ngIf="state.touched && state.errors?.required">
+          You must provide country, state and city
+        </mat-error> 
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="city-picket-text" fxFlex="1 1 auto">
+        <input type="text"
+               placeholder="Select City/Area"
+               aria-label="City"
+               matInput            
+               [formControl]="city"
+               [matAutocomplete]="autoCity">
+        <mat-autocomplete #autoCity="matAutocomplete" (optionSelected)="onCitySelected($event.option.value)" >
+          <mat-option *ngFor="let c of filteredOptionsCity | async" [value]="c">
+            {{c}}
+          </mat-option>
+        </mat-autocomplete>
+        <mat-error *ngIf="city.touched && city.errors?.required">
+          You must provide country, state and city
+        </mat-error> 
+      </mat-form-field>
+  </div>
+  <span fxFlex="1 1 10px"></span>
+  <button mat-flat-button class="register-button" fxFlex="1 1 auto" type="submit" >Register Now</button>
+    </form>
+  </div>
+  <div id="rightContainer" fxFlex="1 1 auto">
+
+  </div>
+</div>

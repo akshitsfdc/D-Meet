@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BookedPatient } from '../models/booked-patient';
@@ -26,7 +27,7 @@ export class LiveQueueDetailsComponent implements OnInit {
   totalPatientSize: Number;
 
 
-  constructor(private router: Router, private route: ActivatedRoute, private matDialog: MatDialog) { }
+  constructor(private firestore: AngularFirestore, private router: Router, private route: ActivatedRoute, private matDialog: MatDialog) { }
 
   ngOnInit(): void {
     this.setTestPatients();
@@ -40,6 +41,7 @@ export class LiveQueueDetailsComponent implements OnInit {
 
   goPatientMeet() {
     // this.router.navigate(['patientMeet'], { relativeTo: this.route });
+    this.saveData();
   }
 
   private setTestPatients(){
@@ -97,9 +99,10 @@ export class LiveQueueDetailsComponent implements OnInit {
             this.shiftPatientToLast();
           }
       }
+
+      
       
     });
-    
   }
 
   private shiftPatientToPosition(position: number){
@@ -136,5 +139,70 @@ export class LiveQueueDetailsComponent implements OnInit {
      }
     }
   }
+
+  private saveData(){
+    // const roomRef = this.firestore.collection('doctor-meta').doc((+ new Date()).toString());
+    // roomRef.set(this.getCitydata());
+
+    // const coollection = this.firestore.collection('cities');
+    // this.firestore
+    // .collection('cities', ref => ref.where("state", "==", "Uttar Pradesh").where("country", "==", "India"))
+    // .get().toPromise().then((querySnapshot) => { 
+    //   querySnapshot.forEach((doc) => {
+    //        console.log(doc.id, "=>", doc.data());  
+    //   }); 
+    // });
+  }
+
+  private getCitydata():any{
+
+    return {
+
+      "type":"degree",
+
+      "degrees" :[
+        "MBBS – Bachelor of Medicine, Bachelor of Surgery",
+        
+        "BDS – Bachelor of Dental Surgery",
+        
+        "BAMS – Bachelor of Ayurvedic Medicine and Surgery",
+        
+        "BUMS – Bachelor of Unani Medicine and Surgery",
+        
+        "BHMS – Bachelor of Homeopathy Medicine and Surgery",
+        
+        "BYNS- Bachelor of Yoga and Naturopathy Sciences",
+        
+        "B.V.Sc & AH- Bachelor of Veterinary Sciences and Animal Husbandry",
+        
+        "Bachelor of Occupational Therapy",
+        
+        "Bachelor of Science in Biotechnology",
+        
+        "Bachelor of Technology in Biomedical Engineering",
+        
+        "Bachelor of Science in Microbiology (Non-Clinical)",
+        
+        "Bachelor of Science in Cardiac or Cardiovascular Technology",
+        
+        "Bachelor of Perfusion Technology or Bachelor of Science in Cardio-Pulmonary Perfusion Technology",
+        
+        "Bachelor of Respiratory Therapy",
+        
+        "Bachelor of Science in Nutrition and Dietetics",
+        
+        "Bachelor of Science in Genetics",
+        
+        "Doctor of Medicine (MD)",
+        
+        "Masters of Surgery (MS)",
+        
+        "Diplomate of National Board (DNB)",
+        
+        "Other"
+        
+        ]
+   }
+}
 
 }

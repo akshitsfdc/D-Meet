@@ -25,6 +25,9 @@ import {MatBadgeModule} from '@angular/material/badge';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatDialogModule} from '@angular/material/dialog';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+
 
 @NgModule({
   declarations: [
@@ -57,7 +60,9 @@ import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
     MatBadgeModule,
     MatSnackBarModule,
     MatDialogModule,
-    NgxMaterialTimepickerModule
+    NgxMaterialTimepickerModule,
+    MatAutocompleteModule,
+    MatProgressBarModule
   ]
 
 })

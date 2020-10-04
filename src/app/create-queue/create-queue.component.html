@@ -1,0 +1,97 @@
+<div class="queue-form-parent">
+    <form [formGroup]="queueForm" #f="ngForm" (ngSubmit)="onSubmit(f)" class="create-queue-container">
+        <!-- <div class="create-queue-container"> -->
+    
+            
+            <div fxLayout="column" fxLayoutGap="20px">
+
+                <span fxFlex="1 1 10px"></span>
+                <mat-label fxLayoutAlign="center center"  class="header-label">Create Queue</mat-label>
+                <span fxFlex="1 1 20px"></span>
+                <mat-form-field appearance="outline">
+                    <mat-label>Enter Number Of Patients</mat-label>
+                    <input matInput type="number" placeholder="Queue Size e.g 100" formControlName="numberOfPatients">
+                    <mat-error *ngIf="numberOfPatients.touched && numberOfPatients.errors?.required">
+                        You must provide patient limit
+                    </mat-error>
+                </mat-form-field>
+        
+                <mat-form-field appearance="fill" fxFlex="1 1 auto">
+                    <mat-label>Choose Currency</mat-label>
+                    <mat-select formControlName="currency" [(value)]="slectedCurrency" >
+                        <mat-option value="INR">INR( &#8377; )</mat-option>
+                        <!-- <mat-option value="dolller">USD ( $ ) </mat-option> -->
+                    </mat-select>
+                    <mat-error *ngIf="currency.touched && currency.errors?.required">
+                        You must choose currency
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Declare your fees</mat-label>
+                    <input matInput type="number" placeholder="Fees e.g 300 Rs" formControlName="fees" (change)="onFeesChangedEvent($event)">
+                    <mat-error *ngIf="fees.touched && fees.errors?.required">
+                        You must provide your fees
+                    </mat-error>
+                </mat-form-field>
+                <mat-label >{{feeStructureText}}</mat-label>
+                <div fxLayout="row wrap" fxLayoutGap=10px>
+                    <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                        <mat-label >Booking Start Time</mat-label>
+                        <input matInput [ngxTimepicker]="startTimePicker" [format]=24 [(value)]='bookStartTime' formControlName="bStartTime">
+                        <mat-error *ngIf="bStartTime.touched && bStartTime.errors?.required">
+                            You must tell when your booking will start
+                        </mat-error>
+                        <ngx-material-timepicker [theme]="darkTheme"  #startTimePicker  (timeSet)="timeChangeBookStart($event)" ></ngx-material-timepicker>
+                        <mat-icon matSuffix (click)="startTimePicker.open()">access_time</mat-icon>
+                      </mat-form-field>
+                      <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                        <mat-label >Booking End Time</mat-label>
+                        <input matInput [ngxTimepicker]="endTimePicker" [min]="bookEndMin" [format]=24 [disabled]="!enableBookEnd"  [(value)]='bookEndTime' formControlName="bEndTime" >
+                        <mat-error *ngIf="bEndTime.touched && bEndTime.errors?.required">
+                            You must tell when your booking will end
+                        </mat-error>
+                        <ngx-material-timepicker [theme]="darkTheme" #endTimePicker  (timeSet)="timeChangeBookEnd($event)"></ngx-material-timepicker>
+                        <mat-icon *ngIf="enableBookEnd" matSuffix (click)="endTimePicker.open()" >access_time</mat-icon>
+                      </mat-form-field>
+                </div>
+                <div fxLayout="row wrap" fxLayoutGap=10px>
+                    <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                        <mat-label >Consulting Start Time</mat-label>
+                        <input matInput [ngxTimepicker]="cStartTimePicker" [format]=24  [min]="bookEndMin"  [disabled]="!enableBookEnd" [(value)]='consultingStartTime' formControlName="cStartTime" >
+                        <mat-error *ngIf="cStartTime.touched && cStartTime.errors?.required">
+                            You must tell when your consulting will start
+                        </mat-error>
+                        <ngx-material-timepicker [theme]="darkTheme" #cStartTimePicker (timeSet)="timeChangeConsultStart($event)"></ngx-material-timepicker>
+                        <mat-icon  *ngIf="enableBookEnd" matSuffix (click)="cStartTimePicker.open()">access_time</mat-icon>
+                      </mat-form-field>
+                      <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                        <mat-label >Consulting End Time</mat-label>
+                        <input matInput [ngxTimepicker]="cEndTimePicker" [format]=24  [min]="consultEndMin" [disabled]="!enableConsultingEnd" [(value)]='consultingEndTime' formControlName="cEndTime">
+                        <mat-error *ngIf="cEndTime.touched && cEndTime.errors?.required">
+                            You must tell when your consulting will end
+                        </mat-error>
+                        <ngx-material-timepicker [theme]="darkTheme" #cEndTimePicker (timeSet)="timeChangeConsultEnd($event)"></ngx-material-timepicker>
+                        <mat-icon *ngIf="enableConsultingEnd" matSuffix (click)="cEndTimePicker.open()" >access_time</mat-icon>
+                      </mat-form-field>
+    
+                     
+                </div>
+                <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                    <mat-label >Approx average time per patient</mat-label>
+                    <input matInput  placeholder="Example 5 minutes" formControlName="aTimePerPatient">
+                    <mat-error *ngIf="aTimePerPatient.touched && aTimePerPatient.errors?.required">
+                        Please provide approximate time per patient
+                    </mat-error>
+                    <span matSuffix>Minutes</span>
+                </mat-form-field>
+                <div fxLayout="row wrap" fxLayoutGap=10px>
+                    <button mat-flat-button class="cancel-queue-button" fxFlex="1 1 40%" >Cancel</button>
+                    <button mat-flat-button class="next-patient-button-button" fxFlex="1 1 auto"  >Create Queue</button>
+                </div>
+               
+            </div>
+            
+    
+        <!-- </div> -->
+    </form>
+</div>

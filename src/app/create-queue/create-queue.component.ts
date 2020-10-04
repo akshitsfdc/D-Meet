@@ -1,0 +1,248 @@
+import { Component} from '@angular/core';
+import { FormGroup, FormControl, Validators, NgForm } from '@angular/forms';
+import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
+import { QueueModel } from '../models/queue-model';
+import { AuthService } from '../services/auth.service';
+
+@Component({
+  selector: 'app-create-queue',
+  templateUrl: './create-queue.component.html',
+  styleUrls: ['./create-queue.component.css']
+})
+export class CreateQueueComponent {
+
+  bookEndMin = null;
+  consultEndMin = null;
+
+  enableBookEnd = false;
+  enableConsultingEnd = false;
+
+  bookStartTime = "";
+  bookEndTime = "";
+  consultingStartTime = "";
+  consultingEndTime = "";
+
+  slectedCurrency = "INR";
+
+  feeStructureText:string = "";
+  serviceChargePercent:number = 5;
+  defaultFees = 300;
+
+  private currentUser;
+
+  queueForm = new FormGroup({
+    numberOfPatients: new FormControl(250, Validators.required),
+    currency: new FormControl(this.slectedCurrency, Validators.required),
+    fees: new FormControl(this.defaultFees, Validators.required),
+    bStartTime: new FormControl('', Validators.required),
+    bEndTime: new FormControl('', Validators.required),
+    cStartTime: new FormControl('', Validators.required),
+    cEndTime: new FormControl('', Validators.required),
+    aTimePerPatient : new FormControl(7, Validators.required)
+  });
+
+  darkTheme: NgxMaterialTimepickerTheme = {
+    container: {
+        bodyBackgroundColor: '#424242',
+        buttonColor: '#fff'
+    },
+    dial: {
+        dialBackgroundColor: '#555',
+    },
+    clockFace: {
+        clockFaceBackgroundColor: '#555',
+        clockHandColor: '#0F9D58',
+        clockFaceTimeInactiveColor: '#fff'
+    }
+};
+
+  constructor(private authService: AuthService,) {
+
+    this.setFeeStructureText(this.defaultFees);
+    this.getUserdata();
+
+   }
+
+   async getUserdata(){
+    this.currentUser = await this.authService.getUser();
+  }
+
+  timeChangeBookStart(time){
+    
+    this.bookStartTime = time;
+
+    this.bookEndMin = time;
+
+    this.enableBookEnd = true;
+
+    this.convertToSeconds(this.bookEndMin);
+
+    this.bookEndTime = "";
+    this.consultingStartTime = "";
+    this.consultingEndTime = "";
+
+  }
+
+  timeChangeBookEnd(time){
+    this.bookEndTime = time;
+  }
+  
+  timeChangeConsultStart(time){
+
+    this.consultingStartTime = time;
+
+    this.consultEndMin = time;
+
+    this.enableConsultingEnd = true;
+
+    this.consultingEndTime = "";
+
+  }
+  timeChangeConsultEnd(time){
+    this.consultingEndTime = time;
+  }
+  private convertToSeconds(time:string):number{
+
+    var seconds = 0;
+    try{
+      var a = time.split(':'); // split it at the colons
+
+      // minutes are worth 60 seconds. Hours are worth 60 minutes.
+     seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60;// + (+a[2]); 
+    }catch{
+      seconds = 0;
+    }
+    
+
+    return seconds;
+  }
+  private validateForm(): boolean{
+
+    let valid:boolean = true;
+
+    
+    try{
+      let bookingStartTime = this.convertToSeconds(this.bookStartTime); 
+      let bookingEndTime = this.convertToSeconds(this.bookEndTime); 
+      let consultingStartTime = this.convertToSeconds(this.consultingStartTime); 
+      let consultingEndTime = this.convertToSeconds(this.consultingEndTime); 
+
+      if(this.numberOfPatients.value.length <= 0){
+        valid = false;
+      }
+      if(this.currency.value.length <= 0){
+        valid = false;
+      }
+      if(this.fees.value.length <= 0){
+        valid = false;
+      }
+      if(this.aTimePerPatient.value.length <= 0){
+        valid = false;
+      }
+      
+      if(bookingEndTime <= bookingStartTime){
+        alert("Booking end time can not be less than or equal to booking start time");
+        valid = false;
+      }
+      if(consultingStartTime < bookingStartTime){
+        alert("Consulting start time can not be less than or equal to booking start time");
+        valid = false;
+      }
+      if(consultingEndTime <= consultingStartTime){
+        alert("Consulting end time can not be less than or equal to Consulting start time");
+        valid = false;
+      }
+      
+    }catch{
+      alert("It seems that you might have given some invalid input, please check all your fields again!");
+      valid = false;
+    }
+    
+    return valid;
+  }
+
+  get numberOfPatients() {
+    return this.queueForm.get('numberOfPatients');
+  }
+  get currency() {
+    return this.queueForm.get('currency');
+  }
+  get fees() {
+    return this.queueForm.get('fees');
+  }
+  get bStartTime() {
+    return this.queueForm.get('bStartTime');
+  }
+  get bEndTime() {
+    return this.queueForm.get('bEndTime');
+  }
+  get cStartTime() {
+    return this.queueForm.get('cStartTime');
+  }
+  get cEndTime() {
+    return this.queueForm.get('cEndTime');
+  }
+  get aTimePerPatient() {
+    return this.queueForm.get('aTimePerPatient');
+  }
+
+  onSubmit(queueForm: NgForm) {
+    if(!this.validateForm()){
+      return;
+    }
+    if(queueForm.valid){
+      this.constructQueueObject();
+    }
+   
+
+  }
+
+  private setFeeStructureText(fees: number):void{
+
+    console.log("this.currency : "+JSON.stringify(this.currency.value));
+    let serviceCharge:number = (fees/100) * this.serviceChargePercent;
+    let totalFees:number = Number(fees) + Number(serviceCharge);
+    this.feeStructureText = "*Service Charge = "+serviceCharge+" "+ this.currency.value+",  You will be paid = "+fees+" "+ this.currency.value+", Total Payable for patient = "+totalFees.toString()+" "+ this.currency.value;
+  }
+  
+  onFeesChangedEvent(event:any):void{
+    let value = event.target.value;
+    if(isNaN(value)){
+      alert("Invalid fees provided! Please provide a valid number.");
+      return;
+    }
+    this.setFeeStructureText(value)
+  }
+  private constructQueueObject(): void{
+
+    if(!this.currentUser){
+      alert("You seems to be logged out because of some reason, please login again or wait for some time or try to refresh this page!");
+      return;
+    }
+    let queue : QueueModel = new QueueModel();
+
+      queue.status = "Created";
+      queue.queueId = this.getTimestamp();
+      queue.patientLimit = this.numberOfPatients.value ;
+      queue.ownerId = this.currentUser.uid; //to be changed
+      queue.fees = this.fees.value ; 
+      queue.bookingStarting = this.bStartTime.value;
+      queue.bookingEnding = this.bEndTime.value;
+      queue.consultingStarting = this.cStartTime.value;
+      queue.consultingEnding = this.cEndTime.value;
+      queue.bookedPatients = 0;
+
+      console.log(JSON.stringify(queue));
+  }
+
+  private getTimestamp():string{
+
+    try{
+      return (new Date().getTime()).toString();
+    }catch{
+      return "invalid";
+    }
+    
+  }
+
+}

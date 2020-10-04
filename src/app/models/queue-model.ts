@@ -6,7 +6,9 @@ export class QueueModel {
     private _status: string;
     private _patientLimit: number;
     private _bookingStarting: string;
+    private _bookingEnding: string;
     private _consultingStarting: string;
+    private _consultingEnding: string;
     private _bookedPatients: number;
     private _queueId: string;
     private _ownerId: string;
@@ -41,14 +43,24 @@ export class QueueModel {
     public set bookingStarting(bookingStarting: string) {
         this._bookingStarting = bookingStarting;
     }
-
+    public get bookingEnding() {
+        return this._bookingEnding;
+    }
+    public set bookingEnding(bookingEnding: string) {
+        this._bookingEnding = bookingEnding;
+    }
     public get consultingStarting() {
         return this._consultingStarting;
     }
     public set consultingStarting(consultingStarting: string) {
         this._consultingStarting = consultingStarting;
     }
-
+    public get consultingEnding() {
+        return this._consultingEnding;
+    }
+    public set consultingEnding(consultingEnding: string) {
+        this._consultingEnding = consultingEnding;
+    }
     public get bookedPatients() {
         return this._bookedPatients;
     }

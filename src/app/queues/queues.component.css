@@ -80,18 +80,4 @@
     bottom: 30px;
     right: 30px;
 }
-.create-queue-container{
-    height: 100%;
-    width: 100%;
-    padding : 20px 50px 20px 50px; 
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
 
-}
-.cancel-queue-button{
-    background-color: whitesmoke;
-}
-.next-patient-button-button{
-    background-color: #0F9D58;
-    color: white;
-}

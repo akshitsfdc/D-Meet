@@ -1,3 +1,4 @@
+import { CreateQueueComponent } from './create-queue/create-queue.component';
 import { HomeComponent } from './home/home.component';
 import { RouterModule } from '@angular/router';
 import { AuthService } from './services/auth.service';
@@ -29,6 +30,9 @@ import { LiveQueueDetailsComponent } from './live-queue-details/live-queue-detai
 import { DoctorConferenceComponent } from './doctor-conference/doctor-conference.component';
 import { MovePatientComponent } from './move-patient/move-patient.component';
 import { QueuesComponent } from './queues/queues.component';
+import { DoctorRegistrationComponent } from './doctor-registration/doctor-registration.component';
+import { LoadingDialogComponent } from './loading-dialog/loading-dialog.component';
+
 
 
 @NgModule({
@@ -46,7 +50,10 @@ import { QueuesComponent } from './queues/queues.component';
     LiveQueueDetailsComponent,
     DoctorConferenceComponent,
     MovePatientComponent,
-    QueuesComponent
+    QueuesComponent,
+    CreateQueueComponent,
+    DoctorRegistrationComponent,
+    LoadingDialogComponent
   ],
   imports: [
     FlexLayoutModule,
@@ -57,7 +64,8 @@ import { QueuesComponent } from './queues/queues.component';
     FormsModule,
     LayoutModule,
     RouterModule.forChild([
-      { path: '', component: LandingPageComponent },
+      { path: '', component: DoctorRegistrationComponent },
+      { path: 'login', component: LandingPageComponent },      
       {
         path: 'home', component: HomeComponent,
 
@@ -66,6 +74,7 @@ import { QueuesComponent } from './queues/queues.component';
             path: 'liveQueue', component: LiveQueueComponent
           },
           {path: 'queues', component: QueuesComponent},
+          {path: 'queues/createQueue', component: CreateQueueComponent},
           { path: 'liveQueue/queueDetails', component: LiveQueueDetailsComponent },
           { path: 'liveQueue/queueDetails/patientMeet', component: DoctorConferenceComponent }
         ]
@@ -73,7 +82,9 @@ import { QueuesComponent } from './queues/queues.component';
       
 
     ]),
+    
     AngularFireModule.initializeApp(environment.firebase),
+   
     MaterialModule
   ],
   providers: [

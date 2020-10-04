@@ -2,7 +2,10 @@
 
 @import "~bootstrap/dist/css/bootstrap.css";
 
-html, body { height: 99vh; }
+html, body { 
+  height: 100%; 
+  /* position: relative; */
+}
 body { margin: 0;
 overflow: hidden;
 }

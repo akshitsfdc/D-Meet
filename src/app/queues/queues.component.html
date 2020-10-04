@@ -56,67 +56,10 @@
     
    
 
-    <button mat-fab class="create-queue-fab" aria-label="Creat Queue">
+    <button mat-fab class="create-queue-fab" aria-label="Creat Queue" (click)="goToCreateQueue()">
         <mat-icon>add</mat-icon>
     </button>
 
-    <div class="create-queue-container">
-
-        <div fxLayout="column">
-            <mat-form-field appearance="outline">
-                <mat-label>Enter Number Of Patients</mat-label>
-                <input matInput type="number" placeholder="Queue Size e.g 100">
-            </mat-form-field>
     
-            <mat-form-field appearance="fill" fxFlex="1 1 auto">
-                <mat-label>Choose Currency</mat-label>
-                <mat-select >
-                    <mat-option value="rs">INR( &#8377; )</mat-option>
-                    <mat-option value="dolller">USD ( $ ) </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-                <mat-label>Declare your fees</mat-label>
-                <input matInput type="number" placeholder="Fees e.g 300 Rs">
-            </mat-form-field>
-  
-            <div fxLayout="row wrap" fxLayoutGap=10px>
-                <mat-form-field appearance="fill" fxFlex="1 1 auto">
-                    <mat-label >Booking Start Time</mat-label>
-                    <input matInput [ngxTimepicker]="startTimePicker" disabled>
-                    <ngx-material-timepicker [theme]="darkTheme"  #startTimePicker min="12:10 AM" max="08:11 PM" (timeSet)="timeChangeBookStart($event)" ></ngx-material-timepicker>
-                    <mat-icon matSuffix (click)="startTimePicker.open()">access_time</mat-icon>
-                  </mat-form-field>
-                  <mat-form-field appearance="fill" fxFlex="1 1 auto">
-                    <mat-label >Booking End Time</mat-label>
-                    <input matInput [ngxTimepicker]="endTimePicker" disabled>
-                    <ngx-material-timepicker [theme]="darkTheme" #endTimePicker [min]="bookEndMin" max="bookEndMax" ></ngx-material-timepicker>
-                    <mat-icon matSuffix (click)="endTimePicker.open()">access_time</mat-icon>
-                  </mat-form-field>
-            </div>
-            
-            <div fxLayout="row wrap" fxLayoutGap=10px>
-                <mat-form-field appearance="fill" fxFlex="1 1 auto">
-                    <mat-label >Consulting Start Time</mat-label>
-                    <input matInput [ngxTimepicker]="cStartTimePicker" disabled>
-                    <ngx-material-timepicker [theme]="darkTheme" #cStartTimePicker disabled="false"></ngx-material-timepicker>
-                    <mat-icon matSuffix (click)="cStartTimePicker.open()">access_time</mat-icon>
-                  </mat-form-field>
-                  <mat-form-field appearance="fill" fxFlex="1 1 auto">
-                    <mat-label >Consulting End Time</mat-label>
-                    <input matInput [ngxTimepicker]="cEndTimePicker" disabled>
-                    <ngx-material-timepicker [theme]="darkTheme" #cEndTimePicker disabled="false"></ngx-material-timepicker>
-                    <mat-icon matSuffix (click)="cEndTimePicker.open()">access_time</mat-icon>
-                  </mat-form-field>
-            </div>
-
-            <div fxLayout="row wrap" fxLayoutGap=10px>
-                <button mat-flat-button class="cancel-queue-button" fxFlex="1 1 40%" >Cancel</button>
-                <button mat-flat-button class="next-patient-button-button" fxFlex="1 1 auto"  >Create Queue</button>
-            </div>
-           
-        </div>
-        
-
-    </div>
+    
 </div>

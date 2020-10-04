@@ -1,6 +1,9 @@
 import { QueueModel } from './../models/queue-model';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
+import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
+import { AuthService } from '../services/auth.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-queues',
@@ -11,23 +14,8 @@ export class QueuesComponent {
 
   queues : any[] = [];
 
-  bookEndMin;
-
-  darkTheme: NgxMaterialTimepickerTheme = {
-    container: {
-        bodyBackgroundColor: '#424242',
-        buttonColor: '#fff'
-    },
-    dial: {
-        dialBackgroundColor: '#555',
-    },
-    clockFace: {
-        clockFaceBackgroundColor: '#555',
-        clockHandColor: '#0F9D58',
-        clockFaceTimeInactiveColor: '#fff'
-    }
-};
-  constructor() { 
+  
+  constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute) { 
     this.getQueues();
   }
 
@@ -48,9 +36,10 @@ export class QueuesComponent {
       this.queues.push(queue);
     }
   }
-  timeChangeBookStart(event){
-    console.log(JSON.stringify(event));
-    this.bookEndMin = event;
+
+  goToCreateQueue() {
+    this.router.navigate(['createQueue'], { relativeTo: this.route });
   }
 
+  
 }

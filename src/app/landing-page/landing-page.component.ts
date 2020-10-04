@@ -47,6 +47,7 @@ export class LandingPageComponent implements OnInit {
       .subscribe(
         user => {
           if (user) {
+            console.log("user : "+JSON.stringify(user));
             this.router.navigate(['home']);
           }
           console.log(user)
