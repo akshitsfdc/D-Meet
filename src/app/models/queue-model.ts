@@ -2,84 +2,101 @@
 
 export class QueueModel {
 
-    private _fees: number;
-    private _status: string;
-    private _patientLimit: number;
-    private _bookingStarting: string;
-    private _bookingEnding: string;
-    private _consultingStarting: string;
-    private _consultingEnding: string;
-    private _bookedPatients: number;
-    private _queueId: string;
-    private _ownerId: string;
+    private fees: number;
+    private status: string;
+    private patientLimit: number;
+    private bookingStarting: number;
+    private bookingEnding: number;
+    private consultingStarting: number;
+    private consultingEnding: number;
+    private bookedPatients: number;
+    private queueId: string;
+    private ownerId: string;
+
 
     constructor(){}
 
 
-    public get fees() {
-        return this._fees;
-    }
-    public set fees(fees: number) {
-        this._fees = fees;
+    public getBookingStarting(): number {
+        return this.bookingStarting;
     }
 
-    public get patientLimit() {
-        return this._patientLimit;
-    }
-    public set patientLimit(patientLimit: number) {
-        this._patientLimit = patientLimit;
+    public setBookingStarting(bookingStarting: number): void {
+        this.bookingStarting = bookingStarting;
     }
 
-    public get status() {
-        return this._status;
-    }
-    public set status(status: string) {
-        this._status = status;
+    public getBookingEnding(): number {
+        return this.bookingEnding;
     }
 
-    public get bookingStarting() {
-        return this._bookingStarting;
-    }
-    public set bookingStarting(bookingStarting: string) {
-        this._bookingStarting = bookingStarting;
-    }
-    public get bookingEnding() {
-        return this._bookingEnding;
-    }
-    public set bookingEnding(bookingEnding: string) {
-        this._bookingEnding = bookingEnding;
-    }
-    public get consultingStarting() {
-        return this._consultingStarting;
-    }
-    public set consultingStarting(consultingStarting: string) {
-        this._consultingStarting = consultingStarting;
-    }
-    public get consultingEnding() {
-        return this._consultingEnding;
-    }
-    public set consultingEnding(consultingEnding: string) {
-        this._consultingEnding = consultingEnding;
-    }
-    public get bookedPatients() {
-        return this._bookedPatients;
-    }
-    public set bookedPatients(bookedPatients: number) {
-        this._bookedPatients = bookedPatients;
+    public setBookingEnding(bookingEnding: number): void {
+        this.bookingEnding = bookingEnding;
     }
 
-    public get queueId() {
-        return this._queueId;
-    }
-    public set queueId(queueId: string) {
-        this._queueId = queueId;
+    public getConsultingStarting(): number {
+        return this.consultingStarting;
     }
 
-    public get ownerId() {
-        return this._ownerId;
+    public setConsultingStarting(consultingStarting: number): void {
+        this.consultingStarting = consultingStarting;
     }
-    public set ownerId(ownerId: string) {
-        this._ownerId = ownerId;
+
+    public getConsultingEnding(): number {
+        return this.consultingEnding;
+    }
+
+    public setConsultingEnding(consultingEnding: number): void {
+        this.consultingEnding = consultingEnding;
+    }
+    
+    public getFees(): number {
+        return this.fees;
+    }
+
+    public setFees(fees: number): void {
+        this.fees = fees;
+    }
+
+    public getStatus(): string {
+        return this.status;
+    }
+
+    public setStatus(status: string): void {
+        this.status = status;
+    }
+
+    public getPatientLimit(): number {
+        return this.patientLimit;
+    }
+
+    public setPatientLimit(patientLimit: number): void {
+        this.patientLimit = patientLimit;
+    }
+
+   
+
+    public getBookedPatients(): number {
+        return this.bookedPatients;
+    }
+
+    public setBookedPatients(bookedPatients: number): void {
+        this.bookedPatients = bookedPatients;
+    }
+
+    public getQueueId(): string {
+        return this.queueId;
+    }
+
+    public setQueueId(queueId: string): void {
+        this.queueId = queueId;
+    }
+
+    public getOwnerId(): string {
+        return this.ownerId;
+    }
+
+    public setOwnerId(ownerId: string): void {
+        this.ownerId = ownerId;
     }
 
 }

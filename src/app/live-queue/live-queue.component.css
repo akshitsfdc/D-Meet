@@ -1,5 +1,5 @@
 #queueComponent{
-    margin: 10px;
+    margin: 15px;
 }
 .live-image{
     width: 10px;
@@ -57,3 +57,106 @@
 .live-status-container{
     flex: 1 1 70%;
 }
+
+.header-label{
+    font-size: 20px;
+    margin-left: 15px;
+    margin-top: 15px;
+    font-family: roboto-bold;
+}
+/* for table */
+
+table {
+    /* width: 100%; */
+    margin: 15px;
+  }
+  
+  tr.example-detail-row {
+    height: 0;
+  }
+  
+  tr.example-element-row:not(.example-expanded-row):hover {
+    background: whitesmoke;
+  }
+  
+  tr.example-element-row:not(.example-expanded-row):active {
+    background: #efefef;
+  }
+  
+  .example-element-row td {
+    border-bottom-width: 0;
+  }
+  
+  .example-element-detail {
+    overflow: hidden;
+    display: flex;
+  }
+  
+  .example-element-diagram {
+    min-width: 80px;
+    border: 2px solid black;
+    padding: 8px;
+    font-weight: lighter;
+    margin: 8px 0;
+    height: 104px;
+  }
+  
+  .example-element-symbol {
+    font-weight: bold;
+    font-size: 40px;
+    line-height: normal;
+  }
+  
+  .example-element-description {
+    padding: 16px;
+  }
+  
+  .example-element-description-attribution {
+    opacity: 0.5;
+  }
+
+  .authorized-status-label{
+    background-color: #00bbff;
+    color: white;
+    border-radius: 10px;
+    padding: 4px 8px 4px 8px;
+    font-family: roboto-regular;
+  }
+  .completed-status-label{
+    background-color: #0F9D58;
+    color: white;
+    border-radius: 10px;
+    padding: 4px 8px 4px 8px;
+    font-family: roboto-regular;
+  }
+  .failed-status-label{
+    background-color: #DB4437;
+    color: white;
+    border-radius: 10px;
+    padding: 4px 8px 4px 8px;
+    font-family: roboto-regular;
+  }
+  .no-kyc-label{
+    color:  #DB4437;
+    font-size: 15px;
+    border-radius: 10px;
+    padding: 4px 8px 4px 8px;
+    font-family: roboto-regular;
+  }
+  .no-kyc-button{
+    background-color: #4285F4;
+    color: white;
+    font-size: 15px;
+    width: fit-content;
+    height: fit-content;
+  }
+  /* mat-cell{
+    display:flex !important;
+    justify-content:center!important;
+    
+  }
+  
+  mat-header-cell {
+    display:flex;
+    justify-content:center;
+  } */

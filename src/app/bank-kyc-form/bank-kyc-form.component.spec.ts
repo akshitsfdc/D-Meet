@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CreateQueueComponent } from './create-queue.component';
+import { BankKycFormComponent } from './bank-kyc-form.component';
 
-describe('CreateQueueComponent', () => {
-  let component: CreateQueueComponent;
-  let fixture: ComponentFixture<CreateQueueComponent>;
+describe('BankKycFormComponent', () => {
+  let component: BankKycFormComponent;
+  let fixture: ComponentFixture<BankKycFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CreateQueueComponent ]
+      declarations: [ BankKycFormComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CreateQueueComponent);
+    fixture = TestBed.createComponent(BankKycFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

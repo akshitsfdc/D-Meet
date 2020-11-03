@@ -37,7 +37,7 @@
                 <div fxLayout="row wrap" fxLayoutGap=10px>
                     <mat-form-field appearance="outline" fxFlex="1 1 auto">
                         <mat-label >Booking Start Time</mat-label>
-                        <input matInput [ngxTimepicker]="startTimePicker" [format]=24 [(value)]='bookStartTime' formControlName="bStartTime">
+                        <input matInput readonly [ngxTimepicker]="startTimePicker" [format]=24 [(value)]='bookStartTime' formControlName="bStartTime">
                         <mat-error *ngIf="bStartTime.touched && bStartTime.errors?.required">
                             You must tell when your booking will start
                         </mat-error>
@@ -46,7 +46,7 @@
                       </mat-form-field>
                       <mat-form-field appearance="outline" fxFlex="1 1 auto">
                         <mat-label >Booking End Time</mat-label>
-                        <input matInput [ngxTimepicker]="endTimePicker" [min]="bookEndMin" [format]=24 [disabled]="!enableBookEnd"  [(value)]='bookEndTime' formControlName="bEndTime" >
+                        <input matInput readonly [ngxTimepicker]="endTimePicker" [min]="bookEndMin" [format]=24 [disabled]="!enableBookEnd"  [(value)]='bookEndTime' formControlName="bEndTime" >
                         <mat-error *ngIf="bEndTime.touched && bEndTime.errors?.required">
                             You must tell when your booking will end
                         </mat-error>
@@ -57,7 +57,7 @@
                 <div fxLayout="row wrap" fxLayoutGap=10px>
                     <mat-form-field appearance="outline" fxFlex="1 1 auto">
                         <mat-label >Consulting Start Time</mat-label>
-                        <input matInput [ngxTimepicker]="cStartTimePicker" [format]=24  [min]="bookEndMin"  [disabled]="!enableBookEnd" [(value)]='consultingStartTime' formControlName="cStartTime" >
+                        <input matInput readonly [ngxTimepicker]="cStartTimePicker" [format]=24  [min]="bookEndMin"  [disabled]="!enableBookEnd" [(value)]='consultingStartTime' formControlName="cStartTime" >
                         <mat-error *ngIf="cStartTime.touched && cStartTime.errors?.required">
                             You must tell when your consulting will start
                         </mat-error>
@@ -66,7 +66,7 @@
                       </mat-form-field>
                       <mat-form-field appearance="outline" fxFlex="1 1 auto">
                         <mat-label >Consulting End Time</mat-label>
-                        <input matInput [ngxTimepicker]="cEndTimePicker" [format]=24  [min]="consultEndMin" [disabled]="!enableConsultingEnd" [(value)]='consultingEndTime' formControlName="cEndTime">
+                        <input matInput readonly [ngxTimepicker]="cEndTimePicker" [format]=24  [min]="consultEndMin" [disabled]="!enableConsultingEnd" [(value)]='consultingEndTime' formControlName="cEndTime">
                         <mat-error *ngIf="cEndTime.touched && cEndTime.errors?.required">
                             You must tell when your consulting will end
                         </mat-error>

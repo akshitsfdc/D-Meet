@@ -32,7 +32,19 @@ import { MovePatientComponent } from './move-patient/move-patient.component';
 import { QueuesComponent } from './queues/queues.component';
 import { DoctorRegistrationComponent } from './doctor-registration/doctor-registration.component';
 import { LoadingDialogComponent } from './loading-dialog/loading-dialog.component';
-
+import { BankKycFormComponent } from './bank-kyc-form/bank-kyc-form.component';
+import {NgxImageCompressService} from 'ngx-image-compress';
+import { LoadingSplashComponent } from './loading-splash/loading-splash.component';
+import { TestNavigationComponent } from './test-navigation/test-navigation.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { DoctorProfileComponent } from './doctor-profile/doctor-profile.component';
+import { AgmCoreModule } from '@agm/core';
+import { ProfileEditComponent } from './profile-edit/profile-edit.component';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 
 @NgModule({
@@ -53,7 +65,12 @@ import { LoadingDialogComponent } from './loading-dialog/loading-dialog.componen
     QueuesComponent,
     CreateQueueComponent,
     DoctorRegistrationComponent,
-    LoadingDialogComponent
+    LoadingDialogComponent,
+    BankKycFormComponent,
+    LoadingSplashComponent,
+    TestNavigationComponent,
+    DoctorProfileComponent,
+    ProfileEditComponent
   ],
   imports: [
     FlexLayoutModule,
@@ -63,13 +80,16 @@ import { LoadingDialogComponent } from './loading-dialog/loading-dialog.componen
     ReactiveFormsModule,
     FormsModule,
     LayoutModule,
+    ImageCropperModule,
     RouterModule.forChild([
-      { path: '', component: DoctorRegistrationComponent },
-      { path: 'login', component: LandingPageComponent },      
+      { path: '', component: LoadingSplashComponent },
+      { path: 'login', component: LandingPageComponent },
+      { path: 'doctorregistration', component: DoctorRegistrationComponent }, 
       {
         path: 'home', component: HomeComponent,
 
         children: [
+          {path: 'doctor-profile', component: DoctorProfileComponent},
           {
             path: 'liveQueue', component: LiveQueueComponent
           },
@@ -82,13 +102,26 @@ import { LoadingDialogComponent } from './loading-dialog/loading-dialog.componen
       
 
     ]),
-    
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyBlMTpGtvjymyxqra7NDzMxAmOOopxGP3I'
+    }),
     AngularFireModule.initializeApp(environment.firebase),
    
-    MaterialModule
+    MaterialModule,
+   
+    MatToolbarModule,
+   
+    MatButtonModule,
+   
+    MatSidenavModule,
+   
+    MatIconModule,
+   
+    MatListModule
   ],
   providers: [
-    AuthService
+    AuthService,
+    NgxImageCompressService
   ],
   bootstrap: [AppComponent]
 })

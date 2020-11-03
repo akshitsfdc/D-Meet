@@ -20,10 +20,50 @@ export class DoctorUserData {
     private about:string;
     private doctor:boolean;
     private registrationLocalTimeStapm:number;
+    private kycSubmitted:boolean;
+    private latitude:number;
+    private longitude:number;
+    private diseaseSpecialist:string[]=[];
+
+
 
     constructor(){}
 
 
+    
+    public getDiseaseSpecialist(): string[] {
+        return this.diseaseSpecialist;
+    }
+
+    public setDiseaseSpecialist(diseaseSpecialist: string[]): void {
+        this.diseaseSpecialist = diseaseSpecialist;
+    }
+
+    public getLatitude(): number {
+        return this.latitude;
+    }
+
+    public setLatitude(latitude: number): void {
+        this.latitude = latitude;
+    }
+
+    public getLongitude(): number {
+        return this.longitude;
+    }
+
+    public setLongitude(longitude: number): void {
+        this.longitude = longitude;
+    }
+
+    
+    public isKycSubmitted(): boolean {
+        return this.kycSubmitted;
+    }
+
+    public setKycSubmitted(kycSubmitted: boolean): void {
+        this.kycSubmitted = kycSubmitted;
+    }
+    
     public getEmail(): string {
         return this.email;
     }

@@ -12,19 +12,33 @@ import { AuthService } from './../services/auth.service';
 })
 export class MainNavigationComponent {
 
+
+  isExpanded = true;
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches),
       shareReplay()
     );
 
-  constructor(private breakpointObserver: BreakpointObserver, private authService: AuthService, private router: Router, private route: ActivatedRoute) { }
+  constructor(private breakpointObserver: BreakpointObserver, private authService: AuthService, private router: Router, private route: ActivatedRoute) { 
 
+    this.liveQueueClick();
+  }
+
+  openProfile(){
+    this.router.navigate(['doctor-profile'], { relativeTo: this.route });
+  }
   liveQueueClick() {
     this.router.navigate(['liveQueue'], { relativeTo: this.route });
   }
   queuesClick(){
     this.router.navigate(['queues'], { relativeTo: this.route });
   }
-
+  logOut(){
+    this.authService.signOut().then(() => {
+      this.router.navigate(['login']);
+    }).catch(error => {
+      console.log("Could not log you out : "+error);
+    });
+  }
 }

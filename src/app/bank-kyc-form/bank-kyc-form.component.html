@@ -1,0 +1,82 @@
+
+<form [formGroup]="kycForm" #f="ngForm" (ngSubmit)="onSubmit(f)" class="kyc-form" fxLayout="column" fxLayoutGap="10px" >
+
+    <div fxLayout="row">
+        <mat-label class="header-label" fxFlex="1 1 auto">Bank Account Details & KYC</mat-label>
+        <mat-icon (click)="closeDialog()">clear</mat-icon>
+    </div>
+    <mat-form-field appearance="outline" fxFlex="1 1 auto">
+        <mat-label>Branch IFSC Code</mat-label>
+        <input matInput  placeholder="Enter IFSC code of the Banck Branch" formControlName="ifsc">
+        <mat-error *ngIf="ifsc.touched && ifsc.errors?.required">
+          You must provide IFSC code
+        </mat-error>    
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" fxFlex="1 1 auto">
+        <mat-label>Bank Account Number</mat-label>
+        <input matInput type="password" placeholder="Enter Bank Account Number" formControlName="accountNumber" (change)="passwordChanged()">
+        <mat-error *ngIf="accountNumber.touched && accountNumber.errors?.required">
+          You must provide your email address
+        </mat-error>    
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" fxFlex="1 1 auto">
+        <mat-label>Bank Account Number</mat-label>
+        <input matInput placeholder="Re-Enter Bank Account Number" formControlName="reAccountNumber" (change)="passwordChanged()">
+        <mat-error *ngIf="reAccountNumber.touched && reAccountNumber.errors?.required">
+          You must re-enter your account number
+        </mat-error>    
+        <mat-error *ngIf="reAccountNumber.touched && reAccountNumber.errors?.notEqalTo">
+            Not maching account number please recheck your account number.   
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" fxFlex="1 1 auto">
+        <mat-label>Beneficiary Name</mat-label>
+        <input matInput placeholder="Enter Account Holder Name" formControlName="beneficiaryName">
+        <mat-error *ngIf="reAccountNumber.touched && reAccountNumber.errors?.required">
+          You must re-enter your account number
+        </mat-error>    
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" fxFlex="1 1 auto">
+        <mat-label>Bank Account Type</mat-label>
+        <mat-select formControlName="accountType">           
+            <mat-option value="saving">Saving Account</mat-option>
+            <mat-option value="current">Current Account</mat-option>
+        </mat-select>
+        <mat-error *ngIf="accountType.touched && accountType.errors?.required">
+            You must choose your bank account type
+         </mat-error>
+    </mat-form-field>
+    
+    <mat-label>*Scan and upload any of your ID proof as KYC doccument.Your name should be clear and same as your DoctorMeetup account.</mat-label>
+
+    <mat-form-field appearance="fill" fxFlex="1 1 auto">
+        <mat-label>KYC Document Type</mat-label>
+        <mat-select formControlName="KYCDocumentType">           
+            <mat-option value="adhar">Aadhaar Card</mat-option>
+            <mat-option value="dl">Driving Licence</mat-option>
+            <mat-option value="passport">Passport</mat-option>
+            <mat-option value="voterID">Voter ID Card</mat-option>
+        </mat-select>
+        <mat-error *ngIf="KYCDocumentType.touched && KYCDocumentType.errors?.required">
+            You must select document type
+          </mat-error> 
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" fxFlex="1 1 auto">
+        <mat-label>KYC Document</mat-label>
+        <input matInput  placeholder="KYC Document" readonly formControlName="KYCDocument" >      
+        <label for="upload" matSuffix>
+            <mat-icon >folder</mat-icon>
+            <input type="file" id="upload" style="display:none"  accept="image/x-png,image/gif,image/jpeg" (change)="handleFileInput($event.target.files)">
+      </label> 
+      <mat-error *ngIf="KYCDocument.touched && KYCDocument.errors?.required">
+         You must choose your ID proof
+      </mat-error>                                
+    </mat-form-field> 
+
+    <button mat-raised-button class="kyc-submit-button" fxFlex="1 1 auto" type="submit" [disabled]="!f.valid">Submit</button>
+</form>

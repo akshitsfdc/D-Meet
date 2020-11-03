@@ -1,34 +1,111 @@
+/* 
 .sidenav-container {
- display: flex;
+  width: 100%;
+ 
+ }
+ 
+ .mat-toolbar.mat-primary {
+   position: sticky;
+   z-index: 1;
+   background: #3a4a52;
+ }
+ mat-sidenav-content{
+   height: 100%;
+   overflow: auto;
+ }
+ mat-sidenav-content::-webkit-scrollbar {
+   width: 10px;
+   background: inherit;
+ } */
+ /* mat-sidenav-content::-webkit-scrollbar-thumb { */
+   /* border-radius: 10px; */
+   /* box-shadow: inset 0 0 6px rgba(0,0,0,.3); */
+   /* background-color: #A9A9A9; */
+   /* border: 1px solid #000; */
+ 
+ /* } */
+/* .parent{
+   height: 100%;
+   width: 100%;
+   overflow: hidden;
+ }
+ #meetupImage{
+   max-height: 74px;
+   max-width: 400px;  
+   z-index: 10px;
+   align-self : center
+ }
+ .toolbar-row1{
+  width: 100%;
+  height: 100%;
+  background-color: white;
+ } */
+
+ .sidenav-container {
+  height: 100%;
 }
 
 .sidenav {
-  width: 150px;
-   background: inherit;
+
 }
 
-.mat-toolbar.mat-primary {
-  position: sticky;
-  top: 100;
-  z-index: 1;
-  height: 10vh;
+.sidenav .mat-toolbar {
+  background: inherit;
+  position: relative;
 }
 mat-sidenav-content{
-  height: 90vh;
+  /* height: 100%;
+  overflow: hidden; */
+}
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.header-toolbar{
+  background-color: white;
+}
+#sidenavInner{
+  height: 100%;
+}
+#bottomCloser{
   width: 100%;
-  overflow: auto;
 }
-mat-sidenav-content::-webkit-scrollbar {
-  width: 10px;
+#meetupImage{
+  max-height: 54px;
+  max-width: 200px;  
+  z-index: 10px;
+  margin-right: 25px;
+  
 }
-mat-sidenav-content::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  /* box-shadow: inset 0 0 6px rgba(0,0,0,.3); */
-  background-color: #A9A9A9;
-  /* border: 1px solid #000; */
-
+#meetupImageSmall{
+  max-height: 50px;
+  max-width: 50px;  
+  z-index: 10px;
 }
-#parent{
-  display: flex;
-  flex-direction: column;
+#profileIcon{
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+}
+#profileIndicatorCard{
+  height: fit-content;
+  width: fit-content;
+  border-radius: 20px;
+  padding: 5px;
+  background-color: #e7f3ff;
+  cursor: pointer;
+}
+.profile-indicator-title{
+  margin-right: 12px;
+  font-size: 16px;
+  color: #0078ff;
+  font-family: "roboto-bold";
+}
+.list-item-div{
+  height: 100%;
+  width: 100%;
+}
+.header-toolbar-row1{
+  width: 100%;
 }

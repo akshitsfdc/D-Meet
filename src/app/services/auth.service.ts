@@ -34,13 +34,12 @@ export class AuthService {
   }
 
   isLoggedIn() {
-    this.afAuth.signOut();
     return this.afAuth.authState;
   }
 
   getUser(){
     return this.afAuth.authState.pipe(first()).toPromise();
   }
-  
-  
+
+ 
 }

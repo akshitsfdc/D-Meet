@@ -43,17 +43,17 @@ export class LandingPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.authService.isLoggedIn()
-      .subscribe(
-        user => {
-          if (user) {
-            console.log("user : "+JSON.stringify(user));
-            this.router.navigate(['home']);
-          }
-          console.log(user)
+    // this.authService.isLoggedIn()
+    //   .subscribe(
+    //     user => {
+    //       if (user) {
+    //         console.log("user : "+JSON.stringify(user));
+    //         this.router.navigate(['loadingmeetup']);
+    //       }
+    //       console.log(user)
 
-        }
-      );
+    //     }
+    //   );
   }
   get name() {
     return this.registerForm.get('name');
@@ -85,6 +85,7 @@ export class LandingPageComponent implements OnInit {
     })
 
   }
+
   private login() {
     let email: String = this.lEmail.value;
     let password: String = this.lPassword.value;

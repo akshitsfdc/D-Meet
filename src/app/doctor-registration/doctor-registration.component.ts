@@ -10,6 +10,8 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { LoadingDialogComponent } from '../loading-dialog/loading-dialog.component';
 import { stringToKeyValue } from '@angular/flex-layout/extended/typings/style/style-transforms';
 import { Router } from '@angular/router';
+import { getLocaleDateFormat } from '@angular/common';
+import { Timestamp } from 'rxjs/internal/operators/timestamp';
 
 @Component({
   selector: 'app-doctor-registration',
@@ -71,7 +73,12 @@ export class DoctorRegistrationComponent implements OnInit {
     this.getSpecializations("specialization");
     
     this.getUserdata();
-   
+
+    // new Date(1602844757157).toLocaleDateString();
+    // Date date = new Date(1602844757157);
+
+    console.log(" 1602844757157  date >> "+new Date(1602846200820).toLocaleDateString());
+    console.log(" 1602844757157  time >> "+new Date(1602846200820).toLocaleTimeString());
   }
 
   passwordChanged(){

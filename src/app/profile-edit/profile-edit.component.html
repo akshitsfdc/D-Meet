@@ -1,0 +1,319 @@
+<ng-container *ngIf="activePPForm" >
+    <div fxLayout="column">
+      <div class="header-div" fxLayout="row" fxLayoutAlign="center center" fxFlex="1 1 50px" >        
+        <mat-label class="header-text">Edit profile</mat-label>
+      </div>
+      <span fxFlex="1 1 20px"></span>
+      <form [formGroup]="ppForm" #f="ngForm" (ngSubmit)="ppSubmit(f)" class="pp-form" fxLayout="column" fxLayoutGap="20px" fxFlex="1 1 auto" >
+        
+          <mat-form-field appearance="outline" fxFlex="1 1 auto">
+              <mat-label>Your Full Name</mat-label>
+              <input matInput placeholder="Enter your full name" formControlName="fullName">
+              <mat-error *ngIf="fullName.touched && fullName.errors?.required">
+                Please provide your name
+              </mat-error>
+          </mat-form-field>
+  
+          <mat-form-field appearance="outline" fxFlex="1 1 auto">
+              <mat-label>Your Speciality</mat-label>
+              <input matInput  placeholder="Enter your speciality" [formControl]="speciality" [matAutocomplete]="autoSpeciality">
+              <mat-autocomplete #autoSpeciality="matAutocomplete"  >
+                <mat-option *ngFor="let sp of filteredOptionsSpeciality | async" [value]="sp">
+                  {{sp}} 
+                </mat-option>
+              <mat-error *ngIf="speciality.touched && speciality.errors?.required">
+                Please select your speciality
+              </mat-error>
+            </mat-autocomplete>
+          </mat-form-field>
+  
+          <mat-form-field appearance="outline" fxFlex="1 1 auto">
+              <mat-label>Select Your Degree</mat-label>
+              <input matInput  placeholder="Enter your practice registration number" [formControl]="degree"
+              [matAutocomplete]="autoDegree" >
+              <mat-autocomplete #autoDegree="matAutocomplete" >
+                <mat-option *ngFor="let de of filteredOptionsDegree | async" [value]="de">
+                  {{de}}
+                </mat-option>
+              </mat-autocomplete>
+              <mat-error *ngIf="degree.touched && degree.errors?.required">
+                Please select your degree
+              </mat-error>
+            </mat-form-field>
+  
+          <div id="registrationIdContainer" fxLayout="row wrap" fxLayoutGap="10px">
+          
+              <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                <mat-label>Your Registration Number</mat-label>
+                <input matInput  placeholder="Enter your practice registration number" formControlName="registrationNumber" readonly>
+                <mat-icon matSuffix class="info-icon"             
+                matTooltip="contact support to change this"
+                matTooltipPosition ="above"
+                matTooltipHideDelay="2000"              
+                >info</mat-icon>
+                <mat-error *ngIf="registrationNumber.touched && registrationNumber.errors?.required">
+                  You must provide your registration number
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                <mat-label>Years Of Experience</mat-label>
+                <input matInput type="number" placeholder="Enter years of experience" formControlName="experience" readonly>
+                <mat-icon matSuffix class="info-icon"             
+                matTooltip="contact support to change this"
+                matTooltipPosition ="above"
+                matTooltipHideDelay="2000"              
+                >info</mat-icon>
+                <mat-error *ngIf="experience.touched && experience.errors?.required">
+                  Please provide your experience years
+                </mat-error>
+  
+              </mat-form-field>
+              
+          </div>
+          <div fxLayout="row" fxLayoutGap="15px">
+            <button mat-flat-button type="button" fxFlex="1 1 40%" class="cancel-button" (click)="onNoClick()" >Cancel</button>
+            <button mat-raised-button type="submit" fxFlex="1 1 auto" class="update-button" >Update</button>
+          </div>
+      </form>
+    </div>
+        
+       
+</ng-container>
+
+<ng-container *ngIf="activeAboutForm" >
+  <div fxLayout="column">
+    <div class="header-div" fxLayout="row" fxLayoutAlign="center center" fxFlex="1 1 50px" >        
+      <mat-label class="header-text">Edit about</mat-label>
+    </div>
+    <span fxFlex="1 1 20px"></span>
+
+    <form [formGroup]="aboutForm" #f="ngForm" (ngSubmit)="aboutSubmit(f)" class="pp-form" fxLayout="column" fxLayoutGap="20px" fxFlex="1 1 auto" >
+
+      <mat-form-field appearance="outline"  fxFlex="1 1 auto">
+        <mat-label>About you</mat-label>
+        <textarea matInput placeholder="Write something beautiful about you" formControlName="about" class="about-textarea" matTextareaAutosize></textarea>
+        <mat-error *ngIf="about.touched && about.errors?.required">
+          Please provide some text about you
+        </mat-error>
+    </mat-form-field>
+    <div fxLayout="row" fxLayoutGap="15px">
+      <button mat-flat-button type="button" fxFlex="1 1 40%" class="cancel-button" (click)="onNoClick()" >Cancel</button>
+      <button mat-raised-button type="submit" fxFlex="1 1 auto" class="update-button" >Update</button>
+    </div>
+    </form>
+  </div>
+</ng-container>
+<ng-container *ngIf="activeFacilityForm" >
+  <div fxLayout="column">
+    <div class="header-div" fxLayout="row" fxLayoutAlign="center center" fxFlex="1 1 50px" >        
+      <mat-label class="header-text">Edit facility</mat-label>
+    </div>
+    <span fxFlex="1 1 20px"></span>
+
+    <form [formGroup]="facilityForm" #f="ngForm" (ngSubmit)="facilitySubmit(f)" class="pp-form" fxLayout="column" fxLayoutGap="20px" fxFlex="1 1 auto" >
+
+      <mat-form-field appearance="outline" fxFlex="1 1 auto">
+          <mat-label>Your Clinic/Hospital Name</mat-label>
+          <input matInput  placeholder="Enter your Clinic/Hospital name" formControlName="clinicName" >
+          <mat-error *ngIf="clinicName.touched && clinicName.errors?.required">
+            Please provide clinic/hospital name
+          </mat-error>
+        </mat-form-field>
+        
+      <mat-form-field appearance="outline"  fxFlex="1 1 auto">
+        <mat-label>Full address of clinic/hospital</mat-label>
+        <textarea matInput placeholder="Address with PIN code" formControlName="clinicAddress" class="about-textarea" matTextareaAutosize></textarea>
+        <mat-error *ngIf="clinicAddress.touched && clinicAddress.errors?.required">
+          This field is required.
+        </mat-error>
+    </mat-form-field>
+    <div id="stateCityContainer" fxLayout="row wrap" fxLayoutGap="10px">
+   
+      <mat-form-field appearance="outline" class="country-picket-text" fxFlex="1 1 auto">
+        <input type="text"
+               placeholder="Select Country"
+               aria-label="Country"
+               matInput            
+               [formControl]="country"
+               [matAutocomplete]="autoCountry">
+        <mat-autocomplete #autoCountry="matAutocomplete"  (optionSelected)="onCountrySelected($event.option.value)">
+          <mat-option *ngFor="let con of filteredOptionsCountry | async" [value]="con">
+            {{con}}
+          </mat-option>
+        </mat-autocomplete>
+        <mat-error *ngIf="country.touched && country.errors?.required">
+          Please select your country
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="state-picket-text" fxFlex="1 1 auto">
+          <input type="text"
+                 placeholder="Select State"
+                 aria-label="State"
+                 matInput            
+                 [formControl]="state"
+                 [matAutocomplete]="autoState">
+          <mat-autocomplete #autoState="matAutocomplete"  (optionSelected)="onStateSelected($event.option.value)">
+            <mat-option *ngFor="let s of filteredOptionsState | async" [value]="s">
+              {{s}}
+            </mat-option>
+          </mat-autocomplete>
+          
+          <mat-error *ngIf="state.touched && state.errors?.required">
+            You must provide country, state and city
+          </mat-error> 
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline" class="city-picket-text" fxFlex="1 1 auto">
+          <input type="text"
+                 placeholder="Select City/Area"
+                 aria-label="City"
+                 matInput            
+                 [formControl]="city"
+                 [matAutocomplete]="autoCity">
+          <mat-autocomplete #autoCity="matAutocomplete" (optionSelected)="onCitySelected($event.option.value)">
+            <mat-option *ngFor="let c of filteredOptionsCity | async" [value]="c">
+              {{c}}
+            </mat-option>
+          </mat-autocomplete>
+          <mat-error *ngIf="city.touched && city.errors?.required">
+            You must provide country, state and city
+          </mat-error> 
+        </mat-form-field>
+    </div>
+    <div fxLayout="row" fxLayoutGap="15px">
+      <button mat-flat-button type="button" fxFlex="1 1 40%" class="cancel-button" (click)="onNoClick()" >Cancel</button>
+      <button mat-raised-button type="submit" fxFlex="1 1 auto" class="update-button" [disabled]="!f.valid" >Update</button>
+    </div>
+    </form>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="activeDiseaseForm" >
+  <div fxLayout="column">
+    <div class="header-div" fxLayout="row" fxLayoutAlign="center center" fxFlex="1 1 50px" >        
+      <mat-label class="header-text">Edit diseases</mat-label>
+    </div>
+    <span fxFlex="1 1 20px"></span>
+
+    <form [formGroup]="diseasesForm" #f="ngForm" (ngSubmit)="diseasesSubmit(f)" class="pp-form" fxLayout="column" fxLayoutGap="20px" fxFlex="1 1 auto" >
+
+      <mat-form-field class="disease-input" fxFlex="1 1 auto">
+        <mat-chip-list #chipListSearch aria-label="Diseases you cure">
+        <mat-chip *ngFor="let key of desease" selectable="true"
+                removable="true" (removed)="removeDesease(key)">
+            {{key}}
+            <mat-icon matChipRemove >cancel</mat-icon>
+        </mat-chip>
+        <input  placeholder="Enter diseases you cure"
+                [matChipInputFor]="chipListSearch"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                matChipInputAddOnBlur="true"
+                (matChipInputTokenEnd)="addDesease($event)">
+        </mat-chip-list>
+    </mat-form-field>
+
+    <div fxLayout="row" fxLayoutGap="15px">
+      <button mat-flat-button type="button" fxFlex="1 1 40%" class="cancel-button" (click)="onNoClick()" >Cancel</button>
+      <button mat-raised-button type="submit" fxFlex="1 1 auto" class="update-button" >Update</button>
+    </div>
+    </form>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="activeBankForm" >
+  <div fxLayout="column">
+    <div class="header-div" fxLayout="row" fxLayoutAlign="center center" fxFlex="1 1 50px" >        
+      <mat-label class="header-text">Edit bank details</mat-label>
+    </div>
+    <span fxFlex="1 1 20px"></span>
+
+    <form [formGroup]="bankForm" #f="ngForm" (ngSubmit)="bankSubmit(f)" class="pp-form" fxLayout="column" fxLayoutGap="20px" fxFlex="1 1 auto" >
+
+      <mat-form-field appearance="outline" fxFlex="1 1 auto">
+        <mat-label>Branch IFSC Code</mat-label>
+        <input matInput  placeholder="Enter IFSC code of the Banck Branch" formControlName="ifsc">
+        <mat-error *ngIf="ifsc.touched && ifsc.errors?.required">
+          You must provide IFSC code
+        </mat-error>    
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" fxFlex="1 1 auto">
+        <mat-label>Bank Account Number</mat-label>
+        <input matInput type="password" placeholder="Enter Bank Account Number" formControlName="accountNumber" (change)="passwordChanged()">
+        <mat-error *ngIf="accountNumber.touched && accountNumber.errors?.required">
+          You must provide your email address
+        </mat-error>    
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" fxFlex="1 1 auto">
+        <mat-label>Bank Account Number</mat-label>
+        <input matInput placeholder="Re-Enter Bank Account Number" formControlName="reAccountNumber" (change)="passwordChanged()">
+        <mat-error *ngIf="reAccountNumber.touched && reAccountNumber.errors?.required">
+          You must re-enter your account number
+        </mat-error>    
+        <mat-error *ngIf="reAccountNumber.touched && reAccountNumber.errors?.notEqalTo">
+            Not maching account number please recheck your account number.   
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" fxFlex="1 1 auto">
+        <mat-label>Beneficiary Name</mat-label>
+        <input matInput placeholder="Enter Account Holder Name" formControlName="beneficiaryName">
+        <mat-error *ngIf="reAccountNumber.touched && reAccountNumber.errors?.required">
+          You must re-enter your account number
+        </mat-error>    
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" fxFlex="1 1 auto">
+        <mat-label>Bank Account Type</mat-label>
+        <mat-select formControlName="accountType">           
+            <mat-option value="saving">Saving Account</mat-option>
+            <mat-option value="current">Current Account</mat-option>
+        </mat-select>
+        <mat-error *ngIf="accountType.touched && accountType.errors?.required">
+          You must choose your bank account type
+       </mat-error>
+    </mat-form-field>
+    
+
+    <div fxLayout="row" fxLayoutGap="15px">
+      <button mat-flat-button type="button" fxFlex="1 1 40%" class="cancel-button" (click)="onNoClick()" >Cancel</button>
+      <button mat-raised-button type="submit" fxFlex="1 1 auto" class="update-button" [disabled]="!bankForm.valid" >Update</button>
+    </div>
+    </form>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="activeProfilePicChange" >
+  <div fxLayout="column">
+    <div class="header-div" fxLayout="row" fxLayoutAlign="center center" fxFlex="1 1 50px" >        
+      <mat-label class="header-text">Change profile picture</mat-label>
+    </div>
+    <span fxFlex="1 1 20px"></span>
+
+    <form fxLayout="column" fxLayoutGap="20px" fxFlex="1 1 auto" fxLayoutAlign="center center">
+      <image-cropper
+        class="image-ropper"
+        [imageChangedEvent]="imageChangedEvent"
+        [maintainAspectRatio]="true"
+        [aspectRatio]="3 / 4"
+        format="png"
+        (imageCropped)="imageCropped($event)"
+        (imageLoaded)="imageLoaded()"
+        (cropperReady)="cropperReady()"
+        (loadImageFailed)="loadImageFailed()"
+    ></image-cropper>
+    <mat-progress-bar *ngIf="uploadPercentage > 0 && uploadPercentage<100" mode="determinate" [value]="uploadPercentage"></mat-progress-bar>
+      <button mat-raised-button type="button"  type="button" (click)="photoInput.click()" fxFlex="1 1 auto" class="choose-button" ><mat-icon >folder</mat-icon>Choose file</button>
+      <input #photoInput type="file" id="upload" style="display:none"  accept="image/x-png,image/gif,image/jpeg" (change)="fileChangeEvent($event)">
+        
+
+      <div fxLayout="row" fxFlexOffset="15px" fxLayoutGap="15px" id="uploadButtonWrapper">
+        <button mat-flat-button type="button" fxFlex="1 1 40%" class="cancel-button" (click)="onNoClick()" >Cancel</button>
+        <button mat-raised-button type="button" fxFlex="1 1 auto" class="update-button" (click)="uploadProfilePic()" [disabled]="disableUploadButton" >Upload Image</button>
+      </div>
+    
+    </form>
+  </div>
+</ng-container>

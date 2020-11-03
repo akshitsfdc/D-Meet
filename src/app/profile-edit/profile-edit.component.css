@@ -1,0 +1,40 @@
+.info-icon{
+    color: #616367;
+    cursor: pointer;
+}
+.header-div{
+    background-color: white;
+    z-index: 10px;
+}
+.header-text{
+    font-size: 24px;
+    font-family: "roboto-bold";
+}
+.update-button{
+    background-color: #4285F4;
+    color: white;
+}
+.cancel-button{
+    background-color: #e0e0e0;
+    /* color: white; */
+}
+.disease-input{
+    max-height: 70vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.about-textarea{
+    /* padding: 10px 5px 10px 5px; */
+
+}
+.image-ropper{
+    max-width: 80vh;
+    max-height: 70vh;
+}
+.choose-button{
+    background-color: #e7f3ff;
+    color: #4285F4;
+}
+#uploadButtonWrapper{
+    width: 100%;
+}

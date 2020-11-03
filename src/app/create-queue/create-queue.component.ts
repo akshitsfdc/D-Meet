@@ -1,8 +1,11 @@
+import { FirestoreService } from './../services/firestore.service';
 import { Component} from '@angular/core';
 import { FormGroup, FormControl, Validators, NgForm } from '@angular/forms';
 import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
 import { QueueModel } from '../models/queue-model';
 import { AuthService } from '../services/auth.service';
+import { error } from 'protractor';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-queue',
@@ -28,7 +31,7 @@ export class CreateQueueComponent {
   serviceChargePercent:number = 5;
   defaultFees = 300;
 
-  private currentUser;
+  private currentUser: firebase.User;
 
   queueForm = new FormGroup({
     numberOfPatients: new FormControl(250, Validators.required),
@@ -56,7 +59,7 @@ export class CreateQueueComponent {
     }
 };
 
-  constructor(private authService: AuthService,) {
+  constructor(private authService: AuthService, private firestore: FirestoreService, private router: Router, private route: ActivatedRoute) {
 
     this.setFeeStructureText(this.defaultFees);
     this.getUserdata();
@@ -75,7 +78,7 @@ export class CreateQueueComponent {
 
     this.enableBookEnd = true;
 
-    this.convertToSeconds(this.bookEndMin);
+    this.convertToMiliSeconds(this.bookEndMin);
 
     this.bookEndTime = "";
     this.consultingStartTime = "";
@@ -101,7 +104,7 @@ export class CreateQueueComponent {
   timeChangeConsultEnd(time){
     this.consultingEndTime = time;
   }
-  private convertToSeconds(time:string):number{
+  private convertToMiliSeconds(time:string):number{
 
     var seconds = 0;
     try{
@@ -114,7 +117,7 @@ export class CreateQueueComponent {
     }
     
 
-    return seconds;
+    return seconds * 1000;
   }
   private validateForm(): boolean{
 
@@ -122,10 +125,10 @@ export class CreateQueueComponent {
 
     
     try{
-      let bookingStartTime = this.convertToSeconds(this.bookStartTime); 
-      let bookingEndTime = this.convertToSeconds(this.bookEndTime); 
-      let consultingStartTime = this.convertToSeconds(this.consultingStartTime); 
-      let consultingEndTime = this.convertToSeconds(this.consultingEndTime); 
+      let bookingStartTime = this.convertToMiliSeconds(this.bookStartTime); 
+      let bookingEndTime = this.convertToMiliSeconds(this.bookEndTime); 
+      let consultingStartTime = this.convertToMiliSeconds(this.consultingStartTime); 
+      let consultingEndTime = this.convertToMiliSeconds(this.consultingEndTime); 
 
       if(this.numberOfPatients.value.length <= 0){
         valid = false;
@@ -192,6 +195,7 @@ export class CreateQueueComponent {
     }
     if(queueForm.valid){
       this.constructQueueObject();
+      this.saveQueue(this.constructQueueObject());
     }
    
 
@@ -213,26 +217,32 @@ export class CreateQueueComponent {
     }
     this.setFeeStructureText(value)
   }
-  private constructQueueObject(): void{
+  private constructQueueObject(): QueueModel{
 
     if(!this.currentUser){
       alert("You seems to be logged out because of some reason, please login again or wait for some time or try to refresh this page!");
       return;
     }
+    let bookingStartTime = this.convertToMiliSeconds(this.bookStartTime); 
+    let bookingEndTime = this.convertToMiliSeconds(this.bookEndTime); 
+    let consultingStartTime = this.convertToMiliSeconds(this.consultingStartTime); 
+    let consultingEndTime = this.convertToMiliSeconds(this.consultingEndTime); 
+
     let queue : QueueModel = new QueueModel();
 
-      queue.status = "Created";
-      queue.queueId = this.getTimestamp();
-      queue.patientLimit = this.numberOfPatients.value ;
-      queue.ownerId = this.currentUser.uid; //to be changed
-      queue.fees = this.fees.value ; 
-      queue.bookingStarting = this.bStartTime.value;
-      queue.bookingEnding = this.bEndTime.value;
-      queue.consultingStarting = this.cStartTime.value;
-      queue.consultingEnding = this.cEndTime.value;
-      queue.bookedPatients = 0;
+      queue.setStatus("Created");
+      queue.setQueueId(this.getTimestamp());
+      queue.setPatientLimit(this.numberOfPatients.value) ;
+      queue.setOwnerId(this.currentUser.uid); //to be changed
+      queue.setFees(this.fees.value); 
+      queue.setBookingStarting(bookingStartTime);
+      queue.setBookingEnding(bookingEndTime);
+      queue.setConsultingStarting(consultingStartTime);
+      queue.setConsultingEnding(consultingEndTime);
+      queue.setBookedPatients(0);
 
       console.log(JSON.stringify(queue));
+      return queue;
   }
 
   private getTimestamp():string{
@@ -243,6 +253,19 @@ export class CreateQueueComponent {
       return "invalid";
     }
     
+  }
+
+  private saveQueue(queue : QueueModel){
+
+    this.firestore.save("queues", this.currentUser.uid, Object.assign({}, queue))
+    .then(() => {
+      this.router.navigate(['home/queues']);
+      console.log("queue saved!");
+    })
+    .catch(error => {
+      console.log("Could not save queue.");
+    })
+
   }
 
 }

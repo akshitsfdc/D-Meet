@@ -27,6 +27,8 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 
 @NgModule({
@@ -62,7 +64,9 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     MatDialogModule,
     NgxMaterialTimepickerModule,
     MatAutocompleteModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatChipsModule,
+    MatTooltipModule
   ]
 
 })
