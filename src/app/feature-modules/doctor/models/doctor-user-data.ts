@@ -3,9 +3,7 @@
 export class DoctorUserData {
 
     private email:string;
-    private firstName:string;
-    private lastName:string;
-    private gender:string;
+    private name:string;
     private picUrl:string;
     private userId:string;
     private profileId:string;
@@ -20,11 +18,11 @@ export class DoctorUserData {
     private city:string;
     private varified:boolean;
     private about:string;
+    private doctor:boolean;
     private registrationLocalTimeStapm:number;
     private kycSubmitted:boolean;
     private latitude:number;
     private longitude:number;
-    private nearbyAddress:string;
     private diseaseSpecialist:string[]=[];
 
 
@@ -33,14 +31,6 @@ export class DoctorUserData {
 
 
     
-    public getNearbyAddress(): string {
-        return this.nearbyAddress;
-    }
-
-    public setNearbyAddress(nearbyAddress: string): void {
-        this.nearbyAddress = nearbyAddress;
-    }
-
     public getDiseaseSpecialist(): string[] {
         return this.diseaseSpecialist;
     }
@@ -82,27 +72,12 @@ export class DoctorUserData {
         this.email = email;
     }
 
-    public getFirstName(): string {
-        return this.firstName;
+    public getName(): string {
+        return this.name;
     }
 
-    public setFirstName(firstName: string): void {
-        this.firstName = firstName;
-    }
-
-    public getLastName(): string {
-        return this.lastName;
-    }
-
-    public setLastName(lastName: string): void {
-        this.lastName = lastName;
-    }
-    public getGender(): string {
-        return this.gender;
-    }
-
-    public setGender(gender: string): void {
-        this.gender = gender;
+    public setName(name: string): void {
+        this.name = name;
     }
 
     public getPicUrl(): string {
@@ -216,6 +191,14 @@ export class DoctorUserData {
 
     public setAbout(about: string): void {
         this.about = about;
+    }
+
+    public isDoctor(): boolean {
+        return this.doctor;
+    }
+
+    public setDoctor(doctor: boolean): void {
+        this.doctor = doctor;
     }
 
     public getRegistrationLocalTimeStapm(): number {

@@ -6,7 +6,6 @@
 
 html, body { height: 100%; width: 100%; }
 body { margin: 0;
-overflow: hidden;
 }
 
 
@@ -19,3 +18,9 @@ overflow: hidden;
   src: url(/assets/fonts/roboto/Roboto-Bold.ttf) format("truetype");
 }
 
+
+/* notification icon color: #476282; */
+/* blue  #4285F4 */
+/* red #DB4437 */
+/* yellow #F4B400 */
+/* green #0F9D58 */

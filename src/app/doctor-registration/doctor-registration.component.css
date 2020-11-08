@@ -1,5 +1,6 @@
 #parent{
     height: 100%;
+    background-color: #ffffff;
 }
 #leftContainer{
     
@@ -15,9 +16,6 @@
     background-size: cover;
     background-position: center;
 }
-.registration-form{
-    padding: 20px 25px 10px 25px;
-}
 .header-label{
     font-size: 30px;
     font-family: roboto-bold;
@@ -27,4 +25,86 @@
     margin-right: 10px;
     background-color: #0F9D58;
     color: white;
+}
+
+/* new layout */
+#meetupImage{
+    max-width: 201.5px;
+    max-height: 100.25px;
+    min-width: 50px;
+    min-height: 25px;
+}
+#headerLabel{
+    font-family: 'roboto-regular';
+    font-size: large;
+}
+
+::ng-deep .mat-form-field {
+    font-size: 12px; 
+}
+.registration-form{
+    width: fit-content;
+    height: fit-content;
+}
+.icon-button{
+    background-color: transparent;
+    outline: none;
+    border: 0;
+    margin-top: 5px;
+} 
+.mat-icon{
+    color: #476282;
+}
+.temp{
+    background-color: blueviolet;
+}
+.back-button{
+    width: fit-content;
+    color:#476282;
+    outline: none;
+    border: 0;
+}
+.next-button{
+    width: fit-content;
+    color: white;
+    background-color: #4285F4;
+    align-self: flex-end;
+    outline: none;
+    border: 0;
+}
+.about-textarea{
+    max-height: 200px;
+}
+::ng-deep .mat-horizontal-stepper-header-container {
+    display: none !important;
+  }
+
+.right-image{
+    min-width: 250px;
+    min-height: 250px;
+    max-width: 400px;
+    max-height: 400px;
+} 
+#contentRight{
+    height: 100%;
+}
+.right-label{
+    width: 250px;
+    text-align: center;
+    font-size: medium;
+    font-family: 'roboto-regular';
+}
+.img-wrapper{
+    width: fit-content;
+    height: fit-content;
+}
+.reg-card{
+    background-color: #ffffff;
+    height: fit-content;
+    width: fit-content;
+    overflow: auto;
+}
+.location-map{
+    width: 500px;
+    height: 450px;
 }

@@ -50,7 +50,7 @@ export class LoadingSplashComponent implements OnInit {
        }
        console.log("doctor >> "+doctor);
        if(doctor){
-        this.router.navigate(['home']);
+        this.router.navigate(['doctor']);
        }else{
         // this.router.navigate(['login']);//load here patient flow
        }
