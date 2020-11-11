@@ -32,13 +32,12 @@ export class LoadingSplashComponent implements OnInit {
 
   private loadUserData(user:firebase.User){
 
-    this.firestore.get("user-data", user.uid)
+    this.firestore.get("user-identity", user.uid)
 
     .then(data => {
 
        const doctor:boolean = data.data().doctor;
 
-       console.log("doctor >> "+doctor);
        
        if(doctor === null || doctor === undefined){
          this.authService.signOut().then(() => {
@@ -52,7 +51,7 @@ export class LoadingSplashComponent implements OnInit {
        if(doctor){
         this.router.navigate(['doctor']);
        }else{
-        // this.router.navigate(['login']);//load here patient flow
+        this.router.navigate(['patient']);
        }
 
     })

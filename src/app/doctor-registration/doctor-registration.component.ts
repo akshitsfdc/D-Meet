@@ -480,6 +480,7 @@ export class DoctorRegistrationComponent implements OnInit {
     userData.setVarified(false);
     userData.setRegistrationLocalTimeStapm((+ new Date()) || 1000);
     userData.setDiseaseSpecialist([]);//to be completed in profile
+    userData.setKycSubmitted(false);
     
     userData.setPicUrl('');
 
