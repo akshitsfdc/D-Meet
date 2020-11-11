@@ -26,7 +26,7 @@ export class AuthService {
   }
 
   // Sign in with email/password
-  signIn(email, password) {
+  signIn(email, password):Promise<firebase.auth.UserCredential> {
     return this.afAuth.signInWithEmailAndPassword(email, password);
   }
   signOut() {
@@ -39,6 +39,16 @@ export class AuthService {
 
   getUser(){
     return this.afAuth.authState.pipe(first()).toPromise();
+  }
+
+  sendPasswordResetMail(email:string):Promise<void>{
+
+    return this.afAuth.sendPasswordResetEmail(email.trim());
+    
+  }
+
+  resetPassword(code:string, password:string):Promise<void>{
+    return this.afAuth.confirmPasswordReset(code.trim(), password.trim());
   }
 
  

@@ -8,7 +8,9 @@ html, body { height: 100%; width: 100%; }
 body { margin: 0;
 }
 
-
+.parent-div{
+  height: 100%;
+}
 @font-face {
   font-family: 'roboto-regular';
   src: url(/assets/fonts/roboto/Roboto-Regular.ttf) format("truetype");

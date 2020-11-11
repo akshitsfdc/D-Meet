@@ -153,6 +153,7 @@ export class DoctorRegistrationComponent implements OnInit {
   get about(){
     return this.registrationForm.get('personal').get('about');
   }
+  
   get country(){
     return this.registrationForm.get('address').get('country');
   }
@@ -371,6 +372,7 @@ export class DoctorRegistrationComponent implements OnInit {
     if(profileId.length <= 0){
       return;
     }
+    this.showProgressBar = true;
      this.firestore.getEquals('user-data', 'profileId', profileId)
      .then(queySnapshot => {
       console.log("queySnapshot.size : "+queySnapshot.size);
@@ -382,10 +384,13 @@ export class DoctorRegistrationComponent implements OnInit {
           this.showInvalidProfileId = true;
           this.profileId.setErrors({'available': "Not available"});
         }
+        this.showProgressBar = false;
      })
      .catch(error => {
       console.log("error : "+error)
       this.isValidProfileId = false;
+      
+      this.showProgressBar = false;
       //error
      });
   }

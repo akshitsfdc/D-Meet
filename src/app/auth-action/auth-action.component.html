@@ -1,0 +1,66 @@
+
+<ng-container [ngSwitch]="mode">
+    <!-- password reset -->
+    <ng-container *ngSwitchCase="'resetPassword'">
+
+        <div id="parent" fxLayout="column" fxLayoutAlign="center center">
+            <form [formGroup]="passwordForm" #f="ngForm" fxFlex.xs="100%" (ngSubmit)="onSubmit(f)" class="login-form" fxLayout="column" >
+                <mat-progress-bar *ngIf="showProgressBar" mode="indeterminate" id="progressIndicator" color="primary"></mat-progress-bar>
+                  <mat-card class="reset-card">
+                    <mat-card-content fxLayout="row" >
+                        <mat-horizontal-stepper  linear #stepper fxFlex="1 1 430px" fxFlex.xs="1 1 auto">
+                            <mat-step >
+                                <div fxLayout="column" >
+                                    <div fxLayout="column" >            
+                                        <img id="meetupImage" src="/assets/imgs/meetup_logo_with.png" alt="Meetup Logo" fxFlexOffset="20px">                            
+                                        <mat-label id="headerLabel" fxFlexOffset="10px">Password Reset</mat-label>                            
+                                    </div>   
+                    
+                                    <mat-form-field appearance="outline" fxFlex="1 1 auto" fxFlexOffset="25px">
+                                        <mat-label>New Password</mat-label>
+                                        <input matInput autocomplete="new-password" type="password" formControlName="password" [type]="hide ? 'password' : 'text'" (change)="passwordChanged()">
+                                        <mat-error *ngIf="password.touched && password.errors?.required">
+                                          Enter password
+                                        </mat-error>
+                                        <mat-error *ngIf="password.touched && password.errors?.invalidPassword">
+                                          Minimum 8 characters, at least one letter, one number and one special character
+                                        </mat-error>
+                                    </mat-form-field>
+                                    <div fxLayout="row" fxFlexOffset="15px">
+                                        <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                                            <mat-label>Confirm</mat-label>
+                                            <input matInput autocomplete="new-password" type="password"  formControlName="confirmPassword" [type]="hide ? 'password' : 'text'" (change)="passwordequality()">
+                                            <mat-error *ngIf="confirmPassword.touched && confirmPassword.errors?.required">
+                                              Re-enter password
+                                            </mat-error>
+                                        <mat-error *ngIf="confirmPassword.touched && confirmPassword.errors?.notEqalTo">
+                                            Not matching 
+                                        </mat-error>
+                                        <mat-icon class="mat-icon" matSuffix (click)="hide = !hide" >{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                                        </mat-form-field>
+                                        <!-- <button class="icon-button" mat-mini-fab type="button"  (click)="hide = !hide" aria-label="show or hide password">
+                                            <mat-icon class="mat-icon" matSuffix > {{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                                        </button> -->
+                                    </div>
+                                   
+                                    
+            
+                                    <button class="reset" mat-raised-button type="submit"  fxFlexOffset="30px" [disabled]="disableReset">Reset Password</button>
+            
+                                </div>
+                            </mat-step>
+                        </mat-horizontal-stepper>
+                    </mat-card-content>
+                  </mat-card>
+                  </form>
+        </div>
+        
+    </ng-container>  
+    <!-- verify email address -->
+    <ng-container *ngSwitchCase="'verifyEmail'">
+    </ng-container>
+    <!-- default action -->
+    <ng-container *ngSwitchDefault>
+      <!-- error -->
+    </ng-container>
+  </ng-container>

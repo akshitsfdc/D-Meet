@@ -30,6 +30,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatStepperModule} from '@angular/material/stepper';
+import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 
 
 @NgModule({
@@ -68,7 +69,8 @@ import {MatStepperModule} from '@angular/material/stepper';
     MatProgressBarModule,
     MatChipsModule,
     MatTooltipModule,
-    MatStepperModule
+    MatStepperModule,
+    MatBottomSheetModule
   ]
 
 })

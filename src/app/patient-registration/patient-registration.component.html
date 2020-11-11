@@ -1,0 +1,129 @@
+<div id="parent" fxLayout="column" fxLayoutAlign="center center">
+
+  
+    <form [formGroup]="registrationForm" #f="ngForm" fxFlex.xs="100%" (ngSubmit)="onSubmit(f)" class="registration-form" fxLayout="column">
+      <mat-progress-bar *ngIf="showProgressBar" mode="indeterminate" id="progressIndicator" color="primary"></mat-progress-bar>
+      <mat-card class="reg-card">
+
+        <mat-card-header >
+
+          <div fxLayout="column" fxFlexOffset="-8px">
+
+            <img id="meetupImage" src="/assets/imgs/meetup_logo_with.png" alt="Meetup Logo" fxFlexOffset="25px">
+
+            <mat-label id="headerLabel" fxFlexOffset="10px">Patient Registration</mat-label>
+
+          </div>
+        </mat-card-header>
+
+        <mat-card-content fxLayout="column">
+
+          
+
+          <div id="contentParent" fxLayout="row rwap" fxFlexOffset="30px" fxLayoutGap="20px">
+            
+            <div id="contentLeft">
+            <mat-horizontal-stepper  linear #stepper>
+              
+              <mat-step [stepControl]="registrationForm" >
+                <div fxLayout="column" fxLayoutGap="8px" >
+                  <div fxLayout="row wrap" fxLayoutGap="10px">
+                    <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                      <mat-label>First name</mat-label>
+                      <input matInput formControlName="firstName"> 
+                      <mat-hint>Please do not prefix Dr.</mat-hint>                
+                      <mat-error *ngIf="firstName.touched && firstName.errors?.required">
+                        Enter first name
+                      </mat-error>
+                      
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                      <mat-label>Last name</mat-label>
+                      <input matInput formControlName="lastName">
+                      <mat-error *ngIf="lastName.touched && lastName.errors?.required">
+                      Enter last name
+                      </mat-error>
+                  </mat-form-field>
+                </div>
+                <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                  <mat-label>Gender</mat-label>
+                  <mat-select formControlName="gender" >           
+                      <mat-option value="female">Female</mat-option>
+                      <mat-option value="male">Male</mat-option>
+                      <mat-option value="other">Other</mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="gender.touched && gender.errors?.required">
+                      Select gender
+                    </mat-error> 
+              </mat-form-field>
+               
+              <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                <mat-label>Age</mat-label>
+                <input matInput type="number" placeholder="Enter your age" formControlName="age">
+                <mat-error *ngIf="age.touched && age.errors?.required">
+                  Please provide your experience years
+                </mat-error>
+             </mat-form-field>
+                <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                  <mat-label>Email</mat-label>
+                  <input matInput type="email" placeholder="enter a valid email address" formControlName="emailAddress">
+                  <mat-error *ngIf="emailAddress.touched && emailAddress.errors?.required">
+                    You must provide your email address
+                  </mat-error>
+                  <mat-error *ngIf="emailAddress.touched && emailAddress.errors?.email">
+                    You must provide a valid email address
+                  </mat-error>
+                </mat-form-field>
+  
+                <div  fxLayout="row wrap" fxLayoutGap="10px" >
+                  <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                    <mat-label>Password</mat-label>
+                    <input matInput autocomplete="new-password" type="password" formControlName="password" [type]="hide ? 'password' : 'text'" (change)="passwordChanged()">
+                    <mat-error *ngIf="password.touched && password.errors?.required">
+                      Enter password
+                    </mat-error>
+                    <mat-error *ngIf="password.touched && password.errors?.invalidPassword">
+                      Minimum 8 characters, at least one letter, one number and one special character
+                    </mat-error>
+                  </mat-form-field>
+  
+                  <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                    <mat-label>Confirm</mat-label>
+                    <input matInput autocomplete="new-password" type="password"  formControlName="confirmPassword" [type]="hide ? 'password' : 'text'" (change)="passwordequality()">
+                    <mat-error *ngIf="confirmPassword.touched && confirmPassword.errors?.required">
+                      Re-enter password
+                    </mat-error>
+                    <mat-error *ngIf="confirmPassword.touched && confirmPassword.errors?.notEqalTo">
+                      Not matching 
+                    </mat-error>
+                  </mat-form-field>
+  
+                  <button class="icon-button" mat-mini-fab type="button"  (click)="hide = !hide" aria-label="show or hide password">
+                    <mat-icon class="mat-icon"  >{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                  </button>
+                </div>
+                <div fxLayout="row" fxFlexOffset="10px">
+                  <button class="register-button" mat-raised-button matStepperNext type="submit">Register Now</button>
+                </div>
+            </div>                
+            </mat-step>
+
+            </mat-horizontal-stepper>
+
+            </div>
+
+            
+            <div id="contentRight" fxFlexOffset.xs="0" fxFlexOffset="25px" fxFlex="1 1 auto" fxLayout="row" fxLayoutAlign="center center">
+              <div *ngIf="stepper.selectedIndex !== 2" fxLayout="column" class="img-wrapper">
+                <img class="right-image" matCardImageMedium src= 'assets/imgs/re_account_temp.svg' />
+                <mat-label class="right-label">Helps you connect your patients online</mat-label>
+              </div>                    
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+     
+  </form>
+
+  
+</div>

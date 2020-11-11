@@ -18,7 +18,12 @@ import { AgmCoreModule } from '@agm/core';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LayoutModule } from '@angular/cdk/layout';
-import { GooglePlaceModule } from "ngx-google-places-autocomplete"; 
+import { GooglePlaceModule } from "ngx-google-places-autocomplete";
+import { LoginComponent } from './login/login.component';
+import { MessageDialogComponent } from './message-dialog/message-dialog.component';
+import { AuthActionComponent } from './auth-action/auth-action.component';
+import { CreateAccountBottomSheetComponent } from './create-account-bottom-sheet/create-account-bottom-sheet.component';
+import { PatientRegistrationComponent } from './patient-registration/patient-registration.component'; 
 
 
 @NgModule({
@@ -27,7 +32,12 @@ import { GooglePlaceModule } from "ngx-google-places-autocomplete";
     LandingPageComponent,
     LoadingDialogComponent,
     LoadingSplashComponent,
-    DoctorRegistrationComponent
+    DoctorRegistrationComponent,
+    LoginComponent,
+    MessageDialogComponent,
+    AuthActionComponent,
+    CreateAccountBottomSheetComponent,
+    PatientRegistrationComponent
   ],
   imports: [
     FlexLayoutModule,

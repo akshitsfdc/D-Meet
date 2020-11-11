@@ -1,0 +1,15 @@
+<diV id="parent" fxLayout="column">
+
+    <div id="headerDiv" fxLayout="row" fxLayoutAlign="center center" fxFlex="1 1 30px">
+        <mat-label mat-dialog-title id="headerLabel">{{data.header}}</mat-label>
+    </div>
+
+    <div fxLayout="row" fxLayoutAlign="center center" mat-dialog-content>
+        <mat-label id="headerLabel">{{data.message}}</mat-label>
+    </div>
+
+    <div mat-dialog-actions fxLayoutAlign="center center">
+        <button class="ok-button" mat-flat-button (click)="close()">{{data.okText||'Got It'}}</button>
+    </div>
+
+</diV>

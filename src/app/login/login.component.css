@@ -1,0 +1,71 @@
+.login-form{
+    width: fit-content;
+    height: fit-content;
+}
+#parent{
+    height: 100%;
+    background-color: #ffffff;
+}
+
+.login-card{
+    background-color: #ffffff;
+    height: fit-content;
+    width: fit-content;
+    overflow: auto;
+}
+#meetupImage{
+    max-width: 201.5px;
+    max-height: 100.25px;
+    min-width: 50px;
+    min-height: 25px;
+}
+::ng-deep .mat-horizontal-stepper-header-container {
+    display: none !important;
+}
+#headerLabel{
+    font-size: x-large;
+    font-family: 'roboto-regular';
+}
+.login{
+    color: white;
+    background-color: #4285F4;
+    outline: none;
+    border: 0;
+    border-radius: 7px;
+}
+.hor-line{
+    background-color: #dde0e3;
+    height: 1px;
+    margin: 40px 0px 30px 0px;
+}
+.create-account{
+    color: white;
+    width: fit-content;
+    padding: 0px 15px 0px 15px;
+    background-color: #0F9D58;
+    outline: none;
+    border: 0;
+    border-radius: 7px;
+    align-self: center;
+}
+.forgot-class{
+    font-family: 'roboto-bold';
+    color:  #4285F4;
+    font-size: small;
+    width: fit-content;
+    cursor: pointer;
+}
+.back-button{
+    width: fit-content;
+    color:#476282;
+    outline: none;
+    border: 0;
+}
+.next-button{
+    width: fit-content;
+    color: white;
+    background-color: #4285F4;
+    align-self: flex-end;
+    outline: none;
+    border: 0;
+}

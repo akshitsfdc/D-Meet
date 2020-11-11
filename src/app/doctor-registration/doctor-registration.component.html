@@ -23,23 +23,19 @@
           <div id="contentParent" fxLayout="row rwap" fxFlexOffset="30px" fxLayoutGap="20px">
             
             <div id="contentLeft">
-
-              
             <mat-horizontal-stepper  linear #stepper>
-
-              <div fxLayout="column">
-
-              </div>
               
               <mat-step formGroupName="first" >
                 <div fxLayout="column" fxLayoutGap="8px" >
                   <div fxLayout="row wrap" fxLayoutGap="10px">
                     <mat-form-field appearance="outline" fxFlex="1 1 auto">
                       <mat-label>First name</mat-label>
-                      <input matInput formControlName="firstName">
+                      <input matInput formControlName="firstName"> 
+                      <mat-hint>Please do not prefix Dr.</mat-hint>                
                       <mat-error *ngIf="firstName.touched && firstName.errors?.required">
                         Enter first name
                       </mat-error>
+                      
                   </mat-form-field>
                   <mat-form-field appearance="outline" fxFlex="1 1 auto">
                       <mat-label>Last name</mat-label>
@@ -70,6 +66,9 @@
                   </mat-error>
                   <mat-error *ngIf="profileId.touched && profileId.errors?.minlength">
                     Must be atleast 4 characters
+                  </mat-error>
+                  <mat-error *ngIf="profileId.touched && profileId.errors?.available">
+                    This profile id is taken y someone else
                   </mat-error>
                   <mat-hint>This will help patients to uniquely identify you and remember your meetup address</mat-hint>
                 </mat-form-field>
@@ -108,7 +107,7 @@
                   </mat-form-field>
   
                   <button class="icon-button" mat-mini-fab type="button"  (click)="hide = !hide" aria-label="show or hide password">
-                    <mat-icon class="mat-icon" matSuffix >{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    <mat-icon class="mat-icon"  >{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
                   </button>
                 </div>
                 <div fxLayout="row" fxFlexOffset="10px">
@@ -201,10 +200,11 @@
                   <mat-form-field appearance="outline" fxFlex="1 1 auto">
                     <mat-label>Nearby Address</mat-label>
                     <input matInput ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)"
-                      placeholder="Start typing and select nearby address of your clinic/hospital"  formControlName="mapAddress" >
+                      placeholder="Start typing and select nearby address to your clinic/hospital"  formControlName="mapAddress" >
                     <mat-error *ngIf="mapAddress.touched && mapAddress.errors?.required">
                       Enter nearby address for map
                     </mat-error>
+                    <mat-icon class="location-icon" matPrefix>location_on</mat-icon>
                     <mat-hint>With this address your nearby patients will conveniently see you in their app and also can reach you by navigating on map</mat-hint>
                   </mat-form-field>
 
