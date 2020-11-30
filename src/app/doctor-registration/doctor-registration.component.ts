@@ -16,7 +16,7 @@ import { error } from 'protractor';
 @Component({
   selector: 'app-doctor-registration',
   templateUrl: './doctor-registration.component.html',
-  styleUrls: ['./doctor-registration.component.css']
+  styleUrls: ['./doctor-registration.component.scss']
 })
 export class DoctorRegistrationComponent implements OnInit {
   

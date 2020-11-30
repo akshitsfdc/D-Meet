@@ -1,0 +1,87 @@
+/* You can add global styles to this file, and also import other style files */
+@import "./vars";
+@import '@angular/material/prebuilt-themes/deeppurple-amber';
+
+@font-face {
+  font-family: 'roboto-regular';
+  src: url(/assets/fonts/roboto/Roboto-Regular.ttf) format("truetype");
+}
+@font-face {
+  font-family: 'roboto-bold';
+  src: url(/assets/fonts/roboto/Roboto-Bold.ttf) format("truetype");
+}
+
+
+html, body { height: 100%; width: 100%; }
+body { margin: 0;
+  
+}
+
+.parent-div{
+  height: 100%;
+}
+
+.mat-raised-button{
+  color: white;
+  background-color: $primary;
+  outline: none;
+  border: 0;
+}
+.mat-flat-button{
+  color: white;
+  background-color: $primary;
+  outline: none;
+  border: 0;
+}
+.green-button{
+  color: white;
+  background-color: $accent;
+}
+.lighter-button{
+  background-color: $grey-lighter;
+  color: $textPrimary;
+}
+
+mat-label{
+  font-family: 'roboto-regular';
+  color: $textPrimary;
+}
+
+.bold-label{
+  font-family: 'roboto-bold';
+}
+
+mat-icon{
+  color: $icon;
+}
+// mat-flat-button
+
+#parent{
+  height: 100%;
+  background-color: #ffffff;
+}
+
+.logo-form-top{
+  max-width: 201.5px;
+  max-height: 100.25px;
+  min-width: 50px;
+  min-height: 25px;
+}
+.header-label{
+  font-family: 'roboto-bold';
+  font-size: large;
+}
+
+.success{
+  color: $accent;
+}
+.failure{
+  color: $warn;
+}
+.alert-button{
+  background-color: $warn;
+  color: white;
+}
+.spinner{
+
+}

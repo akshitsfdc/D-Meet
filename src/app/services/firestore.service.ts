@@ -37,6 +37,11 @@ export class FirestoreService {
     return this.firestore.collection(collection).doc(document).valueChanges();
    
   }
+  getRealtimeCollection(collection:string):Observable<unknown[]>{
+
+    return this.firestore.collection(collection).valueChanges();
+   
+  }
   update(collection:string, document:string, data:any):Promise<void>{
     return this.firestore.collection(collection).doc(document).set(data, {merge:true});
   }

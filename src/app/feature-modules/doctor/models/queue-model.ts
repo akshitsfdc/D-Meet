@@ -2,9 +2,12 @@
 
 export class QueueModel {
 
+    private currency:string;
     private fees: number;
     private status: string;
+    private active:boolean;
     private patientLimit: number;
+    private timePerPatient:number;
     private bookingStarting: number;
     private bookingEnding: number;
     private consultingStarting: number;
@@ -12,9 +15,51 @@ export class QueueModel {
     private bookedPatients: number;
     private queueId: string;
     private ownerId: string;
+    private holidayList:string[] = [];
+    private loading:boolean;
 
-
+   
     constructor(){}
+
+    
+    public getCurrency(): string {
+        return this.currency;
+    }
+
+    public setCurrency(currency: string): void {
+        this.currency = currency;
+    }
+    
+    public getTimePerPatient(): number {
+        return this.timePerPatient;
+    }
+
+    public setTimePerPatient(timePerPatient: number): void {
+        this.timePerPatient = timePerPatient;
+    }
+
+    public isLoading(): boolean {
+        return this.loading;
+    }
+
+    public setLoading(loading: boolean): void {
+        this.loading = loading;
+    }
+    public isActive(): boolean {
+        return this.active;
+    }
+
+    public setActive(active: boolean): void {
+        this.active = active;
+    }
+    
+    public getHolidayList(): string[] {
+        return this.holidayList;
+    }
+
+    public setHolidayList(holidayList: string[]): void {
+        this.holidayList = holidayList;
+    }
 
 
     public getBookingStarting(): number {

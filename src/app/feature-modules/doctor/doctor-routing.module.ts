@@ -1,3 +1,4 @@
+import { EditQueueComponent } from './edit-queue/edit-queue.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CreateQueueComponent } from './create-queue/create-queue.component';
@@ -24,6 +25,7 @@ const routes: Routes = [
         },
         {path: 'queues', component: QueuesComponent},
         {path: 'queues/createQueue', component: CreateQueueComponent},
+        {path: 'queues/editQueue', component: EditQueueComponent},
         { path: 'liveQueue/queueDetails', component: LiveQueueDetailsComponent },
         { path: 'liveQueue/queueDetails/patientMeet', component: DoctorConferenceComponent }
       ]

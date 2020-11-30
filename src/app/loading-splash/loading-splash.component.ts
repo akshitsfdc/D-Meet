@@ -1,3 +1,4 @@
+
 import { FirestoreService } from './../services/firestore.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -6,7 +7,7 @@ import { AuthService } from '../services/auth.service';
 @Component({
   selector: 'app-loading-splash',
   templateUrl: './loading-splash.component.html',
-  styleUrls: ['./loading-splash.component.css']
+  styleUrls: ['./loading-splash.component.scss']
 })
 export class LoadingSplashComponent implements OnInit {
 
@@ -32,27 +33,28 @@ export class LoadingSplashComponent implements OnInit {
 
   private loadUserData(user:firebase.User){
 
-    this.firestore.get("user-identity", user.uid)
+    const userId = user.uid;
+
+    this.firestore.get("user-identity", userId)
 
     .then(data => {
 
-       const doctor:boolean = data.data().doctor;
+      const doctor:boolean = data.data().doctor;
 
-       
-       if(doctor === null || doctor === undefined){
-         this.authService.signOut().then(() => {
+      if(doctor === null || doctor === undefined){
+        this.authService.signOut().then(() => {
           this.router.navigate(['login']);
-         }).catch(() => {
+        }).catch(() => {
           this.router.navigate(['login']);
-         })
-         return;
-       }
-       console.log("doctor >> "+doctor);
-       if(doctor){
+        })
+        return;
+      }
+      console.log("doctor >> "+doctor);
+      if(doctor){      
         this.router.navigate(['doctor']);
-       }else{
+      }else{
         this.router.navigate(['patient']);
-       }
+      }
 
     })
     .catch(error => {
@@ -63,6 +65,6 @@ export class LoadingSplashComponent implements OnInit {
           this.router.navigate(['login']);
          })
     });
-  }
+  }  
 
 }

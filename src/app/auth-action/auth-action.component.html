@@ -36,15 +36,13 @@
                                         <mat-error *ngIf="confirmPassword.touched && confirmPassword.errors?.notEqalTo">
                                             Not matching 
                                         </mat-error>
-                                        <mat-icon class="mat-icon" matSuffix (click)="hide = !hide" >{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                                        <mat-icon  matSuffix (click)="hide = !hide" >{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
                                         </mat-form-field>
                                         <!-- <button class="icon-button" mat-mini-fab type="button"  (click)="hide = !hide" aria-label="show or hide password">
                                             <mat-icon class="mat-icon" matSuffix > {{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
                                         </button> -->
                                     </div>
-                                   
                                     
-            
                                     <button class="reset" mat-raised-button type="submit"  fxFlexOffset="30px" [disabled]="disableReset">Reset Password</button>
             
                                 </div>

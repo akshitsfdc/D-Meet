@@ -1,3 +1,4 @@
+import { UtilsService } from './../../../services/utils.service';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, NgForm } from '@angular/forms';
 import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
@@ -8,13 +9,16 @@ import { QueueModel } from '../models/queue-model';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
 import { MessageDialogComponent } from 'src/app/message-dialog/message-dialog.component';
+import { SessionService } from '../services/session.service';
 
 @Component({
-  selector: 'app-create-queue',
-  templateUrl: './create-queue.component.html',
-  styleUrls: ['./create-queue.component.scss']
+  selector: 'app-edit-queue',
+  templateUrl: './edit-queue.component.html',
+  styleUrls: ['./edit-queue.component.scss']
 })
-export class CreateQueueComponent  implements OnInit{  
+export class EditQueueComponent implements OnInit {
+
+  currentQueue:QueueModel;
 
   bookEndMin = null;
   consultEndMin = null;
@@ -68,10 +72,11 @@ holidays = [
   'Sunday'
 ];
 
-  constructor(private authService: AuthService, private firestore: FirestoreService, private router: Router, private route: ActivatedRoute,  private matDialog: MatDialog) {
+  constructor(private authService: AuthService, private firestore: FirestoreService, private router: Router, 
+    private route: ActivatedRoute,  private matDialog: MatDialog, public session:SessionService, public util:UtilsService) {
 
-   
-
+   this.currentQueue = session.getSharedData() as QueueModel;
+      console.log(util.get24Time(this.currentQueue.getConsultingEnding()));
    }
 
    drop(event: CdkDragDrop<string[]>) {
@@ -99,13 +104,16 @@ ngOnInit():void{
         aTimePerPatient : new FormControl(7, [Validators.required, Validators.max(30), Validators.min(1)])
       }),
       'second' : new FormGroup({
-        bStartTime: new FormControl('', Validators.required),
-        bEndTime: new FormControl('', Validators.required),
-        cStartTime: new FormControl('', Validators.required),
-        cEndTime: new FormControl('', Validators.required)
+        bStartTime: new FormControl(this.util.get24Time(this.currentQueue.getBookingStarting()), Validators.required),
+        bEndTime: new FormControl(this.util.get24Time(this.currentQueue.getBookingEnding()), Validators.required),
+        cStartTime: new FormControl(this.util.get24Time(this.currentQueue.getConsultingStarting()), Validators.required),
+        cEndTime: new FormControl(this.util.get24Time(this.currentQueue.getConsultingEnding()), Validators.required)
       })
-    
+          
   });
+
+  this.slectedCurrency = this.currentQueue.getCurrency();
+  this.defaultFees = this.currentQueue.getFees();
   this.setFeeStructureText(this.defaultFees);
   this.getUserdata();
 
@@ -281,11 +289,9 @@ ngOnInit():void{
 
       queue.setStatus("Active");
       queue.setQueueId(this.getTimestamp());
-      queue.setPatientLimit(this.numberOfPatients.value);
-      queue.setTimePerPatient(this.aTimePerPatient.value);
+      queue.setPatientLimit(this.numberOfPatients.value) ;
       queue.setActive(true);
       queue.setOwnerId(this.currentUser.uid); //to be changed
-      queue.setCurrency(this.currency.value);
       queue.setFees(this.fees.value); 
       queue.setBookingStarting(bookingStartTime);
       queue.setBookingEnding(bookingEndTime);
@@ -352,5 +358,4 @@ ngOnInit():void{
     this.showProgressBar = false;
   
   }
-
 }

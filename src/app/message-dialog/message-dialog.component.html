@@ -1,15 +1,24 @@
-<diV id="parent" fxLayout="column">
+<div id="parent" fxLayout="column" fxLayoutAlign="center center">
+    
+    <ng-container *ngIf="data.success">
 
-    <div id="headerDiv" fxLayout="row" fxLayoutAlign="center center" fxFlex="1 1 30px">
-        <mat-label mat-dialog-title id="headerLabel">{{data.header}}</mat-label>
-    </div>
+        <mat-icon class="success result-icon">check_circle_outline</mat-icon>
+        <mat-label class="header-label result" fxFlexOffset="15px">Success</mat-label>
 
-    <div fxLayout="row" fxLayoutAlign="center center" mat-dialog-content>
+    </ng-container>
+    <ng-container *ngIf="!data.success">
+
+        <mat-icon class="failure result-icon">error_outline</mat-icon>
+        <mat-label class="header-label result" fxFlexOffset="15px">Failure</mat-label>
+        
+    </ng-container>
+    <mat-label id="headerLabel" fxFlexOffset="40px">{{data.message}}</mat-label>
+    <!-- <div fxLayout="row" fxLayoutAlign="center center" mat-dialog-content>
         <mat-label id="headerLabel">{{data.message}}</mat-label>
+    </div> -->
+
+    <div mat-dialog-actions fxLayoutAlign="center center" fxFlexOffset="15px">
+        <button class="lighter-button" mat-flat-button (click)="close()">{{data.okText||'Got It'}}</button>
     </div>
 
-    <div mat-dialog-actions fxLayoutAlign="center center">
-        <button class="ok-button" mat-flat-button (click)="close()">{{data.okText||'Got It'}}</button>
-    </div>
-
-</diV>
+</div>

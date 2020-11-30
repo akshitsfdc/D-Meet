@@ -5,7 +5,7 @@ import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 @Component({
   selector: 'app-create-account-bottom-sheet',
   templateUrl: './create-account-bottom-sheet.component.html',
-  styleUrls: ['./create-account-bottom-sheet.component.css']
+  styleUrls: ['./create-account-bottom-sheet.component.scss']
 })
 export class CreateAccountBottomSheetComponent implements OnInit {
 

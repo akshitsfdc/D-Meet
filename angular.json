@@ -18,21 +18,20 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "aot": true,
+            "aot": true, 
             "assets": [
               "src/favicon.ico",
               "src/assets"
             ],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "./node_modules/bootstrap/dist/css/bootstrap.css",
-              "src/styles.css"
+              "src/scss/styles.scss"
             ],
             "scripts": [
               "./node_modules/jquery/dist/jquery.js",
               "./node_modules/bootstrap/dist/js/bootstrap.js"
             ]
           },
+
           "configurations": {
             "production": {
               "fileReplacements": [
@@ -92,10 +91,11 @@
               "src/favicon.ico",
               "src/assets"
             ],
+            
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "src/styles.css"
+              "src/scss/styles.scss"
             ],
+
             "scripts": []
           }
         },
@@ -130,5 +130,10 @@
   "defaultProject": "doctor-booking",
   "cli": {
     "analytics": "d62d6994-a56b-430a-9749-3a1c1a82865b"
+  },
+  "schematics": {
+    "@schematics/angular:component": {
+      "styleext": "scss"
+    }
   }
 }

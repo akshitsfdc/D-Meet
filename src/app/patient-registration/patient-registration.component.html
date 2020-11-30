@@ -1,5 +1,4 @@
 <div id="parent" fxLayout="column" fxLayoutAlign="center center">
-
   
     <form [formGroup]="registrationForm" #f="ngForm" fxFlex.xs="100%" (ngSubmit)="onSubmit(f)" class="registration-form" fxLayout="column">
       <mat-progress-bar *ngIf="showProgressBar" mode="indeterminate" id="progressIndicator" color="primary"></mat-progress-bar>

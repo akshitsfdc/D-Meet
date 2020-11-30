@@ -8,7 +8,7 @@ import { MessageDialogComponent } from '../message-dialog/message-dialog.compone
 @Component({
   selector: 'app-auth-action',
   templateUrl: './auth-action.component.html',
-  styleUrls: ['./auth-action.component.css']
+  styleUrls: ['./auth-action.component.scss']
 })
 export class AuthActionComponent implements OnInit {
 

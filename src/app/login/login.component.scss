@@ -24,14 +24,10 @@
 }
 #headerLabel{
     font-size: x-large;
-    font-family: 'roboto-regular';
 }
-.login{
-    color: white;
-    background-color: #4285F4;
-    outline: none;
-    border: 0;
+.login{    
     border-radius: 7px;
+    color: white;
 }
 .hor-line{
     background-color: #dde0e3;
@@ -42,14 +38,10 @@
     color: white;
     width: fit-content;
     padding: 0px 15px 0px 15px;
-    background-color: #0F9D58;
-    outline: none;
-    border: 0;
     border-radius: 7px;
     align-self: center;
 }
 .forgot-class{
-    font-family: 'roboto-bold';
     color:  #4285F4;
     font-size: small;
     width: fit-content;
@@ -57,15 +49,8 @@
 }
 .back-button{
     width: fit-content;
-    color:#476282;
-    outline: none;
-    border: 0;
 }
 .next-button{
     width: fit-content;
-    color: white;
-    background-color: #4285F4;
     align-self: flex-end;
-    outline: none;
-    border: 0;
 }

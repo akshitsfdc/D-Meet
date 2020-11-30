@@ -13,10 +13,7 @@
     font-family: 'roboto-regular';
 }
 .reset{
-    color: white;
-    background-color: #4285F4;
-    outline: none;
-    border: 0;
+
     border-radius: 7px;
 }
 .reset-card{
@@ -31,7 +28,4 @@
 }
 ::ng-deep .mat-form-field {
     font-size: 14px; 
-}
-.mat-icon{
-    color: #476282;
 }

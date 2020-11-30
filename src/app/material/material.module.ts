@@ -24,7 +24,7 @@ import { CdkScrollableModule, ScrollingModule } from '@angular/cdk/scrolling';
 import {MatBadgeModule} from '@angular/material/badge';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatDialogModule} from '@angular/material/dialog';
-import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
+
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatChipsModule} from '@angular/material/chips';
@@ -64,7 +64,6 @@ import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
     MatBadgeModule,
     MatSnackBarModule,
     MatDialogModule,
-    NgxMaterialTimepickerModule,
     MatAutocompleteModule,
     MatProgressBarModule,
     MatChipsModule,

@@ -60,9 +60,6 @@
 
 .header-label{
     font-size: 20px;
-    margin-left: 15px;
-    margin-top: 15px;
-    font-family: roboto-bold;
 }
 /* for table */
 
@@ -87,8 +84,10 @@ table {
     border-bottom-width: 0;
   }
   
-  .example-element-detail {
+  .element-detail {
     overflow: hidden;
+    width: 100%;
+    
     display: flex;
   }
   
@@ -160,3 +159,31 @@ table {
     display:flex;
     justify-content:center;
   } */
+
+
+  .queues-container{
+    width: 100%;
+  }
+  .parent{
+    padding: 15px;
+  }
+  .payment-tabel{
+    width: 100%;
+    margin-left: 0;
+    margin-top: 0px;
+  }
+  .graph-card{
+    /* width: auto;
+    height: fit-content; */
+  }
+  .queue-card{
+    height: fit-content;
+  }
+  .setting-buttons{
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  .spinner{
+    height: 24px;
+    width: 24px;
+  }

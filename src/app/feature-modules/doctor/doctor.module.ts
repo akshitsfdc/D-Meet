@@ -1,3 +1,4 @@
+import { SessionService } from './services/session.service';
 import { QueuesComponent } from './queues/queues.component';
 import { ProfileEditComponent } from './profile-edit/profile-edit.component';
 import { MovePatientComponent } from './move-patient/move-patient.component';
@@ -16,7 +17,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from './material/material.module';
 import { AgmCoreModule } from '@agm/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
-
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+import { EditQueueComponent } from './edit-queue/edit-queue.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     MainNavigationComponent,
     MovePatientComponent,
     ProfileEditComponent,
-    QueuesComponent
+    QueuesComponent,
+    EditQueueComponent
   ],
   imports: [
     FlexLayoutModule,
@@ -39,9 +42,11 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     ReactiveFormsModule,
     DoctorRoutingModule,
     MaterialModule,
-    AgmCoreModule
+    AgmCoreModule,
+    NgxMaterialTimepickerModule.setLocale('en-US')
   ],
   exports: [],
+  providers:[SessionService],
   bootstrap:[HomeComponent]
 })
 export class DoctorModule { }
