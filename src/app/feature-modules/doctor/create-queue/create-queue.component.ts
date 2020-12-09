@@ -96,7 +96,9 @@ ngOnInit():void{
         numberOfPatients: new FormControl(250, Validators.required),
         currency: new FormControl(this.slectedCurrency, Validators.required),
         fees: new FormControl(this.defaultFees, Validators.required),
-        aTimePerPatient : new FormControl(7, [Validators.required, Validators.max(30), Validators.min(1)])
+        aTimePerPatient : new FormControl(7, [Validators.required, Validators.max(30), Validators.min(1)]),
+        paymentOption : new FormControl('prepaid', Validators.required),
+        type : new FormControl('video', Validators.required)
       }),
       'second' : new FormGroup({
         bStartTime: new FormControl('', Validators.required),
@@ -212,6 +214,12 @@ ngOnInit():void{
   get secondForm() {
     return this.queueForm.get('second');
   }
+  get paymentOption() {
+    return this.queueForm.get('first').get('paymentOption');
+  }
+  get type() {
+    return this.queueForm.get('first').get('type');
+  }
   get numberOfPatients() {
     return this.queueForm.get('first').get('numberOfPatients');
   }
@@ -279,7 +287,10 @@ ngOnInit():void{
 
     let queue : QueueModel = new QueueModel();
 
-      queue.setStatus("Active");
+
+      queue.setType(this.type.value);
+      queue.setPaymentOption(this.paymentOption.value);
+      queue.setStatus("Scheduled");
       queue.setQueueId(this.getTimestamp());
       queue.setPatientLimit(this.numberOfPatients.value);
       queue.setTimePerPatient(this.aTimePerPatient.value);
@@ -314,21 +325,21 @@ ngOnInit():void{
     this.firestore.save("user-data/"+this.currentUser.uid+"/queues", queue.getQueueId(), Object.assign({}, queue))
     .then(() => {
       this.hideProgress();
-      this.showMessageDialog(true, "Your queue has been created and activated now patients can book online/offline appointments in this queue as per timings provided by you!", "Close");  
+      this.showMessageDialog('success', "Your queue has been created and activated now patients can book online/offline appointments in this queue as per timings provided by you!", "Close");  
      
     })
     .catch(error => {
       this.hideProgress();
-      this.showMessageDialog(false, "Could not create yout que at this moment please try again. If you keep getting this error, please contact support at support@doctormeetup.com", "Close");  
+      this.showMessageDialog('fail', "Could not create queue at this moment please try again. If you keep getting this error, please contact support at support@doctormeetup.com", "Close");  
     
     })
 
   }
 
-  private showMessageDialog(isSuccess:boolean, msg:string, ok:string):void{
+  private showMessageDialog(type:string, msg:string, ok:string):void{
 
     let dialogData = {
-      success : isSuccess,
+      type : type,
       message : msg,
       okText: ok
     }
@@ -336,7 +347,6 @@ ngOnInit():void{
     this.matDialog.open(MessageDialogComponent, {data: dialogData , disableClose: false,
       maxWidth : '300px'
     }).afterClosed().toPromise().then(result => {
-      console.log("Dialoge closed!");
       this.router.navigate(['doctor/queues']);
     });
   }

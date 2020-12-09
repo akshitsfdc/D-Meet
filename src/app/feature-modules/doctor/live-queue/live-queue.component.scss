@@ -1,3 +1,5 @@
+@import 'src/scss/vars';
+
 #queueComponent{
     margin: 15px;
 }
@@ -149,16 +151,6 @@ table {
     width: fit-content;
     height: fit-content;
   }
-  /* mat-cell{
-    display:flex !important;
-    justify-content:center!important;
-    
-  }
-  
-  mat-header-cell {
-    display:flex;
-    justify-content:center;
-  } */
 
 
   .queues-container{
@@ -186,4 +178,30 @@ table {
   .spinner{
     height: 24px;
     width: 24px;
+  }
+  .holiday-chips{
+    max-width: 250px;
+  }
+  .open-button{
+   
+  }
+  .live-label{
+    color: $textPrimary;
+  }
+  .live-label{
+    color: #ffffff;
+  }
+
+  .status-card{
+    padding: 5px 10px 5px 10px;
+  }
+  .status-card-live{
+    
+    background-color: $warn;
+  }
+  .status-card-booking{
+    background-color: $alert;
+  }
+  .status-card-scheduled{
+    background-color: $grey-lighter;
   }

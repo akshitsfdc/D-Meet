@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export interface DialogData {
-  success:boolean,
+  type:string,
   message:string,
   okText:string
 }
@@ -27,4 +27,10 @@ export class MessageDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  cancel(){
+    this.dialogRef.close({approved: false});
+  }
+  approve(){
+    this.dialogRef.close({approved: true});
+  }
 }

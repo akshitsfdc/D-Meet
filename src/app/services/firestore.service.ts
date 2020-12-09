@@ -45,4 +45,7 @@ export class FirestoreService {
   update(collection:string, document:string, data:any):Promise<void>{
     return this.firestore.collection(collection).doc(document).set(data, {merge:true});
   }
+  delete(collection:string, document:string):Promise<void>{
+    return this.firestore.collection(collection).doc(document).delete();
+  }
 }

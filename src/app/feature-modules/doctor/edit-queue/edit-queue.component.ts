@@ -37,7 +37,7 @@ export class EditQueueComponent implements OnInit {
   serviceChargePercent:number = 5;
   defaultFees = 300;
 
-  private currentUser: firebase.User;
+  private currentUser:string;
 
   disableSubmit:boolean = false;
   showProgressBar = false;
@@ -59,24 +59,15 @@ export class EditQueueComponent implements OnInit {
     }
 };
 
-workings = [
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday'
-];
+workings = [];
 
-holidays = [
-  'Sunday'
-];
+holidays = [];
 
   constructor(private authService: AuthService, private firestore: FirestoreService, private router: Router, 
     private route: ActivatedRoute,  private matDialog: MatDialog, public session:SessionService, public util:UtilsService) {
 
    this.currentQueue = session.getSharedData() as QueueModel;
-      console.log(util.get24Time(this.currentQueue.getConsultingEnding()));
+     
    }
 
    drop(event: CdkDragDrop<string[]>) {
@@ -90,9 +81,9 @@ holidays = [
     }
   }
 
-   async getUserdata(){
-    this.currentUser = await this.authService.getUser();
-  }
+  //  async getUserdata(){
+  //   this.currentUser = await this.authService.getUser();
+  // }
 
 ngOnInit():void{
 
@@ -109,13 +100,23 @@ ngOnInit():void{
         cStartTime: new FormControl(this.util.get24Time(this.currentQueue.getConsultingStarting()), Validators.required),
         cEndTime: new FormControl(this.util.get24Time(this.currentQueue.getConsultingEnding()), Validators.required)
       })
-          
+      
   });
 
   this.slectedCurrency = this.currentQueue.getCurrency();
   this.defaultFees = this.currentQueue.getFees();
+
+  this.holidays = this.currentQueue.getHolidayList();
+  this.workings = this.util.getWorkingDays(this.holidays);
+
+  this.timeChangeBookStart(this.util.get24Time(this.currentQueue.getBookingStarting()));
+  this.timeChangeBookEnd(this.util.get24Time(this.currentQueue.getBookingEnding()));
+  this.timeChangeConsultStart(this.util.get24Time(this.currentQueue.getConsultingStarting()));
+  this.timeChangeConsultEnd(this.util.get24Time(this.currentQueue.getConsultingEnding()));
+
   this.setFeeStructureText(this.defaultFees);
-  this.getUserdata();
+
+  this.currentUser = this.session.getUserData().getUserId();
 
 }
 
@@ -288,10 +289,10 @@ ngOnInit():void{
     let queue : QueueModel = new QueueModel();
 
       queue.setStatus("Active");
-      queue.setQueueId(this.getTimestamp());
+      queue.setQueueId(this.currentQueue.getQueueId());
       queue.setPatientLimit(this.numberOfPatients.value) ;
       queue.setActive(true);
-      queue.setOwnerId(this.currentUser.uid); //to be changed
+      queue.setOwnerId(this.currentUser); //to be changed
       queue.setFees(this.fees.value); 
       queue.setBookingStarting(bookingStartTime);
       queue.setBookingEnding(bookingEndTime);
@@ -317,24 +318,24 @@ ngOnInit():void{
   private saveQueue(queue : QueueModel){
     
     this.showProgress();
-    this.firestore.save("user-data/"+this.currentUser.uid+"/queues", queue.getQueueId(), Object.assign({}, queue))
+    this.firestore.update("user-data/"+this.currentUser+"/queues", queue.getQueueId(), Object.assign({}, queue))
     .then(() => {
       this.hideProgress();
-      this.showMessageDialog(true, "Your queue has been created and activated now patients can book online/offline appointments in this queue as per timings provided by you!", "Close");  
+      this.showMessageDialog('success', "Your queue has been updated and activated now patients can book online/offline appointments in this queue as per timings provided by you!", "Close");  
      
     })
     .catch(error => {
       this.hideProgress();
-      this.showMessageDialog(false, "Could not create yout que at this moment please try again. If you keep getting this error, please contact support at support@doctormeetup.com", "Close");  
+      this.showMessageDialog('fail', "Could not update queue at this moment please try again. If you keep getting this error, please contact support at support@doctormeetup.com", "Close");  
     
     })
 
   }
 
-  private showMessageDialog(isSuccess:boolean, msg:string, ok:string):void{
+  private showMessageDialog(type:string, msg:string, ok:string):void{
 
     let dialogData = {
-      success : isSuccess,
+      type : type,
       message : msg,
       okText: ok
     }

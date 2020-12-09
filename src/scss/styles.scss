@@ -41,7 +41,14 @@ body { margin: 0;
   background-color: $grey-lighter;
   color: $textPrimary;
 }
-
+.medium-button{
+  background-color: $grey-medium;
+  color: $textPrimary;
+}
+.darker-button{
+  background-color: $grey-darker;
+  color: $textPrimary;
+}
 mat-label{
   font-family: 'roboto-regular';
   color: $textPrimary;
@@ -59,8 +66,13 @@ mat-icon{
 #parent{
   height: 100%;
   background-color: #ffffff;
-}
 
+}
+.parent{
+  height: 100%;
+  background-color: #ffffff;
+  padding: 15px;
+}
 .logo-form-top{
   max-width: 201.5px;
   max-height: 100.25px;
@@ -82,6 +94,34 @@ mat-icon{
   background-color: $warn;
   color: white;
 }
-.spinner{
-
+.alert-icon{
+  color: $alert;
 }
+.google-black-button{
+  background-color: $icon;
+  color: $grey-lighter;
+}
+div::-webkit-scrollbar {
+  width: 0;
+  background: inherit;
+} 
+div::-webkit-scrollbar-thumb { 
+  border-radius: 10px; 
+  box-shadow: inset 0 0 6px rgba(0,0,0,.3); 
+  background-color:$grey-lighter; 
+  // border: 1px solid #000; 
+} 
+.link-label{
+  color: $primary;
+  font-size: small;
+  cursor: pointer;
+}
+.green-icon{
+  color: $accent;
+}
+.warning-icon{
+  color: $warn;
+}
+// .link-label:hover {
+//   text-decoration: underline;
+// }

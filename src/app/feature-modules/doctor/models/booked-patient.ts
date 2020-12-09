@@ -2,72 +2,104 @@
 
 export class BookedPatient {
 
-    private _name: string;
-    private _picUrl: string;
-    private _from: string;
-    private _status: string;
-    private _condition: string;
-    private _queuePlace: number;
-    private _waitingTime: string;
-    private _bookingId: string;
+    private name: string;
+    private picUrl: string;
+    private from: string;
+    private phone:string;
+    private status: string;
+    private condition: string;
+    private queuePlace: number;
+    private bookingTime:number;
+    private bookingId: string;
+    private queueId:string;
+    private doctorId:string;
 
-    constructor(){}
-
-
-    public get name() {
-        return this._name;
-    }
-    public set name(name: string) {
-        this._name = name;
+    public getQueueId(): string {
+        return this.queueId;
     }
 
-    public get picUrl() {
-        return this._picUrl;
-    }
-    public set picUrl(picUrl: string) {
-        this._picUrl = picUrl;
+    public setQueueId(queueId: string): void {
+        this.queueId = queueId;
     }
 
-    public get from() {
-        return this._from;
-    }
-    public set from(from: string) {
-        this._from = from;
+    public getDoctorId(): string {
+        return this.doctorId;
     }
 
-    public get status() {
-        return this._status;
-    }
-    public set status(status: string) {
-        this._status = status;
+    public setDoctorId(doctorId: string): void {
+        this.doctorId = doctorId;
     }
 
-    public get condition() {
-        return this._condition;
-    }
-    public set condition(condition: string) {
-        this._condition = condition;
+    public getPhone(): string {
+        return this.phone;
     }
 
-    public get queuePlace() {
-        return this._queuePlace;
-    }
-    public set queuePlace(queuePlace: number) {
-        this._queuePlace = queuePlace;
+    public setPhone(phone: string): void {
+        this.phone = phone;
     }
 
-    public get waitingTime() {
-        return this._waitingTime;
-    }
-    public set waitingTime(waitingTime: string) {
-        this._waitingTime = waitingTime;
+    public getBookingTime(): number {
+        return this.bookingTime;
     }
 
-    public get bookingId() {
-        return this._bookingId;
+    public setBookingTime(bookingTime: number): void {
+        this.bookingTime = bookingTime;
     }
-    public set bookingId(bookingId: string) {
-        this._bookingId = bookingId;
+
+    public getName(): string {
+        return this.name;
+    }
+
+    public setName(name: string): void {
+        this.name = name;
+    }
+
+    public getPicUrl(): string {
+        return this.picUrl;
+    }
+
+    public setPicUrl(picUrl: string): void {
+        this.picUrl = picUrl;
+    }
+
+    public getFrom(): string {
+        return this.from;
+    }
+
+    public setFrom(from: string): void {
+        this.from = from;
+    }
+
+    public getStatus(): string {
+        return this.status;
+    }
+
+    public setStatus(status: string): void {
+        this.status = status;
+    }
+
+    public getCondition(): string {
+        return this.condition;
+    }
+
+    public setCondition(condition: string): void {
+        this.condition = condition;
+    }
+
+    public getQueuePlace(): number {
+        return this.queuePlace;
+    }
+
+    public setQueuePlace(queuePlace: number): void {
+        this.queuePlace = queuePlace;
+    }
+
+    public getBookingId(): string {
+        return this.bookingId;
+    }
+
+    public setBookingId(bookingId: string): void {
+        this.bookingId = bookingId;
     }
 
 }

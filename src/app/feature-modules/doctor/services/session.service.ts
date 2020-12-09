@@ -1,3 +1,4 @@
+import { UtilsService } from './../../../services/utils.service';
 import { Injectable } from '@angular/core';
 import { DoctorUserData } from '../models/doctor-user-data';
 import { QueueModel } from '../models/queue-model';
@@ -13,7 +14,7 @@ export class SessionService {
   
   private queues:QueueModel[];
 
-  constructor() {
+  constructor(private utils:UtilsService) {
     this.userData = new DoctorUserData();
     this.queues = [];
    }
@@ -31,7 +32,11 @@ export class SessionService {
   }
 
   public setQueues(queues: QueueModel[]): void {
+
     this.queues = queues;
+
+    this.changeQueueStatus(this.queues);
+
   }
   public getSharedData(): any {
     return this.sharedData;
@@ -40,9 +45,56 @@ export class SessionService {
   public setSharedData(sharedData: any): void {
       this.sharedData = sharedData;
   }
-  private getTimeString(milliseconds:number):string{
-    return new Date(milliseconds).toLocaleDateString();
+
+  private changeQueueStatus(queues:QueueModel[]):void{
+
+    queues.forEach(queue => {
+        if(this.utils.isWithinTimeFrame(queue.getBookingStarting(), queue.getBookingEnding(), 'ist')){
+          queue.setStatus('booking');
+        }
+        if(this.utils.isWithinTimeFrame(queue.getConsultingStarting(), queue.getConsultingEnding(), 'ist')){
+          queue.setStatus('live');
+        }
+  
+        if(this.utils.getTriggerTime(queue.getBookingStarting(), 'ist') !== -1){
+          setTimeout(() => {
+            this.updateQueue(queue);
+          }, this.utils.getTriggerTime(queue.getBookingStarting(), 'ist'));
+        }
+
+        if(this.utils.getTriggerTime(queue.getBookingEnding(), 'ist') !== -1){
+          setTimeout(() => {
+            this.updateQueue(queue);
+          }, this.utils.getTriggerTime(queue.getBookingEnding(), 'ist'));
+        }
+        if(this.utils.getTriggerTime(queue.getConsultingStarting(), 'ist') !== -1){
+          setTimeout(() => {
+            this.updateQueue(queue);
+          }, this.utils.getTriggerTime(queue.getConsultingStarting(), 'ist'));
+        }
+        if(this.utils.getTriggerTime(queue.getConsultingEnding(), 'ist') !== -1){
+          setTimeout(() => {
+            this.updateQueue(queue, true);
+          }, this.utils.getTriggerTime(queue.getConsultingEnding(), 'ist'));
+        }
+    });
   }
 
+  private updateQueue(queue:QueueModel, end?:boolean){
+
+    console.log('updateQueue >> ');
+
+    if(end){
+      queue.setStatus('scheduled');
+      return;
+    }
+    if(this.utils.isWithinTimeFrame(queue.getBookingStarting(), queue.getBookingEnding(), 'ist')){
+      queue.setStatus('booking');
+    }
+    if(this.utils.isWithinTimeFrame(queue.getConsultingStarting(), queue.getConsultingEnding(), 'ist')){
+      queue.setStatus('live');
+    }
+
+  }
 
 }

@@ -1,21 +1,6 @@
 <div class="parent" fxLayout="column" fxLayoutGap="15px" >
 
-    <ng-container *ngIf="!session.getUserData().isKycSubmitted()">
-            <div fxLayout="row" fxLayoutGap="10px" fxFlexOffset="15px" fxLayoutAlign="center center">
-                <mat-label class="no-kyc-label">*Before going live plese complete your registration</mat-label> 
-                <button mat-raised-button (click)="openKycForm()">complete now</button>
-            </div>
-    </ng-container>
-
-    <ng-container *ngIf="session.getUserData().isKycSubmitted()">
-        <ng-container *ngIf="!session.getUserData().isVarified()">
-            <div fxLayout="row" fxLayoutGap="10px" fxFlexOffset="15px" fxLayoutAlign="center center">
-                <mat-label class="no-kyc-label">*We are currently verifying your account you will be live after verification process complete</mat-label>                 
-            </div>
-        </ng-container>
-    </ng-container>
-
-    <mat-label class="header-label">Queues</mat-label> 
+    <mat-label class="header-label">Scheduled Queues</mat-label> 
 
     <div class="queues-container" fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutGap="20px">
 
@@ -27,11 +12,16 @@
                     <span fxFlex="1 1 auto"></span>
                     <mat-spinner *ngIf="queue.isLoading()" class="spinner" [diameter]="20"></mat-spinner>
                 </div>
-
                 <div fxLayout="row">
                     <mat-label>Status</mat-label>
                     <span fxFlex="1 1 auto"></span>
-                    <mat-label >{{queue.getStatus()}}</mat-label>
+                    <mat-card  [ngClass]="{'status-card': true, 'status-card-live': (queue.getStatus()==='live'), 'status-card-booking': (queue.getStatus()==='booking'),
+                    'status-card-scheduled': (queue.getStatus()==='scheduled')}">
+                      <mat-card-content>
+                        <mat-label [ngClass]="{'live-label': (queue.getStatus() !=='scheduled')}">{{queue.getStatus()==='live'?utils.capitalize(queue.getStatus()):utils.initCap(queue.getStatus())}}</mat-label>
+                      </mat-card-content>                      
+                    </mat-card>
+                   
                 </div>
                 <div fxLayout="row" fxLayoutGap="30px">
                     <mat-label>Fees</mat-label>
@@ -44,25 +34,70 @@
                     <mat-label>{{queue.getPatientLimit()}}</mat-label>
                 </div>
                 <div fxLayout="row" fxLayoutGap="30px">
-                    <mat-label>Booking Start Time</mat-label>
-                    <span fxFlex="1 1 auto"></span>
-                    <mat-label>{{utils.millisToTimeString(queue.getBookingStarting())}}</mat-label>
+                  <mat-label>Type</mat-label>
+                  <span fxFlex="1 1 auto"></span>
+                  <mat-label>{{utils.initCap(queue.getType()||'Unavailable')}}</mat-label>
                 </div>
                 <div fxLayout="row" fxLayoutGap="30px">
-                    <mat-label>Booking End Time</mat-label>
-                    <span fxFlex="1 1 auto"></span>
-                    <mat-label>{{utils.millisToTimeString(queue.getBookingEnding())}}</mat-label>
+                  <mat-label>Payment Option</mat-label>
+                  <span fxFlex="1 1 auto"></span>
+                  <mat-label>{{utils.initCap(queue.getPaymentOption() || 'Unavailable')}}</mat-label>
                 </div>
-                <div fxLayout="row" fxLayoutGap="30px">
-                    <mat-label>Consulting Start Time</mat-label>
-                    <span fxFlex="1 1 auto"></span>
-                    <mat-label>{{utils.millisToTimeString(queue.getConsultingStarting())}}</mat-label>
-                </div>
-                <div fxLayout="row" fxLayoutGap="30px">
-                    <mat-label>Consulting End Time</mat-label>
-                    <span fxFlex="1 1 auto"></span>
-                    <mat-label>{{utils.millisToTimeString(queue.getConsultingEnding())}}</mat-label>
-                </div>
+                
+                <mat-accordion>
+                  <mat-expansion-panel >
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Timings
+                      </mat-panel-title>
+                      <mat-panel-description>
+                        <span fxFlex="1 1 auto"></span><mat-icon>access_time</mat-icon>
+                      </mat-panel-description>
+                    </mat-expansion-panel-header>
+                   <div fxLayout="column" fxLayoutGap="10px">
+                    <div fxLayout="row" fxLayoutGap="30px">
+                      <mat-label>Booking Start</mat-label>
+                      <span fxFlex="1 1 auto"></span>
+                      <mat-label>{{utils.millisToTimeString(queue.getBookingStarting())}}</mat-label>
+                  </div>
+                  <div fxLayout="row" fxLayoutGap="30px">
+                      <mat-label>Booking End</mat-label>
+                      <span fxFlex="1 1 auto"></span>
+                      <mat-label>{{utils.millisToTimeString(queue.getBookingEnding())}}</mat-label>
+                  </div>
+                  <div fxLayout="row" fxLayoutGap="30px">
+                      <mat-label>Consulting Start</mat-label>
+                      <span fxFlex="1 1 auto"></span>
+                      <mat-label>{{utils.millisToTimeString(queue.getConsultingStarting())}}</mat-label>
+                  </div>
+                  <div fxLayout="row" fxLayoutGap="30px">
+                      <mat-label>Consulting End</mat-label>
+                      <span fxFlex="1 1 auto"></span>
+                      <mat-label>{{utils.millisToTimeString(queue.getConsultingEnding())}}</mat-label>
+                  </div>
+                   </div>
+                  </mat-expansion-panel>
+                </mat-accordion>
+                <mat-accordion>
+                    <mat-expansion-panel >
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          Off Days
+                        </mat-panel-title>
+                        <mat-panel-description>
+                          <span fxFlex="1 1 auto"></span><mat-icon>event_busy</mat-icon>
+                        </mat-panel-description>
+                      </mat-expansion-panel-header>
+                     <div fxLayout="column">
+                        <mat-chip-list class="holiday-chips"  aria-label="holidays">
+                            <mat-chip *ngFor="let day of queue.getHolidayList()">
+                              {{day}}
+                            </mat-chip>
+                          </mat-chip-list>
+                     </div>
+                    </mat-expansion-panel>
+                  </mat-accordion>
+
                 <mat-accordion>
                     <mat-expansion-panel >
                       <mat-expansion-panel-header>
@@ -75,10 +110,15 @@
                       </mat-expansion-panel-header>
                      <div fxLayout="column">
                         <button  mat-flat-button class="setting-buttons" (click)="editQueue(queue)">Edit</button>
-                        <button  mat-flat-button class="alert-button setting-buttons" fxFlexOffset="10px" (click)="deleteQueue(queue)">Delete</button>
+                        <button  mat-flat-button class="alert-button setting-buttons" fxFlexOffset="10px
+                        " (click)="deletClick(queue)">Delete</button>
                      </div>
                     </mat-expansion-panel>
                   </mat-accordion>
+
+                  <button mat-raised-button class="medium-button open-button" (click)="openQueue(queue)">
+                    <mat-icon>explore</mat-icon>
+                    Operate</button>
             </mat-card-content>
         </mat-card>
     </div>

@@ -1,5 +1,9 @@
+import { QueueModel } from './../models/queue-model';
+import { SessionService } from './../services/session.service';
+import { UtilsService } from 'src/app/services/utils.service';
 
-import { Component, OnInit, Input } from '@angular/core';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { Component, OnInit, Input, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -9,10 +13,13 @@ import { MovePatientComponent } from '../move-patient/move-patient.component';
 @Component({
   selector: 'app-live-queue-details',
   templateUrl: './live-queue-details.component.html',
-  styleUrls: ['./live-queue-details.component.css']
+  styleUrls: ['./live-queue-details.component.scss']
 })
+
 export class LiveQueueDetailsComponent implements OnInit {
 
+  @ViewChild('bookingList') bookingListElement: ElementRef;
+  
   rippleColor = "#4294f4";
   selectedStatus = "live";
   selectStatusDisplay = "Live";
@@ -27,11 +34,65 @@ export class LiveQueueDetailsComponent implements OnInit {
   currentPaient: BookedPatient;
 
   totalPatientSize: Number;
+  currentQueue:QueueModel;
 
+  extraheight:number = 75+15+60;
+  totalTimePassed:string = "0h:00m"
+  movies = [
+    'Episode I - The Phantom Menace',
+    'Episode II - Attack of the Clones',
+    'Episode III - Revenge of the Sith',
+    'Episode IV - A New Hope',
+    'Episode V - The Empire Strikes Back',
+    'Episode VI - Return of the Jedi',
+    'Episode VII - The Force Awakens',
+    'Episode VIII - The Last Jedi',
+    'Episode IV - A New Hope',
+    'Episode I - The Phantom Menace',
+    'Episode II - Attack of the Clones',
+    'Episode III - Revenge of the Sith',
+    'Episode IV - A New Hope',
+    'Episode V - The Empire Strikes Back',
+    'Episode VI - Return of the Jedi',
+    'Episode VII - The Force Awakens',
+    'Episode VIII - The Last Jedi',
+    'Episode IV - A New Hope',
+    'Episode III - Revenge of the Sith',
+    'Episode IV - A New Hope',
+    'Episode V - The Empire Strikes Back',
+    'Episode VI - Return of the Jedi',
+    'Episode VII - The Force Awakens',
+    'Episode VIII - The Last Jedi',
+    'Episode IV - A New Hope',
+    'Episode I - The Phantom Menace',
+    'Episode II - Attack of the Clones',
+    'Episode III - Revenge of the Sith',
+    'Episode IV - A New Hope',
+    'Episode V - The Empire Strikes Back',
+    'Episode VI - Return of the Jedi',
+    'Episode VII - The Force Awakens',
+    'Episode VIII - The Last Jedi',
+    'Episode IV - A New Hope',
+        
+  ];
+  upcomingPatient = [
+    'Episode I - The Phantom Menace',
+    'Episode II - Attack of the Clones',
+    'Episode III - Revenge of the Sith',
+    'Episode IV - A New Hope',
+  ];
+  constructor(private firestore: AngularFirestore, private router: Router, private route: ActivatedRoute, private matDialog: MatDialog,
+     public util:UtilsService, private session:SessionService) {
 
-  constructor(private firestore: AngularFirestore, private router: Router, private route: ActivatedRoute, private matDialog: MatDialog) { }
+        this.currentQueue = session.getSharedData() as QueueModel;
+      }
 
+  
   ngOnInit(): void {
+
+    this.totalTimePassed = this.util.getDateDigits(this.util.getTimeDifference(this.currentQueue.getConsultingStarting()));
+    this.initTimePassed();
+
     this.setTestPatients();
 
     if(this.consultStarted){
@@ -39,6 +100,28 @@ export class LiveQueueDetailsComponent implements OnInit {
         this.currentPaient = this.tempPatients.splice(0, 1)[0];
       }  
     }
+  }
+
+  ngAfterViewInit() {
+  
+    let windowHeight = window.innerHeight;
+    // this.bookingListElement.nativeElement.style.height = 50 +'px';    // set height
+    this.bookingListElement.nativeElement.style.height = (windowHeight-this.extraheight)+'px'; 
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event){
+    let windowHeight = window.innerHeight;
+    this.bookingListElement.nativeElement.style.height = (windowHeight-this.extraheight)+'px'; 
+  }
+  initTimePassed(){
+    setInterval(() => {
+      this.totalTimePassed = this.util.getDateDigits(this.util.getTimeDifference(this.currentQueue.getConsultingStarting()));
+      console.log(this.totalTimePassed);
+    }, 60000);
+  }
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.movies, event.previousIndex, event.currentIndex);
   }
 
   goPatientMeet() {
@@ -51,14 +134,15 @@ export class LiveQueueDetailsComponent implements OnInit {
 
        let bookedPatient: BookedPatient = new BookedPatient();
 
-       bookedPatient.name = "Akshit"+i+1 ;
-       bookedPatient.picUrl = "Akshit" ;
-       bookedPatient.from = "Delhi" ;
-       bookedPatient.condition = "Normal" ;
-       bookedPatient.queuePlace = i + 1 ;
-       bookedPatient.status = "Online";
-       bookedPatient.bookingId = "189457733"+i;
-       bookedPatient.waitingTime = "47m : 14 sec (at 11:32 AM)";
+       bookedPatient.setName("Akshit"+i+1) ;
+       bookedPatient.setPicUrl("Akshit");
+       bookedPatient.setFrom("Delhi") ;
+       bookedPatient.setCondition("Normal");
+       bookedPatient.setQueuePlace(i + 1);
+       bookedPatient.setStatus(i%2===0?"Online":"Offline");
+       bookedPatient.setBookingId("189457733"+i);
+       bookedPatient.setPhone("+918888985133");
+       bookedPatient.setBookingTime(998883267);
 
       this.tempPatients.push(bookedPatient);
 

@@ -1,0 +1,49 @@
+@import 'src/scss/vars';
+
+
+
+.create-queue-fab{
+    background-color: #0F9D58;
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+}
+
+
+
+.queue-card{
+    height: fit-content;
+}
+.queues-container{
+    width: 100%;
+  }
+
+  .holiday-chips{
+    max-width: 250px;
+  }
+
+  .history-header{
+      font-size: small;
+  }
+
+
+  .live-label{
+    color: $textPrimary;
+  }
+  .live-label{
+    color: #ffffff;
+  }
+
+  .status-card{
+    padding: 5px 10px 5px 10px;
+  }
+  .status-card-live{
+    
+    background-color: $warn;
+  }
+  .status-card-booking{
+    background-color: $alert;
+  }
+  .status-card-scheduled{
+    background-color: $grey-lighter;
+  }

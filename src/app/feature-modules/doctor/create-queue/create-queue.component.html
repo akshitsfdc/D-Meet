@@ -32,6 +32,29 @@
 
               <div fxLayout="column" fxLayoutGap="8px" >
 
+                <div fxLayout="row" fxLayoutGap="10px">
+                  <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                    <mat-label>Consulting Type</mat-label>
+                    <mat-select formControlName="type">
+                        <mat-option value="video">Video (Online)</mat-option> 
+                        <mat-option value="offline">Offline (at your clinic/hospital)</mat-option>                     
+                    </mat-select>
+                    <mat-error *ngIf="type.touched && type.errors?.required">
+                        Choose consulting type
+                    </mat-error>
+                   </mat-form-field>
+                   <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                    <mat-label>Payment Option</mat-label>
+                    <mat-select formControlName="paymentOption"  >
+                        <mat-option value="prepaid">Prepaid</mat-option> 
+                        <mat-option *ngIf="type.value === 'offline'" value="postpaid">Postpaid</mat-option>                     
+                    </mat-select>
+                    <mat-error *ngIf="paymentOption.touched && paymentOption.errors?.required">
+                        Choose payment options
+                    </mat-error>
+                   </mat-form-field>
+                </div>
+
                 <mat-form-field appearance="outline">
                   <mat-label>Patients Limit</mat-label>
                   <input matInput type="number" placeholder="Queue Size e.g 100" formControlName="numberOfPatients">
@@ -54,6 +77,9 @@
                   </mat-error>
                   <span matSuffix>Minutes</span>
               </mat-form-field>
+
+
+              <div fxLayout="row" fxLayoutGap="10px">
                 <mat-form-field appearance="outline" fxFlex="1 1 auto">
                   <mat-label>Currency</mat-label>
                   <mat-select formControlName="currency" [(value)]="slectedCurrency" >
@@ -70,6 +96,8 @@
                         Enter your fees
                     </mat-error>
                 </mat-form-field>
+              </div>
+                
                 <mat-label >{{feeStructureText}}</mat-label>
 
                 <div fxLayout="row" fxFlexOffset="10px">

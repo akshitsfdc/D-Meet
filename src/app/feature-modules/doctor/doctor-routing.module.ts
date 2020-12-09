@@ -21,12 +21,12 @@ const routes: Routes = [
       children: [
         {path: 'doctor-profile', component: DoctorProfileComponent},
         {
-          path: 'liveQueue', component: LiveQueueComponent
+          path: 'home', component: LiveQueueComponent
         },
         {path: 'queues', component: QueuesComponent},
         {path: 'queues/createQueue', component: CreateQueueComponent},
         {path: 'queues/editQueue', component: EditQueueComponent},
-        { path: 'liveQueue/queueDetails', component: LiveQueueDetailsComponent },
+        { path: 'home/queue', component: LiveQueueDetailsComponent },
         { path: 'liveQueue/queueDetails/patientMeet', component: DoctorConferenceComponent }
       ]
     }

@@ -10,6 +10,7 @@ import { FirestoreService } from 'src/app/services/firestore.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { PaymentRecievedModel } from '../models/payment-recieved-model';
 import { MatSpinner } from '@angular/material/progress-spinner';
+import { MessageDialogComponent } from 'src/app/message-dialog/message-dialog.component';
 
 declare var google:any;
 @Component({
@@ -53,9 +54,10 @@ export class LiveQueueComponent implements OnInit {
 
     this.graphInit();
 
+   
+
     
   }
-
 
   private graphInit(){
 
@@ -187,6 +189,35 @@ export class LiveQueueComponent implements OnInit {
     });
   }
 
+  private showDialog(type:string, msg:string, ok:string, queue:QueueModel):void{
+
+    let dialogData = {
+      type : type,
+      message : msg,
+      okText: ok
+    }
+
+    this.matDialog.open(MessageDialogComponent, {data: dialogData , disableClose: false,
+      maxWidth : '300px'
+    }).afterClosed().toPromise()
+    .then(result => {
+      if(queue !==null && result.approved){
+        this.deleteQueue(queue);
+      }
+      
+    });
+  }
+
+
+  private deleteQueue(queue:QueueModel):void{
+    this.server.delete("user-data/"+this.session.getUserData().getUserId()+"/queues", queue.getQueueId())
+    .then(() => {
+     
+    })
+    .catch(error => {
+      this.showDialog('fail', 'Could not delete queue at this time please try again. If you keep getting this error, please contact support at support@doctormeetup.com', 'Close',null);
+    });
+  }
   queueStatusChanged(queue:QueueModel){
 
     queue.setLoading(true);   
@@ -201,8 +232,8 @@ export class LiveQueueComponent implements OnInit {
     
   }
 
-  deleteQueue(queue:QueueModel):void{
-
+  deletClick(queue:QueueModel):void{
+    this.showDialog('alert', 'Are you sure, you want to delete your queue?','Yes' , queue);
   }
   editQueue(queue:QueueModel):void{
 
@@ -211,6 +242,13 @@ export class LiveQueueComponent implements OnInit {
     this.router.navigate(['doctor/queues/editQueue']);
     
   }
+  openQueue(queue:QueueModel):void{
+    this.session.setSharedData(queue);
+    this.router.navigate(['doctor/home/queue']);
+  }
+
+  
+
 }
 
 

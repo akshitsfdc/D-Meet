@@ -31,7 +31,7 @@ export class MainNavigationComponent {
     this.router.navigate(['doctor-profile'], { relativeTo: this.route });
   }
   liveQueueClick() {
-    this.router.navigate(['liveQueue'], { relativeTo: this.route });
+    this.router.navigate(['home'], { relativeTo: this.route });
   }
   queuesClick(){
     this.router.navigate(['queues'], { relativeTo: this.route });

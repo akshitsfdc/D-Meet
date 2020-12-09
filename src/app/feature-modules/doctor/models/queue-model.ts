@@ -17,10 +17,28 @@ export class QueueModel {
     private ownerId: string;
     private holidayList:string[] = [];
     private loading:boolean;
+    private type:string;
+    private paymentOption:string;
 
+    
    
     constructor(){}
 
+    public getType(): string {
+        return this.type;
+    }
+
+    public setType(type: string): void {
+        this.type = type;
+    }
+
+    public getPaymentOption(): string {
+        return this.paymentOption;
+    }
+
+    public setPaymentOption(paymentOption: string): void {
+        this.paymentOption = paymentOption;
+    }
     
     public getCurrency(): string {
         return this.currency;

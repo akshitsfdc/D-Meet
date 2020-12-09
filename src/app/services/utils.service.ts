@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { start } from 'repl';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +25,10 @@ export class UtilsService {
     const mi = date.getUTCMinutes();
     return hr+':'+mi;
   }
+  public getISTMilliseconds(milliseconds:number):number{
+    milliseconds -= 5.5 * 3600000;
+    return milliseconds;
+  }
   public getDay(milliseconds:number):string{
 
     milliseconds -= 5.5 * 3600000; //for IST
@@ -31,5 +36,72 @@ export class UtilsService {
     let week:string[] = ['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     return week[new Date(milliseconds).getDay()];
+  }
+
+  public initCap(str:string):string{
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+  public capitalize(str:string):string{
+    return str.toUpperCase();
+  }
+  public getWorkingDays(holidays:string[]):string[]{
+
+    let week:string[] = ['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    holidays.forEach(element => {
+      const index = week.indexOf(element, 0);
+      if (index > -1) {
+        week.splice(index, 1);
+      }
+    });
+
+    return week;
+  }
+  public isWithinTimeFrame(startMs:number | 0, endMs:number | 0, type?:string):boolean{
+
+    const currentTime:number = this.getMillisFromDate(new Date());
+
+     if(currentTime <= endMs && currentTime >= startMs){
+      return true;
+    }else{
+      return false;
+    }
+
+  }
+  public getTriggerTime(milliseconds:number, type?:string):number{
+
+    if(milliseconds === 0 || milliseconds === undefined){
+      return 10;
+    }
+    
+    const currentMillis = this.getMillisFromDate(new Date());
+
+    console.log(milliseconds - currentMillis);
+
+    if(currentMillis >= milliseconds){
+      return -1;
+    }
+
+    return (milliseconds - currentMillis);
+  }
+
+  getTimeDifference(from:number):number{
+
+     const nowMills:number = this.getMillisFromDate(new Date());
+
+     const difference:number = nowMills - from;
+  
+     return difference;
+
+  }
+  getDateDigits(millis:number):string{
+
+    const seconds:number = millis/1000;
+    const minutes:number = seconds/60;
+
+    return  Math.floor(minutes/60)+'h : '+ Math.floor(minutes%60)+'m';
+  }
+  private getMillisFromDate(date:Date):number{
+    return ( ((+date.getHours()) * 60 * 60)  + ((+date.getMinutes()) * 60)) *1000;
   }
 }
