@@ -22,16 +22,23 @@ export class DoctorUserData {
     private about:string;
     private registrationLocalTimeStapm:number;
     private kycSubmitted:boolean;
-    private latitude:number;
-    private longitude:number;
+    // private latitude:number;
+    // private longitude:number;
     private nearbyAddress:string;
     private diseaseSpecialist:string[]=[];
-
-
+    private coordinates:firebase.firestore.GeoPoint;
 
     constructor(){}
 
 
+    public getCoordinates(): firebase.firestore.GeoPoint {
+        return this.coordinates;
+    }
+
+    public setCoordinates(coordinates: firebase.firestore.GeoPoint): void {
+        this.coordinates = coordinates;
+    }
+    
     
     public getNearbyAddress(): string {
         return this.nearbyAddress;
@@ -49,21 +56,21 @@ export class DoctorUserData {
         this.diseaseSpecialist = diseaseSpecialist;
     }
 
-    public getLatitude(): number {
-        return this.latitude;
-    }
+    // public getLatitude(): number {
+    //     return this.latitude;
+    // }
 
-    public setLatitude(latitude: number): void {
-        this.latitude = latitude;
-    }
+    // public setLatitude(latitude: number): void {
+    //     this.latitude = latitude;
+    // }
 
-    public getLongitude(): number {
-        return this.longitude;
-    }
+    // public getLongitude(): number {
+    //     return this.longitude;
+    // }
 
-    public setLongitude(longitude: number): void {
-        this.longitude = longitude;
-    }
+    // public setLongitude(longitude: number): void {
+    //     this.longitude = longitude;
+    // }
 
     
     public isKycSubmitted(): boolean {

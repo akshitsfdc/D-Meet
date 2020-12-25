@@ -17,6 +17,7 @@ export class HomeComponent implements OnInit {
     console.log(sessionService);
   }
 
+  
   ngOnInit(): void {
 
     this.authService.getUser().then(user =>{
@@ -26,17 +27,6 @@ export class HomeComponent implements OnInit {
       //error
     });
 
-  }
-
-  logout() {
-    this.authService.signOut()
-      .then(result => {
-        console.log(result)
-        this.router.navigate(['']);
-      })
-      .catch(error => console.log(error));
-
-      
   }
 
 
@@ -52,7 +42,6 @@ export class HomeComponent implements OnInit {
           let userdata:DoctorUserData = new DoctorUserData();
           Object.assign(userdata, userData); 
           session.setUserData(userdata);
-          console.log("testing user : >> ",JSON.stringify(session.getUserData()));
        },
        error(msg){
         console.log("Obs error >> : "+msg);
@@ -70,7 +59,6 @@ export class HomeComponent implements OnInit {
           queues.push(queue);
         });
         session.setQueues(queues);
-        console.log("Obs next >> : "+JSON.stringify(session.getQueues()));
      },
      error(msg){
       console.log("Obs error >> : "+msg);

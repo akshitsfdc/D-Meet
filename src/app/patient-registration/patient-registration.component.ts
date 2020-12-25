@@ -121,7 +121,7 @@ export class PatientRegistrationComponent implements OnInit {
 
     let userdata:PatientUserData = this.getFilledUserdata(userId);
 
-    this.firestore.save('user-data', userId, Object.assign({}, userdata))
+    this.firestore.save('user-data-patient', userId, Object.assign({}, userdata))
      .then(
        () => {
           console.log("Data Saved!");

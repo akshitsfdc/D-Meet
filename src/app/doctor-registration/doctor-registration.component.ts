@@ -1,3 +1,4 @@
+import { GeoService } from './../services/geo.service';
 import { FirestoreService } from './../services/firestore.service';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -49,7 +50,7 @@ export class DoctorRegistrationComponent implements OnInit {
 
   private loadingIndicator : MatDialogRef<any>;
 
-  constructor(private firebaseAuth: AuthService, private firestore: FirestoreService,  private matDialog: MatDialog, private router: Router) { 
+  constructor(private firebaseAuth: AuthService, private firestore: FirestoreService,  private matDialog: MatDialog, private router: Router, private geoService:GeoService) { 
 
   }
 
@@ -437,7 +438,10 @@ export class DoctorRegistrationComponent implements OnInit {
 
     let userdata:DoctorUserData = this.getFilledUserdata(userId);
 
-    this.firestore.save('user-data', userId, Object.assign({}, userdata))
+    this.geoService.setGeoCollection('user-data');
+
+    this.geoService.saveInGeoCollection(userId, Object.assign({}, userdata))
+    // this.firestore.save('user-data', userId, Object.assign({}, userdata))
      .then(
        () => {
           console.log("Data Saved!");
@@ -446,9 +450,8 @@ export class DoctorRegistrationComponent implements OnInit {
           
        } 
      ).catch(error =>  {
-      console.log(error);
+      console.log("Error >>> "+error);
       this.hideLoading();
-      //error
      }     
     );
     
@@ -470,8 +473,8 @@ export class DoctorRegistrationComponent implements OnInit {
     userData.setSpeciality((this.speciality.value as string).trim());
     userData.setAbout((this.about.value as string).trim());
     userData.setClinicName((this.clinicName.value as string).trim());
-    userData.setLatitude(this.selectedLat);
-    userData.setLongitude(this.selectedLong);
+    // userData.setLatitude(this.selectedLat);
+    // userData.setLongitude(this.selectedLong);
     userData.setNearbyAddress(this.selectedAddress);
     userData.setCountry((this.country.value as string).trim());
     userData.setFullClinicAddress((this.fullAddress.value as string).trim());
@@ -481,8 +484,9 @@ export class DoctorRegistrationComponent implements OnInit {
     userData.setRegistrationLocalTimeStapm((+ new Date()) || 1000);
     userData.setDiseaseSpecialist([]);//to be completed in profile
     userData.setKycSubmitted(false);
-    
+    // userData.set
     userData.setPicUrl('');
+    userData.setCoordinates(this.geoService.getGeopoints(this.selectedLat,this.selectedLong));
 
     return userData;
   }
@@ -506,9 +510,6 @@ export class DoctorRegistrationComponent implements OnInit {
     this.selectedLong = long;
 
     this.selectedAddress = address.formatted_address;
-
-    console.log("lat : "+this.selectedAddress);
-    console.log("long : "+long);
 
   }
 }

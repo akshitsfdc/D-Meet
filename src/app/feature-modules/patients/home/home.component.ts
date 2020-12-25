@@ -1,4 +1,6 @@
+import { SearchService } from './../service/search.service';
 import { Component, OnInit } from '@angular/core';
+import { FirestoreService } from 'src/app/services/firestore.service';
 
 @Component({
   selector: 'app-home',
@@ -7,9 +9,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  constructor(private searchService:SearchService) { 
+    
+  }
 
   ngOnInit(): void {
+    this.loadDoctorData();
+  }
+
+  private loadDoctorData():void{
+
+    this.searchService.loadDoctors();
+    
   }
 
 }

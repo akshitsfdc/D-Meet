@@ -1,0 +1,74 @@
+<div class="parent" fxLayout="column" fxLayoutGap="15px">
+    <mat-label class="header-label">Scheduled meetings</mat-label> 
+    <div class="scheduled-meetings-container" fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutGap="20px"> 
+        <mat-card class="scheduled-meetings-card">
+
+            <mat-card-header>
+                <img mat-card-avatar src="https://material.angular.io/assets/img/examples/shiba1.jpg">
+                <mat-card-title> <mat-label class="header-label">Dr. Aviraj Rajput</mat-label></mat-card-title>
+                <mat-card-subtitle >Online</mat-card-subtitle>    
+            </mat-card-header>
+            <mat-card-content class="scheduled-meetings-card-content" fxLayout="column"  fxLayoutGap="20px">
+
+                <div class="timer-box" fxLayout="column" fxFlexOffset="10px" fxFlexAlign=" center" fxLayoutAlign="center center">
+                    <mat-label class="small-label">Time Left</mat-label>
+                    <mat-label class="header-label big-label" fxFlexOffset="2px">1h:2m:10s</mat-label>
+                </div>
+
+                <mat-accordion>
+                    <mat-expansion-panel >
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          Booking Information
+                        </mat-panel-title>
+                        <mat-panel-description>
+                          <span fxFlex="1 1 auto"></span><mat-icon>info</mat-icon>
+                        </mat-panel-description>
+                      </mat-expansion-panel-header>
+                      <div fxLayout="column" fxLayoutGap="10px">
+
+                        
+                        <div fxLayout="row" fxLayoutGap="30px">
+                          <mat-label>Current Patient</mat-label>
+                          <span fxFlex="1 1 auto"></span>
+                          <mat-label>123</mat-label>
+                        </div>
+                        <div fxLayout="row" fxLayoutGap="30px">
+                            <mat-label>My Number</mat-label>
+                            <span fxFlex="1 1 auto"></span>
+                            <mat-label>152</mat-label>
+                          </div>
+                        <div fxLayout="row" fxLayoutGap="30px">
+                            <mat-label>Expected Time</mat-label>
+                            <span fxFlex="1 1 auto"></span>
+                            <mat-label>11:25 PM</mat-label>
+                        </div>
+                        
+                        
+                      </div>         
+                    </mat-expansion-panel>
+                  </mat-accordion>
+
+                  <mat-accordion>
+                    <mat-expansion-panel >
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          More Option
+                        </mat-panel-title>
+                        <mat-panel-description>
+                          <span fxFlex="1 1 auto"></span><mat-icon>settings</mat-icon>
+                        </mat-panel-description>
+                      </mat-expansion-panel-header>
+                      <div fxLayout="column">
+                        <button  mat-raised-button class="lighter-button" >Meet later</button>                       
+                        <button  mat-flat-button class="alert-button setting-buttons" fxFlexOffset="10px">Cancel meeting</button>
+                                         
+                      </div>     
+                          
+                    </mat-expansion-panel>
+                  </mat-accordion>   
+
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

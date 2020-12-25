@@ -1,0 +1,122 @@
+@import 'src/scss/vars';
+
+ .sidenav-container {
+  height: 100%;
+}
+
+.sidenav {
+
+}
+
+.sidenav .mat-toolbar {
+  background: inherit;
+  position: relative;
+}
+mat-sidenav-content{
+  /* height: 100%;
+  overflow: hidden; */
+}
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.header-toolbar{
+  background-color: white;
+}
+#sidenavInner{
+  height: 100%;
+}
+#bottomCloser{
+  width: 100%;
+}
+#meetupImage{
+  max-height: 54px;
+  max-width: 200px;  
+  z-index: 10px;
+  margin-right: 25px;
+  
+}
+#meetupImageSmall{
+  max-height: 50px;
+  max-width: 50px;  
+  z-index: 10px;
+}
+#profileIcon{
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+}
+#profileIndicatorCard{
+  height: fit-content;
+  width: fit-content;
+  border-radius: 20px;
+  padding: 5px;
+  background-color: #e7f3ff;
+  cursor: pointer;
+}
+.profile-indicator-title{
+  margin-right: 12px;
+  font-size: 16px;
+  color: #0078ff;
+  font-family: "roboto-bold";
+}
+.list-item-div{
+  height: 100%;
+  width: 100%;
+}
+.header-toolbar-row1{
+  width: 100%;
+}
+.notification-icon{
+  color: #476282;  
+  cursor: pointer;
+}
+
+.search-button{
+ width: 100px;
+ height: 100%;
+ border-radius: 0px;
+  // padding-left: 6px;
+  background-color: $grey-lighter;
+  border:1px solid $grey-lighter;
+  cursor: pointer;
+}
+.search-label{
+  font-size: 15px;
+}
+.search-card{
+  height: fit-content;
+  margin-right: 15px;
+  padding: 5px 10px 5px 10px;
+}
+.search-container{
+  border:1px solid $grey-lighter;
+  border-radius: 5px;
+}
+.search-input-wrapper{
+  height: 100%;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.search-input{
+  height: 100%;
+  width: 100%;
+  outline: none !important;
+  border-width: 0px;
+  // border-color: $grey-lighter;
+}
+.search-input:focus {
+  outline: none !important;
+  // border:1px solid $primary;
+  // box-shadow: 0 0 10px #719ECE;
+}
+
+.search-icon{
+  height: fit-content;
+  width: fit-content;
+ }
+
+ .content-div{
+   overflow: hidden;
+ }

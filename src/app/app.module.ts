@@ -24,6 +24,7 @@ import { MessageDialogComponent } from './message-dialog/message-dialog.componen
 import { AuthActionComponent } from './auth-action/auth-action.component';
 import { CreateAccountBottomSheetComponent } from './create-account-bottom-sheet/create-account-bottom-sheet.component';
 import { PatientRegistrationComponent } from './patient-registration/patient-registration.component'; 
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -55,6 +56,7 @@ import { PatientRegistrationComponent } from './patient-registration/patient-reg
     }),
     AngularFireModule.initializeApp(environment.firebase),
     MaterialModule,
+    HttpClientModule
   ],
   providers: [
     AuthService,

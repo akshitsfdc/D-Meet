@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { start } from 'repl';
+import { QueueModel } from '../models/queue-model';
 
 @Injectable({
   providedIn: 'root'
@@ -103,5 +104,60 @@ export class UtilsService {
   }
   private getMillisFromDate(date:Date):number{
     return ( ((+date.getHours()) * 60 * 60)  + ((+date.getMinutes()) * 60)) *1000;
+  }
+
+
+
+
+  //
+  public changeQueueStatus(queues:QueueModel[]):void{
+
+    queues.forEach(queue => {
+        if(this.isWithinTimeFrame(queue.getBookingStarting(), queue.getBookingEnding(), 'ist')){
+          queue.setStatus('booking');
+        }
+        if(this.isWithinTimeFrame(queue.getConsultingStarting(), queue.getConsultingEnding(), 'ist')){
+          queue.setStatus('live');
+        }
+  
+        if(this.getTriggerTime(queue.getBookingStarting(), 'ist') !== -1){
+          setTimeout(() => {
+            this.updateQueue(queue);
+          }, this.getTriggerTime(queue.getBookingStarting(), 'ist'));
+        }
+
+        if(this.getTriggerTime(queue.getBookingEnding(), 'ist') !== -1){
+          setTimeout(() => {
+            this.updateQueue(queue);
+          }, this.getTriggerTime(queue.getBookingEnding(), 'ist'));
+        }
+        if(this.getTriggerTime(queue.getConsultingStarting(), 'ist') !== -1){
+          setTimeout(() => {
+            this.updateQueue(queue);
+          }, this.getTriggerTime(queue.getConsultingStarting(), 'ist'));
+        }
+        if(this.getTriggerTime(queue.getConsultingEnding(), 'ist') !== -1){
+          setTimeout(() => {
+            this.updateQueue(queue, true);
+          }, this.getTriggerTime(queue.getConsultingEnding(), 'ist'));
+        }
+    });
+  }
+
+  private updateQueue(queue:QueueModel, end?:boolean){
+
+    console.log('updateQueue >> ');
+
+    if(end){
+      queue.setStatus('scheduled');
+      return;
+    }
+    if(this.isWithinTimeFrame(queue.getBookingStarting(), queue.getBookingEnding(), 'ist')){
+      queue.setStatus('booking');
+    }
+    if(this.isWithinTimeFrame(queue.getConsultingStarting(), queue.getConsultingEnding(), 'ist')){
+      queue.setStatus('live');
+    }
+
   }
 }

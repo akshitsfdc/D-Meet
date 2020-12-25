@@ -290,7 +290,7 @@ ngOnInit():void{
 
       queue.setType(this.type.value);
       queue.setPaymentOption(this.paymentOption.value);
-      queue.setStatus("Scheduled");
+      queue.setStatus("scheduled");
       queue.setQueueId(this.getTimestamp());
       queue.setPatientLimit(this.numberOfPatients.value);
       queue.setTimePerPatient(this.aTimePerPatient.value);

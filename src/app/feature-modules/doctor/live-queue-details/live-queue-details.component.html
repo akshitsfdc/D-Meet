@@ -2,6 +2,7 @@
     
     <div fxLayout="column" fxFlex="1 1 auto" fxLayoutGap="25px">
         
+     
         <div fxLayout="column" >
            
               <mat-card class="processing-card" [class.mat-elevation-z8]="true">
@@ -37,7 +38,7 @@
                                     <mat-card-title> <mat-label class="header-label">{{currentPaient.name}}</mat-label></mat-card-title>
                                     <!-- <mat-card-title> {{currentPaient.name}}></mat-card-title> -->       
                                                              
-                                    <mat-card-subtitle >{{currentPaient.status}}</mat-card-subtitle>                                
+                                    <mat-card-subtitle >{{currentPaient.getStatus()}}</mat-card-subtitle>                                
                                 </mat-card-header>
     
                                   <mat-card-content fxLayout="column" fxLayoutGap="15px">
@@ -186,7 +187,7 @@
             <mat-label>#50</mat-label>
           </mat-toolbar>
           
-          <div #bookingList class="temp">
+          <div #bookingList class="booking-list-wrapper">
             <div  cdkDropList  class="patient-list fancy-scrollbar" (cdkDropListDropped)="drop($event)">
                 <div class="patient-list-box" *ngFor="let movie of movies" cdkDrag>{{movie}}</div>
               </div>
@@ -196,136 +197,3 @@
    
      
 </div>
-
-
-
-
-<!-- <div class="container-parent">
-
-
-    <div class="parent">
-        <mat-form-field appearance="fill" fxFlex="1 1 auto">
-            <mat-label>Change Status</mat-label>
-            <mat-select [(value)]="selectedStatus" (selectionChange)="statusChanged()">
-                <mat-option value="live">Live</mat-option>
-                <mat-option value="away1">Away for 1 minute</mat-option>
-                <mat-option value="away2">Away for 2 minutes</mat-option>
-                <mat-option value="away5">Away for 5 minutes</mat-option>
-                <mat-option value="away10">Away for 10 minutes</mat-option>
-                <mat-option value="away15">Away for 15 minutes</mat-option>
-                <mat-option value="away20">Away for 20 minutes</mat-option>
-                <mat-option value="away30">Away for 30 minutes</mat-option>
-                <mat-option value="away60">Away for 60 minutes</mat-option>
-                <mat-option value="offline">Offline</mat-option>
-            </mat-select>
-        </mat-form-field>
-
-
-       
-        <mat-card class="current-patient-card">
-            <mat-card-content fxLayout="row wrap">
-                <mat-card-header *ngIf="consultStarted" fxFlex="1 1 auto" fxFlexAlign="center">
-                    <div mat-card-avatar class="example-header-image"></div>
-                    <mat-card-title>{{currentPaient.name}}</mat-card-title>
-                    <mat-card-subtitle>{{currentPaient.from}}</mat-card-subtitle>
-                    
-                </mat-card-header>
-                <div *ngIf="!consultStarted" class="waiting-indicator-container" fxFlex="1 1 100%" fxLayout="row" fxLayoutAlign="center center">
-                    <label >47m : 14 sec</label>
-                </div>
-                <button mat-flat-button *ngIf="consultStarted" class="process-button" fxFlexAlign="center" (click)="goPatientMeet()">Process</button>
-            </mat-card-content>
-
-            <mat-card-footer *ngIf="consultStarted" fxLayout="row" fxLayoutGap="10px" >
-                <button mat-flat-button class="consult-later-button" fxFlex="1 1 auto" (click)="movePatient()">Consult Later</button>
-                <button mat-flat-button class="next-patient-button" fxFlex="1 1 auto" [disabled]="disableNext" (click)="nextPatient()" >Next Patient</button>
-            </mat-card-footer>
-            
-        </mat-card>
-
-        <!-- <mat-toolbar id="optionToolbar"> -->
-        <!-- <mat-card id="infoCard">
-            <mat-card-content >
-
-
-                <div fxLayout="column" fxLayoutAlign="center center" fxFlex="1 1 auto">
-
-                    <div class="kk" fxLayout="column" fxFlex="1 1 auto">
-                        <label class="status-toolbar-header-label" fxFlexAlign="center start">Bookings</label>
-                    </div>
-                    <div class="jj" fxLayout="column" fxFlex="1 1 auto" fxFlexOffset="10px">
-                        <label class="status-toolbar-header-value" fxFlexAlign="center start"  >{{this.totalPatientSize}}</label>
-                    </div>
-                </div>
-                <mat-divider vertical class="devider"></mat-divider>
-                <div fxLayout="column" fxLayoutAlign="center center" fxFlex="1 1 auto">
-                    <div class="kk" fxLayout="column" fxFlex="1 1 auto">
-                        <label class="status-toolbar-header-label" fxFlexAlign="center start">Processed</label>
-                    </div>
-                    <div class="jj" fxLayout="column" fxFlex="1 1 auto" fxFlexOffset="10px">
-                        <label class="status-toolbar-header-value" fxFlexAlign="center start">{{this.processedPatients.length}}</label>
-                    </div>
-                </div>
-                <mat-divider vertical class="devider"></mat-divider>
-                <div fxLayout="column" fxLayoutAlign="center center" fxFlex="1 1 auto">
-                    <div class="kk" fxLayout="column" fxFlex="1 1 auto">
-                        <label class="status-toolbar-header-label" fxFlexAlign="center start">Your Status</label>
-                    </div>
-                    <div class="jj" fxLayout="column" fxFlex="1 1 auto">
-                        <label class="status-toolbar-header-value" fxFlexAlign="center start">{{selectStatusDisplay}}</label>
-                    </div>
-
-                </div>
-                <mat-divider vertical class="devider"></mat-divider>
-                <div fxLayout="column" fxLayoutAlign="center center" fxFlex="1 1 auto">
-                    <div class="kk" fxLayout="column" fxFlex="1 1 auto">
-                        <label class="status-toolbar-header-label" fxFlexAlign="center start">Next</label>
-                    </div>
-                    <div class="jj" fxLayout="column" fxFlex="1 1 auto">
-                        <label *ngIf="tempPatients.length>0"class="status-toolbar-header-value" fxFlexAlign="center start">{{tempPatients[0].bookingId}}</label>
-                        <label *ngIf="tempPatients.length==0" class="status-toolbar-header-value" fxFlexAlign="center start">__</label>
-                    </div>
-                </div>
-            </mat-card-content>
-        </mat-card>
-
-        <mat-list role="list" fxLayout="row wrap" fxLayoutAlign="center" class="patient-list">
-            <mat-list-item *ngFor="let patient of tempPatients" class="list">
-                <mat-card class="patient-item-class">
-                    <mat-card-header>
-                        <div mat-card-avatar class="example-header-image"></div>
-                        <mat-card-title>{{patient.name}}</mat-card-title>
-                        <mat-card-subtitle>{{patient.from}}</mat-card-subtitle>
-                        <div class="live-number-container">
-                            <label class="patient-number">{{patient.queuePlace}}</label>
-                        </div>
-
-                    </mat-card-header>
-
-                    <mat-card-content fxLayout="column">
-                        <div fxLayout="row">
-                            <label class="patient-label">Condition</label>
-                            <label class="patient-value">{{patient.condition}}</label>
-                        </div>
-                        <div fxLayout="row">
-                            <label class="patient-label">Status</label>
-                            <label class="patient-value">{{patient.status}}</label>
-                        </div>
-                        <div fxLayout="row">
-                            <label class="patient-label">Booking Id</label>
-                            <label class="patient-value">{{patient.bookingId}}</label>
-                        </div>
-                        <div fxLayout="row">
-                            <label class="patient-label">Joining In</label>
-                            <label class="patient-value">{{patient.waitingTime}}</label>
-                        </div>
-                    </mat-card-content>
-                </mat-card>
-            </mat-list-item>
-        </mat-list> -->
-
-    <!-- </div>  -->
-    <!-- <mat-card class="patient-details-card">
-
-    </mat-card> -->
-<!-- </div> -->

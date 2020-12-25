@@ -23,12 +23,21 @@ export class DoctorUserData {
     private kycSubmitted:boolean;
     private latitude:number;
     private longitude:number;
+    private geoPoints:firebase.firestore.GeoPoint;
     private diseaseSpecialist:string[]=[];
 
 
 
     constructor(){}
 
+
+    public getGeoPoints(): firebase.firestore.GeoPoint {
+        return this.geoPoints;
+    }
+
+    public setGeoPoints(geoPoints: firebase.firestore.GeoPoint): void {
+        this.geoPoints = geoPoints;
+    }
 
     
     public getDiseaseSpecialist(): string[] {

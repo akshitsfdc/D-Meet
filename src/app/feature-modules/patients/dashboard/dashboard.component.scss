@@ -1,0 +1,77 @@
+@import 'src/scss/vars';
+
+.scheduled-meetings-container{
+    width: 100%;
+}
+.scheduled-meetings-card{
+    width: fit-content;
+} 
+.scheduled-meetings-card-content{
+    width: 100%;
+}
+#profilePictureImage{
+    height: 225px;
+    width: 200px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.facility-map{
+    height: 225px;
+   
+    border-radius: 10PX;
+    /* margin-left: 25px; */
+}
+.queues-container{
+    width: 100%;
+}
+
+.live-label{
+    color: $textPrimary;
+}
+.live-label{
+color: #ffffff;
+}
+
+.status-card{
+padding: 5px 10px 5px 10px;
+}
+.status-card-live{
+
+background-color: $warn;
+}
+.status-card-booking{
+background-color: $alert;
+}
+.status-card-scheduled{
+background-color: $grey-lighter;
+}
+.queue-card{
+    height: fit-content;
+}
+.book-image-icon{
+    color: white;
+}
+.parent{
+    overflow: auto;
+}
+.varified-icon{
+    color: $accent;
+}
+.not-varified-icon{
+
+}
+.queue-loading-container{
+    height: 200px;
+    width: 100%;
+    
+
+}
+.loading-indicator-label{
+    font-size: smaller;
+    
+}
+.no-queue{
+    font-size: 50px;
+    height: fit-content;
+    width: fit-content;
+}

@@ -1,6 +1,9 @@
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentData, DocumentSnapshot } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentData, QuerySnapshot} from '@angular/fire/firestore';
+
+import * as firebase from 'firebase';
+
 
 @Injectable({
   providedIn: 'root'
@@ -9,13 +12,17 @@ export class FirestoreService {
 
   constructor(
     private firestore: AngularFirestore
-  ) { }
+  ) { 
+  }
 
   save(collection:string, document:string, data:any):Promise<void>{
 
     return this.firestore.collection(collection).doc(document).set(data);
    
   }
+  getEqualsObs(collection:string, key:string, value:string):Observable<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>>{
+    return this.firestore.collection(collection, ref => ref.where(key, "==" , value)).get();    
+  } 
   getEquals(collection:string, key:string, value:string):Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>>{
     return this.firestore.collection(collection, ref => ref.where(key, "==" , value)).get().toPromise();    
   }
@@ -27,6 +34,7 @@ export class FirestoreService {
     return this.firestore.collection(collection).doc(document).get().toPromise();
    
   }
+  
   getObs(collection:string, document:string):Observable<firebase.firestore.DocumentSnapshot>{
 
     return this.firestore.collection(collection).doc(document).get();
@@ -47,5 +55,18 @@ export class FirestoreService {
   }
   delete(collection:string, document:string):Promise<void>{
     return this.firestore.collection(collection).doc(document).delete();
+  }
+
+  getAllStartAfter(collection:string, limit:number, document:DocumentData):Promise<QuerySnapshot<DocumentData>>{
+
+    return this.firestore.collection(collection,ref => ref.startAfter(document).limit(limit))
+    .get().toPromise();
+   
+  }
+  getAll(collection:string, limit:number):Promise<QuerySnapshot<DocumentData>>{
+
+    return this.firestore.collection(collection,ref => ref.limit(limit))
+    .get().toPromise();
+   
   }
 }
