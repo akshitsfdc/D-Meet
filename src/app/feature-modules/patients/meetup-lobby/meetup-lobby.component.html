@@ -70,6 +70,19 @@
                                    <mat-label class="small-label">{{currentDoctor.getSpeciality()}}</mat-label>
                                    <mat-label class="small-label position-indicator">www.doctormeetup.com/@{{currentDoctor.getProfileId()}}</mat-label>
                                    <mat-label class="small-label">Currently in a meeting with {{currentPaient.getName()}}</mat-label>
+                                   
+                                   
+                                    <div  class="timer-box footer-div" fxLayout="row" fxLayoutAlign="center center" fxFlexOffset="10px">
+                                  
+                                      <mat-label class="small-label">Consulting will start in </mat-label>
+                                      <mat-label class="header-label big-label" fxFlexOffset="5px">{{totalTimePassed}}</mat-label>
+  
+                                    </div>
+                                 
+                                    <!-- <button mat-raised-button   >                                      
+                                      Book Now</button> -->
+                                  
+                                      <mat-label class="small-label blu-lable" fxFlexOffset="10px" (click)=bookNow()>Book my appointment</mat-label>
                                 </mat-card-content>
                                 
                                
@@ -127,6 +140,7 @@
                           
                          <mat-progress-bar mode="buffer"></mat-progress-bar>
                         </div>
+                        
                           
                      </div> 
                     
@@ -144,6 +158,7 @@
               <mat-label class="small-label">Current patient</mat-label>
               <mat-label class="header-label " fxFlexOffset="10px">{{currentPaient.getBookingId()}}</mat-label>
             </div>
+           
             <div  class="timer-box" fxLayout="row" fxLayoutAlign="center center">
               <mat-label class="small-label">Next patient</mat-label>
               <mat-label class="header-label " fxFlexOffset="10px">{{currentPaient.getBookingId()}}</mat-label>
@@ -151,6 +166,119 @@
            
       </div>
     <mat-divider fxFlexOffset="20px"></mat-divider>
+
+    
+    
+    <ng-container >
+
+   
+    <mat-accordion fxFlexOffset="25px">
+      <mat-expansion-panel >
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Queue Information
+          </mat-panel-title>
+          <mat-panel-description>
+            <span fxFlex="1 1 auto"></span><mat-icon>book_online</mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+          <mat-card class="queue-card"  >
+                        
+            <mat-card-content fxLayout="column" fxLayoutGap="15px">
+                
+                <div fxLayout="row">
+                    <mat-label>Status</mat-label>
+                    <span fxFlex="1 1 auto"></span>
+                    <mat-card  [ngClass]="{'status-card': true, 'status-card-live': (currentQueue.getStatus()==='live'), 'status-card-booking': (currentQueue.getStatus()==='booking'),
+                    'status-card-scheduled': (currentQueue.getStatus()==='scheduled')}">
+                      <mat-card-content>
+                        <mat-label [ngClass]="{'live-label': (currentQueue.getStatus() !=='scheduled')}">{{currentQueue.getStatus()==='live'?utils.capitalize(currentQueue.getStatus()):utils.initCap(currentQueue.getStatus())}}</mat-label>
+                      </mat-card-content>                      
+                    </mat-card>
+                  
+                </div>
+                <div fxLayout="row" fxLayoutGap="30px">
+                  <mat-label>Fees</mat-label>
+                  <span fxFlex="1 1 auto"></span>
+                  <mat-label >{{currentQueue.getFees()}}</mat-label>
+              </div>
+              <div fxLayout="row" fxLayoutGap="30px">
+                  <mat-label>Limit</mat-label>
+                  <span fxFlex="1 1 auto"></span>
+                  <mat-label>{{currentQueue.getPatientLimit()}}</mat-label>
+              </div>
+              <div fxLayout="row" fxLayoutGap="30px">
+                <mat-label>Type</mat-label>
+                <span fxFlex="1 1 auto"></span>
+                <mat-label>{{utils.initCap(currentQueue.getType()||'Unavailable')}}</mat-label>
+              </div>
+              <div fxLayout="row" fxLayoutGap="30px">
+                <mat-label>Payment Option</mat-label>
+                <span fxFlex="1 1 auto"></span>
+                <mat-label>{{utils.initCap(currentQueue.getPaymentOption() || 'Unavailable')}}</mat-label>
+              </div>
+                
+                <mat-accordion>
+                  <mat-expansion-panel >
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Timings
+                      </mat-panel-title>
+                      <mat-panel-description>
+                        <span fxFlex="1 1 auto"></span><mat-icon>access_time</mat-icon>
+                      </mat-panel-description>
+                    </mat-expansion-panel-header>
+                  <div fxLayout="column" fxLayoutGap="10px">
+                    <div fxLayout="row" fxLayoutGap="30px">
+                      <mat-label>Booking Start</mat-label>
+                      <span fxFlex="1 1 auto"></span>
+                      <mat-label>{{utils.millisToTimeString(currentQueue.getBookingStarting())}}</mat-label>
+                  </div>
+                  <div fxLayout="row" fxLayoutGap="30px">
+                      <mat-label>Booking End</mat-label>
+                      <span fxFlex="1 1 auto"></span>
+                      <mat-label>{{utils.millisToTimeString(currentQueue.getBookingEnding())}}</mat-label>
+                  </div>
+                  <div fxLayout="row" fxLayoutGap="30px">
+                      <mat-label>Consulting Start</mat-label>
+                      <span fxFlex="1 1 auto"></span>
+                      <mat-label>{{utils.millisToTimeString(currentQueue.getConsultingStarting())}}</mat-label>
+                  </div>
+                  <div fxLayout="row" fxLayoutGap="30px">
+                      <mat-label>Consulting End</mat-label>
+                      <span fxFlex="1 1 auto"></span>
+                      <mat-label>{{utils.millisToTimeString(currentQueue.getConsultingEnding())}}</mat-label>
+                  </div>
+                  </div>
+                  </mat-expansion-panel>
+                </mat-accordion>
+                <mat-accordion>
+                    <mat-expansion-panel >
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          Off Days
+                        </mat-panel-title>
+                        <mat-panel-description>
+                          <span fxFlex="1 1 auto"></span><mat-icon>event_busy</mat-icon>
+                        </mat-panel-description>
+                      </mat-expansion-panel-header>
+                    <div fxLayout="column">
+                        <mat-chip-list class="holiday-chips"  aria-label="holidays">
+                          <mat-chip *ngFor="let day of currentQueue.getHolidayList()">
+                            {{day}}
+                            </mat-chip>
+                          </mat-chip-list>
+                    </div>
+                    </mat-expansion-panel>
+                  </mat-accordion>
+                  
+            </mat-card-content>
+
+          </mat-card>
+  </mat-expansion-panel >
+   
+    </mat-accordion>
+    </ng-container>
 
     <ng-container *ngIf="!bookingavailable">
     <div class="timing-container" fxLayout="row wrap" fxFlexOffset="20px"  fxLayoutAlign="space-between center">
@@ -212,9 +340,10 @@
 </div>
 
  
-        <span fxFlex="1 1 15px"></span>
+        
 
       </ng-container>
+      <span fxFlex="1 1 15px"></span>
     </div>
     
     <div fxLayout="column" fxFlex="1 1 auto" >

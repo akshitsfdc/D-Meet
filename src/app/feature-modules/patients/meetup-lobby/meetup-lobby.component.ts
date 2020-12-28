@@ -1,3 +1,4 @@
+import { CheckoutService } from './../service/checkout.service';
 import { DoctorUserData } from './../../../models/doctor-user-data';
 import { HttpService } from './../../../services/http.service';
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
@@ -9,6 +10,7 @@ import { MovePatientComponent } from '../../doctor/move-patient/move-patient.com
 import { QueueModel } from 'src/app/models/queue-model';
 import { SessionService } from '../service/session.service';
 
+declare var Razorpay: any; 
 @Component({
   selector: 'app-meetup-lobby',
   templateUrl: './meetup-lobby.component.html',
@@ -23,7 +25,7 @@ export class MeetupLobbyComponent implements OnInit {
   selectStatusDisplay = "Live";
 
   bookingavailable:boolean = true;
-  
+
   disableNext = false;
 
   tempPatients = []; 
@@ -83,7 +85,8 @@ export class MeetupLobbyComponent implements OnInit {
     'Episode IV - A New Hope',
   ];
   constructor(private matDialog: MatDialog,
-     public util:UtilsService, private httpService:HttpService, private session:SessionService) {
+     public util:UtilsService, private httpService:HttpService, private session:SessionService, public utils:UtilsService,
+     private checkoutService:CheckoutService) {
 
    
   }
@@ -303,6 +306,60 @@ export class MeetupLobbyComponent implements OnInit {
         
         ]
    }
+}
+
+bookNow():void{
+
+  let checkoutobject:any = this.checkoutService.getPaymentOptionObject();
+  checkoutobject.amount = "5000";
+  checkoutobject.currency = "INR";
+  checkoutobject.name = "Doctor Meetup";
+  checkoutobject.prefill.name = "Akshit Test";
+  checkoutobject.prefill.email = "aksh.rajput2@gmail.com";
+  checkoutobject.prefill.contact = "+918888985133";
+
+  checkoutobject['handler'] =  (response)=>{
+    this.processPaymentSuccess(response)
+  };
+  this.getOrderId().then(data => {
+    if(data && data.status === "success"){
+      let order:any = data.order;
+      checkoutobject.order_id = order.id;
+
+      this.checkout(checkoutobject);
+    }else{
+      console.log("Got error resonse !");
+    }
+  })
+  .catch(error =>{
+    //error
+    console.log("error : "+error)
+
+  });
+
+  
+}
+
+private  getOrderId(){
+  return  this.checkoutService.createOrderId("5000", "INR")
+}
+
+private checkout(options):void{
+
+  let rzp1 = new Razorpay(options);
+
+  rzp1.on('payment.failed', (response) => {
+    this.processPaymentError(response);
+  });
+
+  
+}
+
+private processPaymentSuccess(response){
+  console.log("payment successful : "+JSON.stringify(response));
+}
+private processPaymentError(response){
+  console.log("payment Failed : "+JSON.stringify(response));
 }
 
 }

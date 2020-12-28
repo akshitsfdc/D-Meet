@@ -5,6 +5,7 @@
 
 .parent{
     padding: 15px 15px 0px 15px;
+    overflow: auto;
 }
 
 //drag and drop start
@@ -191,6 +192,41 @@
  mat-card-footer{
    width: 100%;
  }
+ .footer-div{
+   width: 100%;
+
+ }
+.blu-lable{
+  cursor: pointer;
+  color: $primary;
+  align-self: center;
+  text-decoration: underline;
+}
+.blu-lable:hover{
+  z-index: 10px;
+}
+
+.live-label{
+  color: #ffffff;
+  }
+  
+  .status-card{
+  padding: 5px 10px 5px 10px;
+  }
+  .status-card-live{
+  
+  background-color: $warn;
+  }
+  .status-card-booking{
+  background-color: $alert;
+  }
+  .status-card-scheduled{
+  background-color: $grey-lighter;
+  }
+  .queue-card{
+      height: fit-content;
+  }
+ 
 
 // .temp{
 //     width: 0;
