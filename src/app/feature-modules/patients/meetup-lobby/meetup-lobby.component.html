@@ -4,19 +4,6 @@
         
      
         <div fxLayout="column" >
-           
-            <!-- <ng-container *ngIf="bookingavailable">
-              <div class="booking-available-div" fxLayout="column" fxLayoutAlign=" center">
-                <div  class="timer-box" fxLayout="column" fxLayoutAlign="center center">
-                                  
-                  <mat-label class="small-label">Bookings will stop in </mat-label>
-                  <mat-label class="header-label big-label" fxFlexOffset="5px">{{totalTimePassed}}</mat-label>
-                </div>
-              </div>
-            </ng-container>
-              
-            <ng-container *ngIf="!bookingavailable"> -->
-
             
               <mat-card class="processing-card" [class.mat-elevation-z8]="true">
                   <mat-card-content  fxLayout="column" class="processing-card-content" >
@@ -56,11 +43,7 @@
                             <mat-card class="processing-patient-card doctor-card"  [class.mat-elevation-z2]="true">
                                 <mat-card-header *ngIf="consultStarted" >
                                     <img mat-card-avatar src="https://www.motakhasis.com/en/wp-content/uploads/2020/02/Doctor-DOC-UK.png">
-                                    <mat-card-title> <mat-label class="header-label">Dr. {{currentDoctor.getFirstName()+' '+currentDoctor.getLastName() }}</mat-label></mat-card-title>
-                                    <!-- <mat-card-title> {{currentPaient.name}}></mat-card-title> -->       
-                                                             
-                                    <mat-card-subtitle >{{currentPaient.getStatus()}}</mat-card-subtitle>            
-                                    
+                                    <mat-card-title> <mat-label class="header-label">Dr. {{currentDoctor.getFirstName()+' '+currentDoctor.getLastName() }}</mat-label></mat-card-title>                                                                       
                                     <span fxFlex="1 1 auto"></span>
                                    <mat-icon>medical_services</mat-icon>
                                 </mat-card-header>
@@ -69,20 +52,26 @@
                                    <mat-label class="small-label">{{currentDoctor.getDegree()}}</mat-label>
                                    <mat-label class="small-label">{{currentDoctor.getSpeciality()}}</mat-label>
                                    <mat-label class="small-label position-indicator">www.doctormeetup.com/@{{currentDoctor.getProfileId()}}</mat-label>
-                                   <mat-label class="small-label">Currently in a meeting with {{currentPaient.getName()}}</mat-label>
+                                   <ng-container *ngIf="currentQueue.getCurrentPatient()">
+                                      <mat-label  class="small-label">Currently in a meeting with {{currentQueue.getCurrentPatient().getName()}}</mat-label>
+                                   </ng-container>
                                    
                                    
+                                   <ng-container *ngIf="!currentQueue.isConsultingStarted()">
                                     <div  class="timer-box footer-div" fxLayout="row" fxLayoutAlign="center center" fxFlexOffset="10px">
                                   
                                       <mat-label class="small-label">Consulting will start in </mat-label>
                                       <mat-label class="header-label big-label" fxFlexOffset="5px">{{totalTimePassed}}</mat-label>
   
                                     </div>
+                                   </ng-container>
+                                   
                                  
                                     <!-- <button mat-raised-button   >                                      
                                       Book Now</button> -->
-                                  
-                                      <mat-label class="small-label blu-lable" fxFlexOffset="10px" (click)=bookNow()>Book my appointment</mat-label>
+                                    <ng-container >
+                                      <mat-label  class="small-label blu-lable" fxFlexOffset="15px" (click)=openBookingDialog()>Book my appointment</mat-label>
+                                    </ng-container>
                                 </mat-card-content>
                                 
                                
@@ -104,12 +93,11 @@
                                 
                               </div>
                               
-                              <mat-card class="processing-patient-card"  [class.mat-elevation-z2]="true">
+                              <mat-card *ngIf="currentQueue.getCurrentPatient()" class="processing-patient-card"  [class.mat-elevation-z2]="true">
                                 <mat-card-header *ngIf="consultStarted" >
                                     <img mat-card-avatar src="https://material.angular.io/assets/img/examples/shiba1.jpg">
-                                    <mat-card-title> <mat-label class="header-label">{{currentPaient.getName()}}</mat-label></mat-card-title>
-                                    <!-- <mat-card-title> {{currentPaient.name}}></mat-card-title> -->                                                                    
-                                    <mat-card-subtitle >{{currentPaient.getStatus()}}</mat-card-subtitle>       
+                                    <mat-card-title> <mat-label class="header-label">{{currentQueue.getCurrentPatient().getName()}}</mat-label></mat-card-title>                                                                                                
+                                    <mat-card-subtitle >{{currentQueue.getCurrentPatient().getStatus()}}</mat-card-subtitle>       
                                     <span fxFlex="1 1 auto"></span>
                                     <mat-icon>single_bed</mat-icon>                         
                                 </mat-card-header>
@@ -118,7 +106,7 @@
                                     <div fxLayout="row" fxLayoutGap="30px">
                                       <mat-label class="small-label">Booking Time</mat-label>
                                       <span fxFlex="1 1 auto"></span>
-                                      <mat-label class="small-label">booking time</mat-label>
+                                      <mat-label class="small-label">{{currentQueue.getCurrentPatient().getBookingTime()}}</mat-label>
                                   </div>
                                   <div fxLayout="row" fxLayoutGap="30px">
                                       <mat-label class="small-label">Booking Id</mat-label>
@@ -156,12 +144,12 @@
           <!-- <span></span> -->
           <div  class="timer-box" fxLayout="row" fxLayoutAlign="center center">
               <mat-label class="small-label">Current patient</mat-label>
-              <mat-label class="header-label " fxFlexOffset="10px">{{currentPaient.getBookingId()}}</mat-label>
+              <mat-label class="header-label " fxFlexOffset="10px">{{currentQueue.getCurrentPatient()?currentQueue.getCurrentPatient().getBookingId():'__'}}</mat-label>
             </div>
            
             <div  class="timer-box" fxLayout="row" fxLayoutAlign="center center">
               <mat-label class="small-label">Next patient</mat-label>
-              <mat-label class="header-label " fxFlexOffset="10px">{{currentPaient.getBookingId()}}</mat-label>
+              <mat-label class="header-label " fxFlexOffset="10px">{{currentQueue.getCurrentPatient()?currentQueue.getCurrentPatient().getBookingId():'__'}}</mat-label>
             </div>
            
       </div>
@@ -351,29 +339,40 @@
             <mat-label>Bookings</mat-label>
             <span fxFlex="1 1 auto"></span>
             
-            <mat-label>#50</mat-label>
+            <mat-label>#{{currentQueue.getBookings().length}}</mat-label>
           </mat-toolbar>
           
           <div #bookingList class="booking-list-wrapper">
+
             <div  cdkDropList  class="patient-list fancy-scrollbar" (cdkDropListDropped)="drop($event)">
-                <div class="patient-list-box" fxLayout="row" *ngFor="let movie of movies; index as i" fxLayoutAlign="start start">
+                <div class="patient-list-box"  *ngFor="let booking of currentQueue.getBookings(); index as i"  fxLayout="row" fxLayoutAlign="start start">
 
-                  <mat-card-header class="patient-info-header" >
-                    <img mat-card-avatar src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4QcsAkyJy8YJXzB_ODAR9Q88d50--zfXfNw&usqp=CAU">
-                    <mat-card-title> <mat-label class="header-label">{{currentPaient.name}}</mat-label></mat-card-title>
-                    <!-- <mat-card-title> {{currentPaient.name}}></mat-card-title> -->       
-                                             
-                    <mat-card-subtitle >{{currentPaient.getStatus()}}</mat-card-subtitle> 
-                  </mat-card-header>
+                 
+                 
+                    <mat-card-header class="patient-info-header" >
+                      <img mat-card-avatar src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4QcsAkyJy8YJXzB_ODAR9Q88d50--zfXfNw&usqp=CAU">
+                      <mat-card-title fxLayout="row">
+                        <mat-label class="header-label">{{booking.getName()}}</mat-label>
+                        <ng-container *ngIf="booking.isCurrentPatient()" >
+                          <mat-label fxFlexOffset="10px">C</mat-label>
+                        </ng-container> 
+                      </mat-card-title>                                                                  
+                      <mat-card-subtitle fxLayout="row">
+                         {{booking.getStatus()}}                        
+                      </mat-card-subtitle> 
+                    </mat-card-header>
+  
+                    <span fxFlex="1 1 auto"></span>
+                    <mat-card  [ngClass]="{'position-card': true, 'position-card-1': i==0, 'position-card-2': i==1, 'position-card-3': i==2}" >
+                      <mat-card-content>
+                        <mat-label [ngClass]="{'first-label': i===0 || i===1 || i===2}">#{{i+1}}</mat-label>
+                        <!-- [ngClass]="{'live-label': (queue.getStatus() !=='scheduled')}" -->
+                      </mat-card-content>                      
+                    </mat-card> 
+                    <span fxFlex="1 1 10px"></span>  
+                 
+                              
 
-                  <span fxFlex="1 1 auto"></span>
-                  <mat-card  [ngClass]="{'position-card': true, 'position-card-1': i==0, 'position-card-2': i==1, 'position-card-3': i==2}" >
-                    <mat-card-content>
-                      <mat-label [ngClass]="{'first-label': i===0 || i===1 || i===2}">#{{i+1}}</mat-label>
-                      <!-- [ngClass]="{'live-label': (queue.getStatus() !=='scheduled')}" -->
-                    </mat-card-content>                      
-                  </mat-card> 
-                  <span fxFlex="1 1 10px"></span>                          
                   <!-- {{movie}} -->
                 </div>
               </div>

@@ -50,6 +50,15 @@ export class FirestoreService {
     return this.firestore.collection(collection).valueChanges();
    
   }
+
+  public getRealTimeCollectionWithQuery(collection:string, key1:string, value1:string, key2:string, value2:string, key3:string, value3:string, orderBy:string):Observable<unknown[]> {
+    return this.firestore.collection(collection, ref =>
+      ref.where(key1, "==", value1)
+        .where(key2, "==", value2)
+        .where(key3, "==", value3)
+      .orderBy(orderBy))
+      .valueChanges();
+  }
   update(collection:string, document:string, data:any):Promise<void>{
     return this.firestore.collection(collection).doc(document).set(data, {merge:true});
   }

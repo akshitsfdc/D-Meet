@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { PatientUserData } from "src/app/models/patient-user-data";
 
 
 @Injectable({
@@ -7,12 +8,23 @@ import { Injectable } from "@angular/core";
 
 export class SessionService {
 
-    private sharedData:any;
+    private sharedData: any;
+    private userData: PatientUserData;
+
+
 
     constructor() {
     }
 
 
+    public getUserData(): PatientUserData {
+        return this.userData;
+    }
+
+    public setUserData(userData: PatientUserData): void {
+        this.userData = userData;
+    }
+    
     public getSharedData(): any {
         return this.sharedData;
     }

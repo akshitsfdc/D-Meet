@@ -1,3 +1,4 @@
+import { HttpService } from './http.service';
 import { Injectable } from '@angular/core';
 import { start } from 'repl';
 import { QueueModel } from '../models/queue-model';
@@ -7,7 +8,10 @@ import { QueueModel } from '../models/queue-model';
 })
 export class UtilsService {
 
-  constructor() { }
+
+  // { "timestapmIST": 1609694762338, "timestapmUTC": 1609674962338, "date": "3 0 2021" }
+  
+  constructor(private http:HttpService) { }
 
   public millisToTimeString(milliseconds:number):string{
 
@@ -60,9 +64,18 @@ export class UtilsService {
   }
   public isWithinTimeFrame(startMs:number | 0, endMs:number | 0, type?:string):boolean{
 
-    const currentTime:number = this.getMillisFromDate(new Date());
-
-     if(currentTime <= endMs && currentTime >= startMs){
+    let currentTime: number = this.getMillisFromDate(new Date());
+    
+    // await this.http.getServerDate("serverDate")
+    // .then(dateObjs => {
+    //   currentTime = dateObjs.timestapmIST;
+    //   console.log("currentTime 1 "+currentTime);
+    // })
+    // .catch(error => {
+      
+    //   //error
+    // })
+    if(currentTime <= endMs && currentTime >= startMs){
       return true;
     }else{
       return false;
@@ -88,13 +101,24 @@ export class UtilsService {
 
   getTimeDifference(from:number):number{
 
-     const nowMills:number = this.getMillisFromDate(new Date());
+    let nowMills: number = this.getMillisFromDate(new Date());;
 
-     const difference:number = nowMills - from;
-  
+    // this.getIstTimeServer()
+    //   .then(timeStamp => {
+    
+    //     nowMills = this.getMillisFromDate(new Date(timeStamp));
+
+    //   })
+    //   .catch(error => {
+      
+    //   });
+      
+    const difference: number = nowMills - from;
+
      return difference;
 
   }
+
   getDateDigits(millis:number):string{
 
     const seconds:number = millis/1000;
@@ -102,17 +126,36 @@ export class UtilsService {
 
     return  Math.floor(minutes/60)+'h : '+ Math.floor(minutes%60)+'m';
   }
-  private getMillisFromDate(date:Date):number{
-    return ( ((+date.getHours()) * 60 * 60)  + ((+date.getMinutes()) * 60)) *1000;
+
+  private getMillisFromDate(date: Date): number{
+    
+    console.log("hr : " + date.getHours());
+    console.log("minutes : " + date.getMinutes());
+    
+    return (((+date.getHours()) * 60 * 60) + ((+date.getMinutes()) * 60)) * 1000;
+    
   }
 
+  private async getIstTimeServer():Promise<number> {
 
+    let currentTime: number;// = this.getMillisFromDate(new Date());;
 
+    await this.http.getServerDate("serverDate")
+    .then(dateObjs => {
+      currentTime = dateObjs.timestapmIST;
+    })
+    .catch(error => {
+      
+      //error
+    })
+
+    return currentTime;
+  }
 
   //
-  public changeQueueStatus(queues:QueueModel[]):void{
+  public changeQueueStatus(queues:QueueModel[]){
 
-    queues.forEach(queue => {
+    queues.forEach(async queue => {
         if(this.isWithinTimeFrame(queue.getBookingStarting(), queue.getBookingEnding(), 'ist')){
           queue.setStatus('booking');
         }
@@ -159,5 +202,36 @@ export class UtilsService {
       queue.setStatus('live');
     }
 
+  }
+
+  async originalBookingCheck(startMs:number, endMs:number): Promise<boolean>{
+    
+    let currentTime: number = this.getMillisFromDate(new Date());
+    
+    await this.http.getServerDate("serverDate")
+      .then(dateObjs => {
+        console.log("currentTime 1 >> server " + dateObjs.timestapmIST);
+
+        let utcMillies: number = this.getUtCMillies(dateObjs.timestapmIST);
+
+        currentTime = this.getMillisFromDate(new Date(utcMillies));;
+        console.log("currentTime 1 " + currentTime);
+      })
+      .catch(error => {
+      
+        //error
+      });
+    console.log("currentTime 2    startMs => " + startMs);
+    console.log("currentTime 2    endMs => " + endMs);
+    
+    if(+currentTime <= endMs && +currentTime >= startMs){
+      return true;
+    }else{
+      return false;
+    }
+
+  }
+  public getUtCMillies(istMillies: number): number{
+    return (istMillies - (5.5 * 60 * 60 * 1000));
   }
 }

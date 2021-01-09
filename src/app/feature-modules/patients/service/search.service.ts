@@ -1,3 +1,4 @@
+
 import { UtilsService } from './../../../services/utils.service';
 import { DocumentData } from '@angular/fire/firestore';
 import { GeoService } from './../../../services/geo.service';
@@ -6,6 +7,8 @@ import { SearchedDoctor } from './../models/searched-doctor';
 import { Injectable } from '@angular/core';
 import { DoctorUserData } from 'src/app/models/doctor-user-data';
 import { QueueModel } from 'src/app/models/queue-model';
+import { HttpService } from 'src/app/services/http.service';
+import { BookedPatient } from 'src/app/models/booked-patient';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +23,7 @@ export class SearchService {
 
    
 
-  constructor(private firestore:FirestoreService, private utils: UtilsService) {
+  constructor(private firestore:FirestoreService, private utils: UtilsService, private http:HttpService) {
     this.nearbyDoctors = [];
     this.globalDoctors = [];
     this.globalLastVisible = null;
@@ -130,6 +133,47 @@ export class SearchService {
      complete: () => console.log('queue loaded!')
    });
   }
+
+  public getBookingsOfQueue(queue: QueueModel) {
+
+    let currentPatient: BookedPatient = new BookedPatient();
+
+    this.http.getServerDate("serverDate")
+      .then(dateObj => {
+
+        const millies: number = this.utils.getUtCMillies(dateObj.timestapmIST);        
+        const date: Date = new Date(millies);
+        const dateStr: string = date.getDate() + '' + date.getMonth() + '' + date.getFullYear();
+
+        this.firestore.getRealTimeCollectionWithQuery("queue-bookings", "doctorId", queue.getOwnerId(), "dateString", dateStr, "queueId", queue.getQueueId(), "bookingTimeServer")
+          .subscribe(
+            {
+              next(patients) {
+                
+                let bookedPatients: BookedPatient[] = [];              
+                patients.forEach(element => {
+                  let patient:BookedPatient = new BookedPatient();
+                  Object.assign(patient, element); 
+                  bookedPatients.push(patient);
+                  console.log("I called!")
+                  if (patient.isCurrentPatient()) {
+                    currentPatient = patient;
+                    
+                  }
+                });
+                console.log("I called 2!")
+                queue.setCurrentPatient(currentPatient);
+                console.log("I called 3!")
+                queue.setBookings(bookedPatients);
+             },
+             error(msg){
+              console.log("Obs error >> : "+msg);
+             },
+             complete: () => console.log('completed')
+            });
+          });
+  }
+
 
   
 }

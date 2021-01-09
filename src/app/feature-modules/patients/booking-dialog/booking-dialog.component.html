@@ -1,0 +1,32 @@
+<form [formGroup]="bookingForm" #f="ngForm" class="container-div" fxLayout="column" (ngSubmit)="onSubmit(f)">
+    <mat-label mat-dialog-title class="header-label" fxFlexAlign="center">Booking</mat-label>
+
+    <mat-form-field appearance="outline" fxFlex="1 1 auto" >
+
+        <mat-label>Phone number(10 digit)</mat-label>
+        <input matInput type="text" placeholder="Enter your phone number" formControlName="phone">    
+        <mat-icon matSuffix matTooltip="This will help doctor to contact you, when needed">info</mat-icon>
+
+        <mat-error *ngIf="phone.touched && phone.errors?.required">
+            Enter 10 digit phone number
+        </mat-error>
+        <mat-error *ngIf="phone.touched && phone.errors?.pattern">
+            Enter a valid 10 digit phone number
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" fxFlex="1 1 auto" >
+        <mat-label>City or State( Optional )</mat-label>
+        <input matInput type="text" placeholder="Enter your city/state" formControlName="city">
+    
+    </mat-form-field>
+
+    
+
+    <div mat-dialog-actions fxLayout="row" class="button-container">
+        <button mat-button fxFlex="1 1 40%" type="button" class="lighter-button" (click)="cancel()" >Cancel</button>
+        <button mat-raised-button type="submit" fxFlex="1 1 auto">Pay fees</button>        
+    </div>
+    <span fxFlex="1 1 10px"></span>
+</form>
+

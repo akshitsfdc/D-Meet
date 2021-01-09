@@ -11,7 +11,7 @@ export class HttpService {
   private server:string = 'https://us-central1-doctorclientmeetup.cloudfunctions.net/';
 
   constructor(private http: HttpClient) { 
-
+  
   }
 
   public getServerDate(endpoint:string):Promise<any>{
@@ -19,14 +19,13 @@ export class HttpService {
   }
 
   public getDataForPayment(endpoint:string, amount:string, currency:string):Promise<any>{
-
-    let headers = new HttpHeaders();
-    headers.append('Content-Type', 'application/json');
-    let params = new HttpParams();
-    params.set("amount",amount);
-    params.set("currency",currency);
-
-    return this.http.get(this.server+endpoint, {headers: headers, params: params}).toPromise();
+    
+    // let headers:HttpHeaders = new HttpHeaders();
+    // // headers.append('conte')
+    // let params = new HttpParams();
+    // params.set("amount",amount);
+    // params.append("currency",currency);
+    return this.http.get(this.server+endpoint, {params:{amount:amount, currency:currency}}).toPromise();
 
   }
 }

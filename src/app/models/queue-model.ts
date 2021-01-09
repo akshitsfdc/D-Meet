@@ -1,3 +1,5 @@
+import { BookedPatient } from "./booked-patient";
+
 
 
 export class QueueModel {
@@ -16,14 +18,52 @@ export class QueueModel {
     private queueId: string;
     private ownerId: string;
     private holidayList:string[] = [];
-    private loading:boolean;
+    private loading: boolean;
     private type:string;
-    private paymentOption:string;
-
+    private paymentOption: string;
     
-   
-    constructor(){}
+    private bookingAvailable: boolean;
+    private consultingStarted: boolean;
 
+    private bookings: BookedPatient[];
+    private currentPatient: BookedPatient;
+
+    constructor() {
+        this.bookings = [];
+    }
+    
+
+    public getCurrentPatient(): BookedPatient {
+        return this.currentPatient;
+    }
+
+    public setCurrentPatient(currentPatient: BookedPatient): void {
+        this.currentPatient = currentPatient;
+    }
+
+    public getBookings(): BookedPatient[] {
+        return this.bookings;
+    }
+
+    public setBookings(bookings: BookedPatient[]): void {
+        this.bookings = bookings;
+    }
+
+    public isBookingAvailable(): boolean {
+        return this.bookingAvailable;
+    }
+
+    public setBookingAvailable(bookingAvailable: boolean): void {
+        this.bookingAvailable = bookingAvailable;
+    }
+
+    public isConsultingStarted(): boolean {
+        return this.consultingStarted;
+    }
+
+    public setConsultingStarted(consultingStarted: boolean): void {
+        this.consultingStarted = consultingStarted;
+    }
     public getType(): string {
         return this.type;
     }

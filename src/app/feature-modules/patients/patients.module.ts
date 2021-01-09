@@ -12,6 +12,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { MeetingsComponent } from './meetings/meetings.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MeetupLobbyComponent } from './meetup-lobby/meetup-lobby.component';
+import { BookingDialogComponent } from './booking-dialog/booking-dialog.component';
 
 
 
@@ -22,7 +23,8 @@ import { MeetupLobbyComponent } from './meetup-lobby/meetup-lobby.component';
     MainNavigationComponent,
     DashboardComponent,
     MeetingsComponent,
-    MeetupLobbyComponent
+    MeetupLobbyComponent,
+    BookingDialogComponent
   ],
   imports: [
     CommonModule,
