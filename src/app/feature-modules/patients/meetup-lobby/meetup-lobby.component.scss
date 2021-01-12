@@ -227,6 +227,18 @@
       height: fit-content;
   }
  
+  .current-patient-bg{
+    background-color: $light-green;
+  }
+  .processed-icon{
+    font-size: 16px;
+
+  }
+  .pending-icon {
+    font-size: 16px;
+    color: $warn;
+  }
+  
 
 // .temp{
 //     width: 0;

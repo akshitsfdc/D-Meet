@@ -19,11 +19,41 @@ export class BookedPatient {
     private age: number;
     private signature: string;
     private dateString: string;
-    
+    private bookingTimeServer: number;
     private currentPatient: boolean;
+    private processed: boolean;
+    private pending: boolean;
+
+    
+
    
+
   
     constructor(){}
+
+    public getBookingTimeServer(): number {
+        return this.bookingTimeServer;
+    }
+
+    public setBookingTimeServer(bookingTimeServer: number): void {
+        this.bookingTimeServer = bookingTimeServer;
+    }
+    
+    public isProcessed(): boolean {
+        return this.processed;
+    }
+
+    public setProcessed(processed: boolean): void {
+        this.processed = processed;
+    }
+
+    public isPending(): boolean {
+        return this.pending;
+    }
+
+    public setPending(pending: boolean): void {
+        this.pending = pending;
+    }
 
     public isCurrentPatient(): boolean {
         return this.currentPatient;

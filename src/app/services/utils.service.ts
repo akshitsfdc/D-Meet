@@ -234,4 +234,5 @@ export class UtilsService {
   public getUtCMillies(istMillies: number): number{
     return (istMillies - (5.5 * 60 * 60 * 1000));
   }
+
 }

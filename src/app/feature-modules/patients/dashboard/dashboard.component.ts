@@ -61,6 +61,7 @@ export class DashboardComponent implements OnInit {
       doctor : doctor,
       queue : queue
     };
+    this.searchService.setCurrentQueue(queue);
     this.session.setSharedData(object);
     this.router.navigate(['patient/meetup-lobby']);
   }

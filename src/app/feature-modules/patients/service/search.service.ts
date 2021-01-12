@@ -9,6 +9,7 @@ import { DoctorUserData } from 'src/app/models/doctor-user-data';
 import { QueueModel } from 'src/app/models/queue-model';
 import { HttpService } from 'src/app/services/http.service';
 import { BookedPatient } from 'src/app/models/booked-patient';
+import { queue } from 'rxjs/internal/scheduler/queue';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,8 @@ export class SearchService {
   private globalLastVisible:DocumentData = null;
   private globalDocsLimit:number = 15;
 
+  private currentQueue: QueueModel;
+
    
 
   constructor(private firestore:FirestoreService, private utils: UtilsService, private http:HttpService) {
@@ -28,7 +31,16 @@ export class SearchService {
     this.globalDoctors = [];
     this.globalLastVisible = null;
     this.globalDocsLimit = 15;
+    this.currentQueue = null;
   }
+
+  public getCurrentQueue(): QueueModel {
+    return this.currentQueue;
+}
+
+public setCurrentQueue(currentQueue: QueueModel): void {
+    this.currentQueue = currentQueue;
+}
 
   public getNearbyDoctors():SearchedDoctor[]{
     return this.nearbyDoctors;
@@ -107,23 +119,33 @@ export class SearchService {
 
   public setDoctorQueues(searchedDoctor:SearchedDoctor):void{
 
-    let utils:UtilsService = this.utils;
+    let utils: UtilsService = this.utils;
+    let parentObj = this;
     searchedDoctor.setQueueLoading(true);
+   
     let path:string = 'user-data/'+searchedDoctor.getDoctor().getUserId()+'/queues';
     this.firestore.getRealtimeCollection(path)
+    
     .subscribe({
       next(data){
       
-        let queues:QueueModel[] = [];
+        let queues: QueueModel[] = [];
+        
         data.forEach(element => {
           let queue:QueueModel = new QueueModel();
-          Object.assign(queue, element); 
+          Object.assign(queue, element);           
           queues.push(queue);
+          queue.setBookingAvailable(utils.isWithinTimeFrame(queue.getBookingStarting(), queue.getBookingEnding()));
+          queue.setConsultingStarted(utils.isWithinTimeFrame(queue.getConsultingStarting(), queue.getConsultingEnding()));   
+          
+         
         });
+
         searchedDoctor.setQueues(queues);
         utils.changeQueueStatus(queues);
         searchedDoctor.setQueueInitialized(true);
         searchedDoctor.setQueueLoading(false);
+        parentObj.reformCurrentQueue(searchedDoctor);
      },
      error(msg){
       console.log("Obs error >> : "+msg);
@@ -134,6 +156,21 @@ export class SearchService {
    });
   }
 
+  private reformCurrentQueue(searchedDoctor:SearchedDoctor):void {
+
+    for (let i = 0; i < searchedDoctor.getQueues().length; ++i){
+      let queue: QueueModel = searchedDoctor.getQueues()[i];
+      if (this.currentQueue && this.currentQueue.getQueueId() === queue.getQueueId() && this.currentQueue.getOwnerId() === queue.getOwnerId()) {
+        this.currentQueue.setBookingStarting(queue.getBookingStarting());
+        this.currentQueue.setBookingEnding(queue.getBookingEnding());
+        this.currentQueue.setConsultingStarting(queue.getConsultingStarting());
+        this.currentQueue.setConsultingEnding(queue.getConsultingEnding());
+        this.currentQueue.setBookingAvailable(this.utils.isWithinTimeFrame(this.currentQueue.getBookingStarting(), this.currentQueue.getBookingEnding()));
+        this.currentQueue.setConsultingStarted(this.utils.isWithinTimeFrame(this.currentQueue.getConsultingStarting(), this.currentQueue.getConsultingEnding()));
+      }
+    }
+   
+  }
   public getBookingsOfQueue(queue: QueueModel) {
 
     let currentPatient: BookedPatient = new BookedPatient();
@@ -150,20 +187,19 @@ export class SearchService {
             {
               next(patients) {
                 
-                let bookedPatients: BookedPatient[] = [];              
+                let bookedPatients: BookedPatient[] = [];      
+                let index = 1;
                 patients.forEach(element => {
                   let patient:BookedPatient = new BookedPatient();
                   Object.assign(patient, element); 
                   bookedPatients.push(patient);
-                  console.log("I called!")
+                  patient.setQueuePlace(index);
+                  ++index;
                   if (patient.isCurrentPatient()) {
-                    currentPatient = patient;
-                    
+                    currentPatient = patient;                  
                   }
-                });
-                console.log("I called 2!")
+                });            
                 queue.setCurrentPatient(currentPatient);
-                console.log("I called 3!")
                 queue.setBookings(bookedPatients);
              },
              error(msg){
@@ -173,7 +209,5 @@ export class SearchService {
             });
           });
   }
-
-
   
 }
