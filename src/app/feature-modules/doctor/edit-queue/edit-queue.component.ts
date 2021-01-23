@@ -288,7 +288,7 @@ ngOnInit():void{
 
     let queue : QueueModel = new QueueModel();
 
-      queue.setStatus("Active");
+      queue.setStatus("scheduled");
       queue.setQueueId(this.currentQueue.getQueueId());
       queue.setPatientLimit(this.numberOfPatients.value) ;
       queue.setActive(true);

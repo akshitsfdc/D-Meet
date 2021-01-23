@@ -26,11 +26,23 @@ export class DoctorUserData {
     // private longitude:number;
     private nearbyAddress:string;
     private diseaseSpecialist:string[]=[];
-    private coordinates:firebase.firestore.GeoPoint;
+    private coordinates: firebase.firestore.GeoPoint;
+    private status: string;
+
+    
+
 
     constructor(){}
 
 
+    public getStatus(): string {
+        return this.status;
+    }
+
+    public setStatus(status: string): void {
+        this.status = status;
+    }
+    
     public getCoordinates(): firebase.firestore.GeoPoint {
         return this.coordinates;
     }

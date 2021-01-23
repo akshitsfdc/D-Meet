@@ -28,7 +28,7 @@
                             <!-- <div class="timing-container" fxLayout="column"  fxLayoutAlign="space-between center">
                                 <div  class="timer-box" fxLayout="column" fxLayoutAlign="center center">
                                     <mat-label class="small-label">Time Passed</mat-label>
-                                    <mat-label class="header-label big-label" fxFlexOffset="2px">{{totalTimePassed}}</mat-label>
+                                    <mat-label class="header-label big-label" fxFlexOffset="2px">{{consultingStartWaitingTimeLabel}}</mat-label>
                                   </div>
                                   <div  class="timer-box" fxLayout="column" fxLayoutAlign="center center">
                                     <mat-label class="small-label">Current</mat-label>
@@ -43,7 +43,8 @@
                             <mat-card class="processing-patient-card doctor-card"  [class.mat-elevation-z2]="true">
                                 <mat-card-header *ngIf="consultStarted" >
                                     <img mat-card-avatar src="https://images.theconversation.com/files/304957/original/file-20191203-66986-im7o5.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=1200.0&fit=crop">
-                                    <mat-card-title> <mat-label class="header-label">Dr. {{currentDoctor.getFirstName()+' '+currentDoctor.getLastName() }}</mat-label></mat-card-title>                                                                       
+                                    <mat-card-title> <mat-label class="header-label">Dr. {{currentDoctor.getFirstName()+' '+currentDoctor.getLastName() }}</mat-label></mat-card-title>     
+                                    <mat-card-subtitle>{{currentDoctor.getStatus() || "offline"}}</mat-card-subtitle>                                                                  
                                     <span fxFlex="1 1 auto"></span>
                                    <mat-icon>medical_services</mat-icon>
                                 </mat-card-header>
@@ -51,14 +52,25 @@
                                     
                                    <mat-label class="small-label">{{currentDoctor.getDegree()}}</mat-label>
                                    <mat-label class="small-label">{{currentDoctor.getSpeciality()}}</mat-label>
-                                   <mat-label class="small-label position-indicator">www.doctormeetup.com/@{{currentDoctor.getProfileId()}}</mat-label>
+                                   <mat-label class="small-label highlighted-text">www.doctormeetup.com/@{{currentDoctor.getProfileId()}}</mat-label>
                                  
+                                   
                                    
                                    <ng-container *ngIf="!currentQueue.isConsultingStarted()">
                                     <div  class="timer-box footer-div" fxLayout="row" fxLayoutAlign="center center" fxFlexOffset="10px">
                                   
                                       <mat-label class="small-label">Consulting will start in </mat-label>
-                                      <mat-label class="header-label big-label" fxFlexOffset="5px">{{totalTimePassed}}</mat-label>
+                                      <mat-label class="header-label medium-label highlighted-text" fxFlexOffset="5px">{{consultingStartWaitingTimeLabel}}</mat-label>
+  
+                                    </div>
+                                   </ng-container>
+
+                                   <ng-container *ngIf="!currentQueue.isBookingAvailable() && currentQueue.getBookings().length == 0">
+
+                                    <div  class="timer-box footer-div" fxLayout="row" fxLayoutAlign="center center" fxFlexOffset="10px">
+                                  
+                                      <mat-label class="small-label">Booking will start in </mat-label>
+                                      <mat-label class="header-label medium-label highlighted-text" fxFlexOffset="5px">{{bookingStartingWaitingTimeLabel}}</mat-label>
   
                                     </div>
                                    </ng-container>
@@ -77,12 +89,12 @@
                               
                               <ng-container *ngIf="currentQueue.isConsultingStarted() && currentQueue.getBookings().length > 0">
 
-                              <div class="processing-indicator-wrapper">
+                              <div class="processing-indicator-wrapper" *ngIf="currentQueue.getCurrentPatient()">
 
                                 <div  class="timer-box" fxLayout="column" fxLayoutAlign="center center">
                                   
                                   <mat-label class="small-label">Current meeting</mat-label>
-                                  <mat-label class="header-label" fxFlexOffset="5px">{{totalTimePassed}}</mat-label>
+                                  <mat-label class="header-label" fxFlexOffset="5px">{{consultingStartWaitingTimeLabel}}</mat-label>
                                 </div>
                                     <!-- <mat-icon>settings</mat-icon> -->
                                   
@@ -122,7 +134,7 @@
                               
                          </div>                         
                           
-                         <mat-progress-bar mode="buffer"></mat-progress-bar>
+                         <mat-progress-bar mode="buffer" *ngIf="currentQueue.getCurrentPatient()"></mat-progress-bar>
                         </div>
                         
                           
@@ -145,7 +157,7 @@
            
             <div  class="timer-box" fxLayout="row" fxLayoutAlign="center center">
               <mat-label class="small-label">Next patient</mat-label>
-              <mat-label class="header-label " fxFlexOffset="10px">{{currentQueue.getCurrentPatient()?currentQueue.getCurrentPatient().getBookingId():'__'}}</mat-label>
+              <mat-label class="header-label " fxFlexOffset="10px" >{{currentQueue.getNextNumber()?"#"+currentQueue.getNextNumber():'__'}}</mat-label>
             </div>
            
       </div>
@@ -264,22 +276,24 @@
     </mat-accordion>
     </ng-container>
 
-    <ng-container *ngIf="!bookingavailable">
+     <!-- My Booking area -->
+
+    <ng-container *ngIf="currentQueue.getMyBooking() && currentQueue.getMyBooking()">
     <div class="timing-container" fxLayout="row wrap" fxFlexOffset="20px"  fxLayoutAlign="space-between center">
       <!-- <span></span> -->
       <div  class="timer-box" fxLayout="row" fxLayoutAlign="center center">
           <mat-label class="small-label">Your meeting will start in</mat-label>
-          <mat-label class="header-label position-indicator" fxFlexOffset="10px">{{totalTimePassed}}</mat-label>
+          <mat-label class="header-label highlighted-text" fxFlexOffset="10px">{{currentQueue.getMyBooking().getSelfWaitingTime()}}</mat-label>
         </div>
         <div  class="timer-box" fxLayout="row" fxLayoutAlign="center center">
           <mat-label class="small-label">Your position in queue</mat-label>
-          <mat-label class="header-label position-indicator">&nbsp;#10</mat-label>          
+          <mat-label class="header-label highlighted-text">&nbsp;#{{currentQueue.getMyBooking().getQueuePlace()}}</mat-label>          
         </div>
-       
   </div>
 
-  <div fxLayout="column" fxFlexOffset="10px" class="upcoming-list">
-            
+ 
+         
+    <ng-container *ngIf="currentQueue.getMyBooking()">
     <mat-accordion>
         <mat-expansion-panel >
           <mat-expansion-panel-header >
@@ -295,17 +309,17 @@
             <div fxLayout="row" fxLayoutGap="30px">
               <mat-label>Booking Time</mat-label>
               <span fxFlex="1 1 auto"></span>
-              <mat-label>booking time</mat-label>
+              <mat-label>{{util.millisToTimeString(currentQueue.getMyBooking().getBookingTimeServer())}}</mat-label>
           </div>
           <div fxLayout="row" fxLayoutGap="30px">
               <mat-label>Booking Id</mat-label>
               <span fxFlex="1 1 auto"></span>
-              <mat-label>booking Id</mat-label>
+              <mat-label>{{currentQueue.getMyBooking().getBookingId()}}</mat-label>
           </div>
           <div fxLayout="row" fxLayoutGap="30px">
               <mat-label>Position</mat-label>
               <span fxFlex="1 1 auto"></span>
-              <mat-label>position</mat-label>
+              <mat-label>#{{currentQueue.getMyBooking().getQueuePlace()}}</mat-label>
           </div>
           <div fxLayout="row" fxLayoutGap="30px">
               <mat-label>Meeting start at(approx)</mat-label>
@@ -321,7 +335,8 @@
               
         </mat-expansion-panel>
       </mat-accordion>
-</div>
+    </ng-container>
+<!-- My Booking area end -->
 
  
         

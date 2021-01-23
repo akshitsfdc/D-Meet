@@ -21,17 +21,47 @@ export class QueueModel {
     private loading: boolean;
     private type:string;
     private paymentOption: string;
-    
     private bookingAvailable: boolean;
     private consultingStarted: boolean;
-
     private bookings: BookedPatient[];
     private currentPatient: BookedPatient;
+    private nextNumber: string;
+    private nextId: string;
+    private myBooking: BookedPatient;
+
+    
 
     constructor() {
         this.bookings = [];
     }
+
+    public getMyBooking(): BookedPatient {
+        return this.myBooking;
+    }
     
+    public setMyBooking(myBooking: BookedPatient): void {
+        this.myBooking = myBooking;
+    }
+
+
+    
+
+    public getNextNumber(): string {
+        return this.nextNumber;
+    }
+
+    public setNextNumber(nextNumber: string): void {
+        this.nextNumber = nextNumber;
+    }
+
+    public getNextId(): string {
+        return this.nextId;
+    }
+
+    public setNextId(nextId: string): void {
+        this.nextId = nextId;
+    }
+
 
     public getCurrentPatient(): BookedPatient {
         return this.currentPatient;

@@ -112,8 +112,14 @@ export class UtilsService {
     //   .catch(error => {
       
     //   });
+
+    let difference: number;
       
-    const difference: number = nowMills - from;
+    if (nowMills > from) {
+      difference = nowMills - from;
+    } else {
+      difference = from - nowMills;
+    }
 
      return difference;
 

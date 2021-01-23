@@ -6,7 +6,7 @@ import { BookingDialogComponent } from './../booking-dialog/booking-dialog.compo
 import { CheckoutService } from './../service/checkout.service';
 import { DoctorUserData } from './../../../models/doctor-user-data';
 import { HttpService } from './../../../services/http.service';
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { UtilsService } from 'src/app/services/utils.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -17,6 +17,7 @@ import { SessionService } from '../service/session.service';
 import { LoadingDialogComponent } from 'src/app/loading-dialog/loading-dialog.component';
 import { BookedPatient } from '../../../models/booked-patient';
 import { MessageDialogComponent } from 'src/app/message-dialog/message-dialog.component';
+import { TimeInterval } from 'rxjs';
 
 declare var Razorpay: any; 
 
@@ -25,8 +26,8 @@ declare var Razorpay: any;
   templateUrl: './meetup-lobby.component.html',
   styleUrls: ['./meetup-lobby.component.scss']
 })
-export class MeetupLobbyComponent implements OnInit {
-
+export class MeetupLobbyComponent implements OnInit, OnDestroy {
+  
   @ViewChild('bookingList') bookingListElement: ElementRef;
   
   rippleColor = "#4294f4";
@@ -49,7 +50,10 @@ export class MeetupLobbyComponent implements OnInit {
   currentQueue:QueueModel;
 
   extraheight:number = 75+15+60;
-  totalTimePassed:string = "0h:00m"
+  consultingStartWaitingTimeLabel: string = "0h:00m"
+  
+  bookingStartingWaitingTime: number = 0;
+  bookingStartingWaitingTimeLabel: String = "0h:00m";
   movies = [
     'Episode I - The Phantom Menace',
     'Episode II - Attack of the Clones',
@@ -87,15 +91,13 @@ export class MeetupLobbyComponent implements OnInit {
     'Episode IV - A New Hope',
         
   ];
-  upcomingPatient = [
-    'Episode I - The Phantom Menace',
-    'Episode II - Attack of the Clones',
-    'Episode III - Revenge of the Sith',
-    'Episode IV - A New Hope',
-  ];
 
-  private timepassedMillis:number = 0;
+  private myWaitingTimeTimer;
+
+  private consultingStartWaitingTime:number = 0;
   private loading: MatDialogRef<LoadingDialogComponent>;
+
+  selftWaitingTime: string = "tun tun";
 
   userData: PatientUserData;
 
@@ -105,6 +107,7 @@ export class MeetupLobbyComponent implements OnInit {
 
    
   }
+  
 
   
   ngOnInit(): void {
@@ -122,13 +125,24 @@ export class MeetupLobbyComponent implements OnInit {
 
     this.setTimerForAvailability();
 
-    if (this.currentQueue.isBookingAvailable() && !this.currentQueue.isConsultingStarted()) {
+    if (!this.currentQueue.isConsultingStarted()) {
 
-      this.timepassedMillis = this.util.getTimeDifference(this.currentQueue.getConsultingStarting());
+      this.consultingStartWaitingTime = this.util.getTimeDifference(this.currentQueue.getConsultingStarting());
 
-      this.totalTimePassed = this.util.getDateDigits(this.timepassedMillis);//this.util.getDateDigits(this.util.getTimeDifference(this.currentQueue.getConsultingStarting()));
+      this.consultingStartWaitingTimeLabel = this.util.getDateDigits(this.consultingStartWaitingTime);
   
-      this.initTimePassed();
+      this.initConsultingWaitingTime();
+
+      
+    }
+
+    if (!this.currentQueue.isBookingAvailable()) {
+
+      this.bookingStartingWaitingTime = this.util.getTimeDifference(this.currentQueue.getBookingStarting());
+
+      this.bookingStartingWaitingTimeLabel = this.util.getDateDigits(this.bookingStartingWaitingTime);
+
+      this.initBookingWaitingTime();
     }
    
 
@@ -148,6 +162,8 @@ export class MeetupLobbyComponent implements OnInit {
       //error
       console.log(error);
     });
+
+    this.startTimerCounter();
   }
 
   private setTimerForAvailability() {
@@ -170,11 +186,19 @@ export class MeetupLobbyComponent implements OnInit {
     let windowHeight = window.innerHeight;
     this.bookingListElement.nativeElement.style.height = (windowHeight-this.extraheight)+'px'; 
   }
-  initTimePassed(){
+  initConsultingWaitingTime(){
     setInterval(() => {
-      this.timepassedMillis += 60000;
-      this.totalTimePassed = this.util.getDateDigits(this.timepassedMillis);//this.util.getDateDigits(this.util.getTimeDifference(this.currentQueue.getConsultingStarting()));
-      console.log(this.totalTimePassed);
+      this.consultingStartWaitingTime -= 60000;
+      this.consultingStartWaitingTimeLabel = this.util.getDateDigits(this.consultingStartWaitingTime);
+      console.log(this.consultingStartWaitingTimeLabel);
+    }, 60000);
+  }
+
+  initBookingWaitingTime(){
+    setInterval(() => {
+      this.bookingStartingWaitingTime -= 60000;
+      this.bookingStartingWaitingTimeLabel = this.util.getDateDigits(this.bookingStartingWaitingTime);
+      console.log(this.bookingStartingWaitingTime);
     }, 60000);
   }
   drop(event: CdkDragDrop<string[]>) {
@@ -297,56 +321,7 @@ export class MeetupLobbyComponent implements OnInit {
     // });
   }
 
-  private getCitydata():any{
-
-    return {
-
-      "type":"degree",
-
-      "degrees" :[
-        "MBBS – Bachelor of Medicine, Bachelor of Surgery",
-        
-        "BDS – Bachelor of Dental Surgery",
-        
-        "BAMS – Bachelor of Ayurvedic Medicine and Surgery",
-        
-        "BUMS – Bachelor of Unani Medicine and Surgery",
-        
-        "BHMS – Bachelor of Homeopathy Medicine and Surgery",
-        
-        "BYNS- Bachelor of Yoga and Naturopathy Sciences",
-        
-        "B.V.Sc & AH- Bachelor of Veterinary Sciences and Animal Husbandry",
-        
-        "Bachelor of Occupational Therapy",
-        
-        "Bachelor of Science in Biotechnology",
-        
-        "Bachelor of Technology in Biomedical Engineering",
-        
-        "Bachelor of Science in Microbiology (Non-Clinical)",
-        
-        "Bachelor of Science in Cardiac or Cardiovascular Technology",
-        
-        "Bachelor of Perfusion Technology or Bachelor of Science in Cardio-Pulmonary Perfusion Technology",
-        
-        "Bachelor of Respiratory Therapy",
-        
-        "Bachelor of Science in Nutrition and Dietetics",
-        
-        "Bachelor of Science in Genetics",
-        
-        "Doctor of Medicine (MD)",
-        
-        "Masters of Surgery (MS)",
-        
-        "Diplomate of National Board (DNB)",
-        
-        "Other"
-        
-        ]
-   }
-}
+  
 
 private async bookNow(phoneNumber:string, from:string):Promise<void>{
 
@@ -415,7 +390,12 @@ private checkout(options):void{
     this.processPaymentError(response);
   });
 
-  rzp1.open();
+  try {
+    rzp1.open();  
+  } catch {
+    
+  }
+  
   
 }
 
@@ -536,5 +516,31 @@ private processPaymentError(response){
   }
   consultingStarted(){
     this.currentQueue.setConsultingStarted(this.util.isWithinTimeFrame(this.currentQueue.getConsultingStarting(), this.currentQueue.getConsultingEnding()));
+  }
+
+  startTimerCounter() {
+    this.myWaitingTimeTimer = setInterval(() => {     
+      this.changeSelfWaitingTime();
+    }, 1000);
+
+    
+  }
+
+
+  
+  changeSelfWaitingTime() {
+    console.log("Outside >> ");
+    if (this.currentQueue.getBookings().length > 0 && this.currentQueue.getMyBooking()) {
+      
+      console.log("Inside >> ");
+      
+      this.currentQueue.getMyBooking().setSelfWaitingTime(+new Date());
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.myWaitingTimeTimer) {
+      clearInterval(this.myWaitingTimeTimer);
+    }
   }
 }

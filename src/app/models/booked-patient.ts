@@ -23,13 +23,20 @@ export class BookedPatient {
     private currentPatient: boolean;
     private processed: boolean;
     private pending: boolean;
+    private selfWaitingTime: number;
 
     
-
-   
-
   
     constructor(){}
+
+
+    public getSelfWaitingTime(): number {
+        return this.selfWaitingTime;
+    }
+
+    public setSelfWaitingTime(selfWaitingTime: number): void {
+        this.selfWaitingTime = selfWaitingTime;
+    }
 
     public getBookingTimeServer(): number {
         return this.bookingTimeServer;

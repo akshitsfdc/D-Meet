@@ -10,6 +10,7 @@ import { QueueModel } from 'src/app/models/queue-model';
 import { HttpService } from 'src/app/services/http.service';
 import { BookedPatient } from 'src/app/models/booked-patient';
 import { queue } from 'rxjs/internal/scheduler/queue';
+import { SessionService } from './session.service';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,7 @@ export class SearchService {
 
    
 
-  constructor(private firestore:FirestoreService, private utils: UtilsService, private http:HttpService) {
+  constructor(private firestore:FirestoreService, private utils: UtilsService, private http:HttpService, private session:SessionService) {
     this.nearbyDoctors = [];
     this.globalDoctors = [];
     this.globalLastVisible = null;
@@ -173,12 +174,12 @@ public setCurrentQueue(currentQueue: QueueModel): void {
   }
   public getBookingsOfQueue(queue: QueueModel) {
 
-    let currentPatient: BookedPatient = new BookedPatient();
-
+    let currentPatient: BookedPatient;
+    let currentRef = this;
     this.http.getServerDate("serverDate")
       .then(dateObj => {
 
-        const millies: number = this.utils.getUtCMillies(dateObj.timestapmIST);        
+        const millies: number = this.utils.getUtCMillies(dateObj.timestapmIST);
         const date: Date = new Date(millies);
         const dateStr: string = date.getDate() + '' + date.getMonth() + '' + date.getFullYear();
 
@@ -187,27 +188,44 @@ public setCurrentQueue(currentQueue: QueueModel): void {
             {
               next(patients) {
                 
-                let bookedPatients: BookedPatient[] = [];      
+                let bookedPatients: BookedPatient[] = [];
                 let index = 1;
                 patients.forEach(element => {
-                  let patient:BookedPatient = new BookedPatient();
-                  Object.assign(patient, element); 
+                  let patient: BookedPatient = new BookedPatient();
+                  Object.assign(patient, element);
                   bookedPatients.push(patient);
                   patient.setQueuePlace(index);
                   ++index;
                   if (patient.isCurrentPatient()) {
-                    currentPatient = patient;                  
+                    currentPatient = patient;
                   }
-                });            
+                  if (patient.getPatientId() === currentRef.session.getUserData().getUserId()) {
+                    queue.setMyBooking(patient)
+                  }
+                });
                 queue.setCurrentPatient(currentPatient);
                 queue.setBookings(bookedPatients);
-             },
-             error(msg){
-              console.log("Obs error >> : "+msg);
-             },
-             complete: () => console.log('completed')
+                currentRef.setCurrentNext(queue);
+              },
+              error(msg) {
+                console.log("Obs error >> : " + msg);
+              },
+              complete: () => console.log('completed')
             });
-          });
+      });
+  }
+
+  private setCurrentNext(queue:QueueModel) {
+    
+    
+    queue.getBookings().forEach(patient => {
+      if ((!patient.isCurrentPatient() && !patient.isProcessed())) {
+        queue.setNextId(patient.getBookingId());
+        queue.setNextNumber("" + patient.getQueuePlace());
+        return;
+      }
+        
+    });
   }
   
 }
