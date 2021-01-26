@@ -19,6 +19,7 @@ import { AgmCoreModule } from '@agm/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { EditQueueComponent } from './edit-queue/edit-queue.component';
+import { MeetupLobbyComponent } from './meetup-lobby/meetup-lobby.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { EditQueueComponent } from './edit-queue/edit-queue.component';
     MovePatientComponent,
     ProfileEditComponent,
     QueuesComponent,
-    EditQueueComponent
+    EditQueueComponent,
+    MeetupLobbyComponent
   ],
   imports: [
     FlexLayoutModule,

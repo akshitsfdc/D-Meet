@@ -11,6 +11,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { PaymentRecievedModel } from '../models/payment-recieved-model';
 import { MatSpinner } from '@angular/material/progress-spinner';
 import { MessageDialogComponent } from 'src/app/message-dialog/message-dialog.component';
+import { DoctorUserData } from 'src/app/models/doctor-user-data';
 
 declare var google:any;
 @Component({
@@ -219,14 +220,17 @@ export class LiveQueueComponent implements OnInit {
     });
   }
   queueStatusChanged(queue:QueueModel){
-
+    
     queue.setLoading(true);   
-    this.server.update('user-data/'+this.session.getUserData().getUserId()+'/queues', queue.getQueueId(), {'active': !queue.isActive()})
-    .then(() => {
+    this.server.update('user-data/'+this.session.getUserData().getUserId()+'/queues', queue.getQueueId(), {"active": !queue.isActive()})
+      .then(() => {
+        console.log("Queue status changed success!");
+        
       queue.setLoading(false);
     })
     .catch(error => {
       //error
+      console.log("Queue status changed failed!");
       queue.setLoading(false);     
     });
     
@@ -242,9 +246,14 @@ export class LiveQueueComponent implements OnInit {
     this.router.navigate(['doctor/queues/editQueue']);
     
   }
-  openQueue(queue:QueueModel):void{
-    this.session.setSharedData(queue);
-    this.router.navigate(['doctor/home/queue']);
+  openQueue(queue: QueueModel): void{
+    
+    let data = {
+      queue: queue,
+      doctor: this.session.getUserData()
+    }
+    this.session.setSharedData(data);
+    this.router.navigate(['doctor/meetup-lobby']);
   }
 
   

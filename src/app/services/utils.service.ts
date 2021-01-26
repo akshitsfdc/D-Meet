@@ -101,7 +101,7 @@ export class UtilsService {
 
   getTimeDifference(from:number):number{
 
-    let nowMills: number = this.getMillisFromDate(new Date());;
+    let nowMills: number = this.getMillisFromDate(new Date());
 
     // this.getIstTimeServer()
     //   .then(timeStamp => {
@@ -115,13 +115,16 @@ export class UtilsService {
 
     let difference: number;
       
-    if (nowMills > from) {
-      difference = nowMills - from;
-    } else {
-      difference = from - nowMills;
-    }
+    difference = nowMills - from;
 
-     return difference;
+    console.log("difference : "+difference);
+    
+
+    if (difference < 0) {
+      return Math.abs(difference);
+    } else {
+      return Math.abs(86400000-difference); 
+    }
 
   }
 
@@ -130,7 +133,9 @@ export class UtilsService {
     const seconds:number = millis/1000;
     const minutes:number = seconds/60;
 
-    return  Math.floor(minutes/60)+'h : '+ Math.floor(minutes%60)+'m';
+    return Math.floor(minutes / 60) + 'h : ' + Math.floor(minutes % 60) + 'm';
+    // return  Math.floor(minutes%60)+'h : '+ Math.floor(minutes%60)+'m';
+
   }
 
   private getMillisFromDate(date: Date): number{

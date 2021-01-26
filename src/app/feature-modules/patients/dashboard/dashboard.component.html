@@ -91,12 +91,22 @@ infiniteScrollThrottle="50"
                         <div fxLayout="row">
                             <mat-label>Status</mat-label>
                             <span fxFlex="1 1 auto"></span>
-                            <mat-card  [ngClass]="{'status-card': true, 'status-card-live': (queue.getStatus()==='live'), 'status-card-booking': (queue.getStatus()==='booking'),
-                            'status-card-scheduled': (queue.getStatus()==='scheduled')}">
-                              <mat-card-content>
-                                <mat-label [ngClass]="{'live-label': (queue.getStatus() !=='scheduled')}">{{queue.getStatus()==='live'?utils.capitalize(queue.getStatus()):utils.initCap(queue.getStatus())}}</mat-label>
+                            <ng-container *ngIf="queue.isActive()">                            
+                              <mat-card  [ngClass]="{'status-card': true, 'status-card-live': (queue.getStatus()==='live'), 'status-card-booking': (queue.getStatus()==='booking'),
+                              'status-card-scheduled': (queue.getStatus()==='scheduled')}">
+                                <mat-card-content>
+                                  <mat-label [ngClass]="{'live-label': (queue.getStatus() !=='scheduled')}">{{queue.getStatus()==='live'?utils.capitalize(queue.getStatus()):utils.initCap(queue.getStatus())}}</mat-label>
+                                </mat-card-content>                      
+                              </mat-card>
+                          </ng-container>
+                          <ng-container *ngIf="!queue.isActive()">                            
+                            <mat-card  [ngClass]="{'status-card': true, 'deactivated-card':true}">
+                              <mat-card-content fxLayout="row" fxLayoutAlign="center center" matTooltip="This queue has been de-activated for today by the doctor">
+                                <mat-icon class="deactivated-lock-icon">lock</mat-icon>
+                                <mat-label [ngClass]="{'deactivated-lebel':true}" fxFlexOffset="5px">de-activated</mat-label>
                               </mat-card-content>                      
                             </mat-card>
+                        </ng-container>
                            
                         </div>
                         <div fxLayout="row" fxLayoutGap="30px">
@@ -173,9 +183,12 @@ infiniteScrollThrottle="50"
                              </div>
                             </mat-expansion-panel>
                           </mat-accordion>
-                          <button mat-raised-button class="medium-button" fxFlexOffset="5px" (click)="viewLobby(queue, doctor.getDoctor())">
-                            <mat-icon >room_preferences</mat-icon>
-                            Visit Queue</button>  
+                          <ng-container >
+                            <button mat-raised-button class="medium-button" fxFlexOffset="5px" (click)="viewLobby(queue, doctor.getDoctor())" disabled={{!queue.isActive()}}>
+                              <mat-icon *ngIf="queue.isActive()">room_preferences</mat-icon>
+                              Visit Queue</button>  
+                          </ng-container>
+                         
                           <!-- <button mat-raised-button  >
                             <mat-icon class="book-image-icon">queue</mat-icon>
                             Book Now</button> -->

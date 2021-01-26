@@ -1,3 +1,4 @@
+import { QueueModel } from "./queue-model";
 
 
 export class DoctorUserData {
@@ -25,16 +26,28 @@ export class DoctorUserData {
     // private latitude:number;
     // private longitude:number;
     private nearbyAddress:string;
-    private diseaseSpecialist:string[]=[];
+    private diseaseSpecialist: string[];
     private coordinates: firebase.firestore.GeoPoint;
     private status: string;
+    private queues: QueueModel[];
+
+
+
+    constructor() {
+        this.diseaseSpecialist = [];
+        this.queues = [];
+    }
+
+
+    public getQueues(): QueueModel[] {
+        return this.queues;
+    }
+
+    public setQueues(queues: QueueModel[]): void {
+        this.queues = queues;
+    }
 
     
-
-
-    constructor(){}
-
-
     public getStatus(): string {
         return this.status;
     }

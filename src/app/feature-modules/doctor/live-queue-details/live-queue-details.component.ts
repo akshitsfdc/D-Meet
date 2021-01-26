@@ -83,7 +83,6 @@ export class LiveQueueDetailsComponent implements OnInit {
   ];
   constructor(private firestore: AngularFirestore, private router: Router, private route: ActivatedRoute, private matDialog: MatDialog,
      public util:UtilsService, private session:SessionService) {
-
         this.currentQueue = session.getSharedData() as QueueModel;
       }
 

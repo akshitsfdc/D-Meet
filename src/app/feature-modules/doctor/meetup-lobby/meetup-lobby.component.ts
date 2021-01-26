@@ -1,23 +1,16 @@
-import { SearchService } from './../service/search.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
-import { PaymentInfo } from '../../../models/payment-info';
-import { PatientUserData } from './../../../models/patient-user-data';
-import { BookingDialogComponent } from './../booking-dialog/booking-dialog.component';
-import { CheckoutService } from './../service/checkout.service';
+import { PatientUserData } from './../../../models/patient-user-data'
 import { DoctorUserData } from './../../../models/doctor-user-data';
-import { HttpService } from './../../../services/http.service';
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { UtilsService } from 'src/app/services/utils.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-
 import { MovePatientComponent } from '../../doctor/move-patient/move-patient.component';
 import { QueueModel } from 'src/app/models/queue-model';
-import { SessionService } from '../service/session.service';
 import { LoadingDialogComponent } from 'src/app/loading-dialog/loading-dialog.component';
 import { BookedPatient } from '../../../models/booked-patient';
 import { MessageDialogComponent } from 'src/app/message-dialog/message-dialog.component';
-import { TimeInterval } from 'rxjs';
+import { SessionService } from '../services/session.service';
 
 declare var Razorpay: any; 
 
@@ -45,6 +38,7 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
   currentDoctor:DoctorUserData;
   currentPaient: BookedPatient;
+  nextPatient: BookedPatient;
 
   totalPatientSize: Number;
   currentQueue:QueueModel;
@@ -102,8 +96,7 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
   userData: PatientUserData;
 
   constructor(private matDialog: MatDialog,
-     public util:UtilsService, private httpService:HttpService, private session:SessionService, public utils:UtilsService,
-     private checkoutService:CheckoutService, private firestore:FirestoreService, private searchService:SearchService) {
+     public utils:UtilsService, private session:SessionService, private firestoreService: FirestoreService) {
 
    
   }
@@ -112,24 +105,22 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
   
   ngOnInit(): void {
 
-   
-    this.currentQueue = this.session.getSharedData().queue;
-    this.currentDoctor = this.session.getSharedData().doctor;
-    this.userData = this.session.getUserData(); 
+    this.currentQueue = this.session.getSharedData().queue as QueueModel;
 
-    this.searchService.getBookingsOfQueue(this.currentQueue);
-
+    this.currentDoctor = this.session.getSharedData().doctor as DoctorUserData;
 
     this.bookingAvailability();
+
     this.consultingStarted();
 
     this.setTimerForAvailability();
 
+
     if (!this.currentQueue.isConsultingStarted()) {
 
-      this.consultingStartWaitingTime = this.util.getTimeDifference(this.currentQueue.getConsultingStarting());
+      this.consultingStartWaitingTime = this.utils.getTimeDifference(this.currentQueue.getConsultingStarting());
 
-      this.consultingStartWaitingTimeLabel = this.util.getDateDigits(this.consultingStartWaitingTime);
+      this.consultingStartWaitingTimeLabel = this.utils.getDateDigits(this.consultingStartWaitingTime);
   
       this.initConsultingWaitingTime();
 
@@ -138,34 +129,20 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
     if (!this.currentQueue.isBookingAvailable()) {
 
-      this.bookingStartingWaitingTime = this.util.getTimeDifference(this.currentQueue.getBookingStarting());
+      this.bookingStartingWaitingTime = this.utils.getTimeDifference(this.currentQueue.getBookingStarting());
 
-      this.bookingStartingWaitingTimeLabel = this.util.getDateDigits(this.bookingStartingWaitingTime);
+      this.bookingStartingWaitingTimeLabel = this.utils.getDateDigits(this.bookingStartingWaitingTime);
 
       this.initBookingWaitingTime();
     }
    
 
-    this.setTestPatients();
+    // this.startTimerCounter();
 
-    // if(this.consultStarted){
-    //   if(this.tempPatients.length > 0){
-    //     this.currentPaient = this.tempPatients.splice(0, 1)[0];
-    //   }  
-    // }
-
-    this.httpService.getServerDate('serverDate')
-    .then(response => {
-      console.log(JSON.stringify(response));
-    })
-    .catch(error=>{
-      //error
-      console.log(error);
-    });
-
-    this.startTimerCounter();
+    
   }
 
+ 
   private setTimerForAvailability() {
 
     setInterval(() => {     
@@ -189,7 +166,7 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
   initConsultingWaitingTime(){
     setInterval(() => {
       this.consultingStartWaitingTime -= 60000;
-      this.consultingStartWaitingTimeLabel = this.util.getDateDigits(this.consultingStartWaitingTime);
+      this.consultingStartWaitingTimeLabel = this.utils.getDateDigits(this.consultingStartWaitingTime);
       console.log(this.consultingStartWaitingTimeLabel);
     }, 60000);
   }
@@ -197,7 +174,7 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
   initBookingWaitingTime(){
     setInterval(() => {
       this.bookingStartingWaitingTime -= 60000;
-      this.bookingStartingWaitingTimeLabel = this.util.getDateDigits(this.bookingStartingWaitingTime);
+      this.bookingStartingWaitingTimeLabel = this.utils.getDateDigits(this.bookingStartingWaitingTime);
       console.log(this.bookingStartingWaitingTime);
     }, 60000);
   }
@@ -232,21 +209,21 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
   }
 
 
-  nextPatient(){
+  // nextPatient(){
 
-    this.processedPatients.push(this.currentPaient);
+  //   this.processedPatients.push(this.currentPaient);
 
-    if(this.tempPatients.length > 0){
-      this.currentPaient = this.tempPatients.splice(0, 1)[0];
-    }
+  //   if(this.tempPatients.length > 0){
+  //     this.currentPaient = this.tempPatients.splice(0, 1)[0];
+  //   }
     
-    if(this.processedPatients.length === this.totalPatientSize){
-      // this.processedPatients.push(this.currentPaient);
-      // this.currentPaient = this.tempPatients.splice(0, 1)[0];
-      this.disableNext = true;
-    }
+  //   if(this.processedPatients.length === this.totalPatientSize){
+  //     // this.processedPatients.push(this.currentPaient);
+  //     // this.currentPaient = this.tempPatients.splice(0, 1)[0];
+  //     this.disableNext = true;
+  //   }
     
-  }
+  // }
   movePatient(){
 
     let dialogData = {
@@ -323,132 +300,6 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
   
 
-private async bookNow(phoneNumber:string, from:string):Promise<void>{
-
-  this.showLoading();
-
-  await this.util.originalBookingCheck(this.currentQueue.getBookingStarting(), this.currentQueue.getBookingEnding())
-    .then(result => {
-      console.log( result );
-    })
-    .catch(error => {
-    //error
-  })
- 
-  if (!(await this.util.originalBookingCheck(this.currentQueue.getBookingStarting(), this.currentQueue.getBookingEnding()))) {
-    
-    this.showDialog('fail', "This queue is no longer available for booking today. Please check your system date and time, in case you got any false availability of this queue. Or contact support if you have any further issue.", "Ok");
-    this.hideLoading();
-    return;
-  } 
-  let checkoutobject:any = this.checkoutService.getPaymentOptionObject();
-  checkoutobject.amount = this.currentQueue.getFees() * 100;
-  checkoutobject.currency = "INR";
-  checkoutobject.name = this.currentDoctor.getFirstName()+' '+this.currentDoctor.getLastName()+' - Appointment';
-
-  checkoutobject.prefill.name = this.userData.getFirstName()+' '+this.userData.getLastName();
-  checkoutobject.prefill.email = this.userData.getEmail();
-  checkoutobject.prefill.contact = phoneNumber;
-
-  checkoutobject['handler'] =  (response)=>{
-    this.processPaymentSuccess(phoneNumber, from , response)
-  };
-  this.getOrderId().then(data => {
-    if(data && data.status === "success"){
-      let order:any = data.order;
-      checkoutobject.order_id = order.id;      
-
-      this.hideLoading();
-
-      this.checkout(checkoutobject);
-
-      
-    }else{
-      console.log("Got error resonse !");
-      this.hideLoading();
-    }
-  })
-  .catch(error =>{
-    //error
-    console.log("error : " + JSON.stringify(error));
-    this.hideLoading();
-
-  });
-
-  
-}
-
-private  getOrderId(){
-  return  this.checkoutService.createOrderId((this.currentQueue.getFees() * 100).toString(), "INR")
-}
-
-private checkout(options):void{
-
-  let rzp1 = new Razorpay(options);
-
-  rzp1.on('payment.failed', (response) => {
-    this.processPaymentError(response);
-  });
-
-  try {
-    rzp1.open();  
-  } catch {
-    
-  }
-  
-  
-}
-
-private processPaymentSuccess(phoneNumber, from, response){
-  
-  // let paymentInfo: PaymentInfo = new PaymentInfo();
-  // paymentInfo.setPaymentId(response.razorpay_payment_id || "");
-  // paymentInfo.setOrderId(response.razorpay_order_id || "");
-  // paymentInfo.setSignature(response.razorpay_signature || "");
-
-  let bookedPaitient: BookedPatient = new BookedPatient();
-
-  const name:string = this.userData.getFirstName() + ' ' + this.userData.getLastName()
-  bookedPaitient.setName(name);
-  bookedPaitient.setPicUrl(this.userData.getPicUrl());
-  bookedPaitient.setAge(this.userData.getAge());
-  bookedPaitient.setFrom(from);
-  bookedPaitient.setPhone(phoneNumber);
-  bookedPaitient.setStatus("online");
-  bookedPaitient.setQueuePlace(10);
-  bookedPaitient.setBookingTime(+Date.now());
-  bookedPaitient.setBookingId((+Date.now()).toString());
-  bookedPaitient.setQueueId(this.currentQueue.getQueueId());
-  bookedPaitient.setDoctorId(this.currentDoctor.getUserId());
-  // bookedPaitient.setPaymentInfo(paymentInfo);
-  bookedPaitient.setPaymentId(response.razorpay_payment_id || "");
-  bookedPaitient.setOrderId(response.razorpay_order_id || "");
-  bookedPaitient.setSignature(response.razorpay_signature || "");
-  bookedPaitient.setPatientId(this.userData.getUserId());
-  bookedPaitient.setCurrentPatient(false);
-  bookedPaitient.setPending(false);
-  bookedPaitient.setProcessed(false);
-
-  let date: Date = new Date();
-  let dateStr = date.getDay() + '' + date.getMonth() + '' + date.getFullYear();
-  bookedPaitient.setDateString(dateStr);
-
-  const docId = this.userData.getUserId() + "_" +bookedPaitient.getBookingId();
-  
-
-  this.showLoading();
-  this.firestore.save("queue-bookings", docId, Object.assign({}, bookedPaitient))
-  .then(() => {
-    this.showDialog('success', "Your appointment has been registered successfully. You can now track your booking on this lobby.", "Ok")
-    this.hideLoading();
-  })
-  .catch(error => {
-    this.showDialog('fail', "Something went wrong. We could not book your appointment at this time. Please contact support, if you have any query", "Ok");
-    console.log("failed : "+error);
-    this.hideLoading();
-  });
- 
-}
  
 
 private showDialog(type:string, msg:string, ok:string):void{
@@ -467,42 +318,7 @@ private showDialog(type:string, msg:string, ok:string):void{
   });
 }
   
-  
-private processPaymentError(response){
-  console.log("payment Failed : "+JSON.stringify(response));
-}
-  
- 
-  private saveMyBooking() {
-    // this.firestore.save('queue-bookings');
-  }
 
-
-  openBookingDialog(){
-
-    let dialogData = {
-      maxPosition : this.tempPatients.length,
-      minPosition: this.tempPatients.length > 2 ? 2 : this.tempPatients.length
-    }
-    
-
-    let dialog = this.matDialog.open(BookingDialogComponent, { minWidth:"300px", maxWidth:"500px", maxHeight:"600px", disableClose:true, data: dialogData});
-    
-    dialog.afterClosed().subscribe(result => {
-
-      if (result && !result.canceled) {
-       
-          if(result.paying){           
-            this.bookNow(result.phoneNumber, result.city);
-          }else{
-            // this.hideLoading();
-          }
-      }
-
-      
-      
-    });
-  }
 
   private showLoading() {
     
@@ -514,10 +330,10 @@ private processPaymentError(response){
   }
 
   bookingAvailability(){
-    this.currentQueue.setBookingAvailable(this.util.isWithinTimeFrame(this.currentQueue.getBookingStarting(), this.currentQueue.getBookingEnding()));
+    this.currentQueue.setBookingAvailable(this.utils.isWithinTimeFrame(this.currentQueue.getBookingStarting(), this.currentQueue.getBookingEnding()));
   }
   consultingStarted(){
-    this.currentQueue.setConsultingStarted(this.util.isWithinTimeFrame(this.currentQueue.getConsultingStarting(), this.currentQueue.getConsultingEnding()));
+    this.currentQueue.setConsultingStarted(this.utils.isWithinTimeFrame(this.currentQueue.getConsultingStarting(), this.currentQueue.getConsultingEnding()));
   }
 
   startTimerCounter() {
@@ -540,9 +356,150 @@ private processPaymentError(response){
     }
   }
 
+finalizeCurrent(makePending:boolean): void {
+
+      let serverInput;
+  let currentUserInput;
+  this.showLoading();
+
+      if (makePending) {
+        serverInput = {
+          "currentPatient": false, "processed": false, "pending": true
+        };
+      } else {
+        serverInput = {
+          "currentPatient": false, "processed": true, "pending": false
+        };
+      }
+      currentUserInput = {
+        "currentPatient": true, "processed": false, "pending": false
+      };
+      let documentString = this.currentQueue.getCurrentPatient().getPatientId() + "_" + this.currentQueue.getCurrentPatient().getBookingId();
+      
+      this.firestoreService.update("queue-bookings", documentString, serverInput)
+        .then(() => {
+
+
+          this.nextPatient = this.findNextPatient();
+
+          let pendingStarted: boolean = false;
+
+          if (this.nextPatient === null) {
+            pendingStarted = true;
+            this.nextPatient = this.findNextPendingPatient();
+            if (this.nextPatient === null) {
+              this.hideLoading();
+              console.log("queue ended.");
+              this.currentQueue.setCurrentPatient(null);
+              
+              return;
+            }
+          }
+
+          
+          let documentString = this.nextPatient.getPatientId() + "_" + this.nextPatient.getBookingId();
+          
+          this.firestoreService.update("queue-bookings", documentString, currentUserInput)
+            .then(() => {
+              
+              // if (pendingStarted) {
+              //   this.nextPatient = this.findNextPendingPatient();
+              // } else {
+              //   this.nextPatient = this.findNextPatient();
+              // }
+              this.hideLoading();
+              console.log("Success.");
+
+            })
+            .catch(error => {
+              //error
+              this.hideLoading();
+              console.log("Error making current user.");
+            });
+
+        })
+        .catch(error => {
+        //error
+        this.hideLoading();
+        console.log("Error updating current user.");
+      })
+    
+   
+  }
+
+ startQueueProcessing() {
+
+
+   let currentUserInput;
+   this.showLoading();
+    currentUserInput = {
+      "currentPatient": true, "processed": false, "pending": false
+    };
+
+    let patientId = this.currentQueue.getBookings()[0].getPatientId();
+    let bookingId = this.currentQueue.getBookings()[0].getBookingId();
+
+   let documentString = patientId + "_" + bookingId;
+   
+   console.log("queue started with : "+documentString);
+   
+          
+          this.firestoreService.update("queue-bookings", documentString, currentUserInput)
+            .then(() => {
+                // this.nextPatient = this.findNextPatient();
+              this.hideLoading();
+              console.log("Success started queue!");
+              
+            })
+            .catch(error => {
+              //error
+              this.hideLoading();
+              console.log("Failed started queue!");
+            });
+
+
+  }
+
+  private findNextPatient():BookedPatient {
+    
+    // this.currentQueue.getBookings().forEach(patient => {
+    //   console.log("searching for candidate..");
+      
+    //   if (!patient.isPending() && !patient.isProcessed()) {
+    //     console.log("Canndidate..mached!");
+    //     return patient;
+    //   }
+    // });
+
+    for (let i = 0; i < this.currentQueue.getBookings().length; ++i){
+      console.log("searching for candidate..");
+      let patient = this.currentQueue.getBookings()[i];
+
+      if (!patient.isPending() && !patient.isProcessed()) {
+        console.log("Canndidate..mached!");
+        return patient;
+      }
+
+    }
+
+    return null;
+
+  }
+  private findNextPendingPatient():BookedPatient {
+    
+    this.currentQueue.getBookings().forEach(patient => {
+      if (patient.isPending()) {
+        return patient;
+      }
+    });
+
+    return null;
+
+  }
   ngOnDestroy(): void {
     if (this.myWaitingTimeTimer) {
       clearInterval(this.myWaitingTimeTimer);
     }
   }
 }
+

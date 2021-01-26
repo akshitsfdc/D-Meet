@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentData, QuerySnapshot} from '@angular/fire/firestore';
+import { AngularFirestore, DocumentChangeAction, DocumentData, QuerySnapshot} from '@angular/fire/firestore';
 
 import * as firebase from 'firebase';
 
@@ -50,7 +50,12 @@ export class FirestoreService {
     return this.firestore.collection(collection).valueChanges();
    
   }
+  getQueuesCollection(collection:string):Observable<DocumentChangeAction<unknown>[]>{
 
+    return this.firestore.collection(collection).stateChanges();
+   
+  }
+  // stateChanges
   public getRealTimeCollectionWithQuery(collection:string, key1:string, value1:string, key2:string, value2:string, key3:string, value3:string, orderBy:string):Observable<unknown[]> {
     return this.firestore.collection(collection, ref =>
       ref.where(key1, "==", value1)
@@ -58,6 +63,14 @@ export class FirestoreService {
         .where(key3, "==", value3)
       .orderBy(orderBy))
       .valueChanges();
+  }
+  public getBookingChanges(collection:string, key1:string, value1:string, key2:string, value2:string, key3:string, value3:string, orderBy:string):Observable<DocumentChangeAction<unknown>[]> {
+    return this.firestore.collection(collection, ref =>
+      ref.where(key1, "==", value1)
+        .where(key2, "==", value2)
+        .where(key3, "==", value3)
+        .orderBy(orderBy))
+      .stateChanges();
   }
   update(collection:string, document:string, data:any):Promise<void>{
     return this.firestore.collection(collection).doc(document).set(data, {merge:true});

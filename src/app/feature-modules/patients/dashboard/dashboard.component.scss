@@ -45,6 +45,18 @@ background-color: $alert;
 .status-card-scheduled{
 background-color: $grey-lighter;
 }
+.deactivated-card{
+    background-color: $grey-darker;
+ }
+ .deactivated-lebel{
+   color: $textPrimary;
+   height: fit-content;
+ }
+ .deactivated-lock-icon{
+     font-size: 12px;
+     height: fit-content;
+     width: fit-content;
+ }
 .queue-card{
     height: fit-content;
 }

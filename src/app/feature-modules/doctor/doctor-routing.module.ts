@@ -1,3 +1,4 @@
+
 import { EditQueueComponent } from './edit-queue/edit-queue.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -8,6 +9,7 @@ import { HomeComponent } from './home/home.component';
 import { LiveQueueDetailsComponent } from './live-queue-details/live-queue-details.component';
 import { LiveQueueComponent } from './live-queue/live-queue.component';
 import { QueuesComponent } from './queues/queues.component';
+import { MeetupLobbyComponent } from './meetup-lobby/meetup-lobby.component';
 
 
 const routes: Routes = [
@@ -23,7 +25,10 @@ const routes: Routes = [
         {
           path: 'home', component: LiveQueueComponent
         },
-        {path: 'queues', component: QueuesComponent},
+        { path: 'queues', component: QueuesComponent },
+        {
+          path: 'meetup-lobby', component: MeetupLobbyComponent
+        },
         {path: 'queues/createQueue', component: CreateQueueComponent},
         {path: 'queues/editQueue', component: EditQueueComponent},
         { path: 'home/queue', component: LiveQueueDetailsComponent },

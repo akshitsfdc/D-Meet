@@ -4,7 +4,7 @@
 
     <div class="queues-container" fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutGap="20px">
 
-        <mat-card class="queue-card"  *ngFor="let queue of session.getQueues()">
+        <mat-card class="queue-card"  *ngFor="let queue of session.getUserData().getQueues()">
            
             <mat-card-content fxLayout="column" fxLayoutGap="15px">
                 <div fxLayout="row">

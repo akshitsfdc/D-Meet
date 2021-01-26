@@ -2,6 +2,7 @@ import { BookedPatient } from "./booked-patient";
 
 
 
+
 export class QueueModel {
 
     private currency:string;
@@ -28,6 +29,10 @@ export class QueueModel {
     private nextNumber: string;
     private nextId: string;
     private myBooking: BookedPatient;
+    private queueEnded: boolean;
+
+    
+
 
     
 
@@ -35,6 +40,15 @@ export class QueueModel {
         this.bookings = [];
     }
 
+
+    public isQueueEnded(): boolean {
+        return this.queueEnded;
+    }
+
+    public setQueueEnded(queueEnded: boolean): void {
+        this.queueEnded = queueEnded;
+    }
+    
     public getMyBooking(): BookedPatient {
         return this.myBooking;
     }
