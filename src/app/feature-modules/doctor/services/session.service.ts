@@ -1,3 +1,4 @@
+import { queue } from 'rxjs/internal/scheduler/queue';
 import { AuthService } from './../../../services/auth.service';
 import { UtilsService } from './../../../services/utils.service';
 import { Injectable } from '@angular/core';
@@ -105,7 +106,7 @@ export class SessionService {
               break;
 
             case "modified":
-              currentRef.changeQueueStatus(queueObj);
+              // currentRef.changeQueueStatus(queueObj);
               currentRef.updateQueueOfUser(queueObj);             
               break;
             case "removed":
@@ -117,24 +118,6 @@ export class SessionService {
         });
 
       })
-    
-  //   .subscribe({
-  //     next(data){
-  //       let queues:QueueModel[] = [];
-  //       data.forEach(element => {
-  //         let queue:QueueModel = new QueueModel();
-  //         Object.assign(queue, element); 
-  //         queues.push(queue);
-          
-  //       });
-  //       currentRef.setQueues(queues);
-  //    },
-  //    error(msg){
-  //     console.log("Obs error >> : "+msg);
-  //    },
-  //    complete: () => console.log('completed')
-  //  });
-
   }
   private deleteQueue(queueUpdate: QueueModel): void{
     
@@ -160,27 +143,34 @@ export class SessionService {
         if(this.utils.isWithinTimeFrame(queue.getBookingStarting(), queue.getBookingEnding(), 'ist')){
           queue.setStatus('booking');
         }
+    
         if(this.utils.isWithinTimeFrame(queue.getConsultingStarting(), queue.getConsultingEnding(), 'ist')){
           queue.setStatus('live');
         }
   
-        if(this.utils.getTriggerTime(queue.getBookingStarting(), 'ist') !== -1){
+    
+        if(this.utils.getTriggerTime(queue.getBookingStarting(), 'ist')){
           setTimeout(() => {
             this.updateQueue(queue);
           }, this.utils.getTriggerTime(queue.getBookingStarting(), 'ist'));
         }
+    
 
-        if(this.utils.getTriggerTime(queue.getBookingEnding(), 'ist') !== -1){
+        if(this.utils.getTriggerTime(queue.getBookingEnding(), 'ist')){
           setTimeout(() => {
             this.updateQueue(queue);
           }, this.utils.getTriggerTime(queue.getBookingEnding(), 'ist'));
         }
-        if(this.utils.getTriggerTime(queue.getConsultingStarting(), 'ist') !== -1){
+    
+    
+        if(this.utils.getTriggerTime(queue.getConsultingStarting(), 'ist')){
           setTimeout(() => {
             this.updateQueue(queue);
           }, this.utils.getTriggerTime(queue.getConsultingStarting(), 'ist'));
         }
-        if(this.utils.getTriggerTime(queue.getConsultingEnding(), 'ist') !== -1){
+    
+    
+        if(this.utils.getTriggerTime(queue.getConsultingEnding(), 'ist')){
           setTimeout(() => {
              this.updateQueue(queue, true);
           }, this.utils.getTriggerTime(queue.getConsultingEnding(), 'ist'));
@@ -197,9 +187,13 @@ export class SessionService {
     }
     if(this.utils.isWithinTimeFrame(queue.getBookingStarting(), queue.getBookingEnding(), 'ist')){
       queue.setStatus('booking');
+      console.log("status changed to booking.");
+    } else {
+      queue.setStatus('scheduled');
     }
     if(this.utils.isWithinTimeFrame(queue.getConsultingStarting(), queue.getConsultingEnding(), 'ist')){
       queue.setStatus('live');
+      console.log("status changed to live.");
     }
 
   }
@@ -243,11 +237,13 @@ export class SessionService {
                   if (patient.isCurrentPatient()) {
                     queue.setCurrentPatient(patient);
                   }
-                  queue.getBookings().push(patient)
+                  queue.getBookings().push(patient);
+                  currentRef.checkQueueCompleteNess(queue);
                   break;
 
                 case "modified":
                   currentRef.updatePatient(patient, queue);
+                  currentRef.checkQueueCompleteNess(queue);
                   break;
                 case "removed":
                   break;
@@ -258,6 +254,22 @@ export class SessionService {
             currentRef.setCurrentNext(queue);
           })
       });
+  }
+
+  private checkQueueCompleteNess(queue: QueueModel) {
+  
+
+    for (let i = 0; i < queue.getBookings().length; ++i){
+
+      let patient = queue.getBookings()[i];
+
+      if (!patient.isProcessed()) {
+        queue.setQueueEnded(false);
+        return;
+      }
+    }
+    queue.setNextNumber("")
+    queue.setQueueEnded(true);
   }
 
   private setCurrentNext(queue:QueueModel) {
@@ -271,7 +283,9 @@ export class SessionService {
         queue.setNextNumber("" + patient.getQueuePlace());
         return;
       }
+
     }
+    queue.setNextNumber("");
   }
 
   private updatePatient(patientUpdate: BookedPatient, queue:QueueModel) {
@@ -312,6 +326,8 @@ private updateQueueOfUser(queueUpdate:QueueModel) {
     if (queue.getQueueId() === queueUpdate.getQueueId()) {
 
       this.updateQueueModel(queue, queueUpdate);
+
+      this.changeQueueStatus(queue);
 
       return;
     }

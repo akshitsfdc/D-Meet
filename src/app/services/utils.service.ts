@@ -65,59 +65,89 @@ export class UtilsService {
   public isWithinTimeFrame(startMs:number | 0, endMs:number | 0, type?:string):boolean{
 
     let currentTime: number = this.getMillisFromDate(new Date());
+
+    console.log("currentTime >> " + currentTime);
+    console.log("startMs >> " + startMs);
+    console.log("endMs >> "+endMs);
     
-    // await this.http.getServerDate("serverDate")
-    // .then(dateObjs => {
-    //   currentTime = dateObjs.timestapmIST;
-    //   console.log("currentTime 1 "+currentTime);
-    // })
-    // .catch(error => {
-      
-    //   //error
-    // })
-    if(currentTime <= endMs && currentTime >= startMs){
+    if(currentTime < endMs && currentTime >= startMs){
       return true;
     }else{
       return false;
     }
 
   }
+
   public getTriggerTime(milliseconds:number, type?:string):number{
 
     if(milliseconds === 0 || milliseconds === undefined){
       return 10;
     }
+
+    let difference;
+    milliseconds = this.getISTMilliseconds(milliseconds);
     
-    const currentMillis = this.getMillisFromDate(new Date());
+    let targetDate: Date = new Date(milliseconds);
+    let currentDate: Date = new Date();
+    
+    difference = this.getDifferenceBetweenHrMi(currentDate, targetDate);
 
-    console.log(milliseconds - currentMillis);
+    return difference;
+  }
 
-    if(currentMillis >= milliseconds){
-      return -1;
+  getDifferenceBetweenHrMi(currentDate:Date, targetDate:Date):number {
+    
+    let currentHr: number = currentDate.getHours();
+    let currentMi: number = currentDate.getMinutes();
+
+    let targetHr: number = targetDate.getHours();
+    let targetMi: number = targetDate.getMinutes();
+
+    console.log("trigger >> target : hr " + targetHr);
+    console.log("trigger >> target : minutes " + targetMi);
+    
+    console.log("trigger >> current : hr " + currentHr);
+    console.log("trigger >> current : minutes " + currentMi);
+
+    
+    let hrDifference: number, miDifference:number, totalMilliseconds:number;
+
+    hrDifference = (24 - currentHr) - (24 - targetHr);
+    miDifference = (60 - currentMi) - (60 - targetMi);
+
+    console.log("trigger >> target : hrDifference before " + hrDifference);
+    console.log("trigger >> target : miDifference before " + miDifference);
+
+    if (hrDifference < 0) {
+      hrDifference = 24 -  Math.abs(hrDifference);
+    }
+    if (miDifference < 0) {
+      hrDifference = Math.abs(hrDifference) - 1;
+      miDifference = 60 - Math.abs(miDifference);
     }
 
-    return (milliseconds - currentMillis);
+    totalMilliseconds = ((hrDifference * 60 * 60) + (miDifference * 60)) * 1000;
+
+    console.log("trigger >> target : hrDifference " + hrDifference);
+    console.log("trigger >> target : miDifference " + miDifference);
+
+    console.log("trigger >> ********* >> difference >>>> "+totalMilliseconds);
+
+    return totalMilliseconds;
+
+  }
+
+  isTimeWithinRange(startMs:number , endMs:number) {
+    
   }
 
   getTimeDifference(from:number):number{
 
     let nowMills: number = this.getMillisFromDate(new Date());
 
-    // this.getIstTimeServer()
-    //   .then(timeStamp => {
-    
-    //     nowMills = this.getMillisFromDate(new Date(timeStamp));
-
-    //   })
-    //   .catch(error => {
-      
-    //   });
-
     let difference: number;
       
     difference = nowMills - from;
-
-    console.log("difference : "+difference);
     
 
     if (difference < 0) {
@@ -139,9 +169,6 @@ export class UtilsService {
   }
 
   private getMillisFromDate(date: Date): number{
-    
-    console.log("hr : " + date.getHours());
-    console.log("minutes : " + date.getMinutes());
     
     return (((+date.getHours()) * 60 * 60) + ((+date.getMinutes()) * 60)) * 1000;
     
@@ -200,8 +227,6 @@ export class UtilsService {
 
   private updateQueue(queue:QueueModel, end?:boolean){
 
-    console.log('updateQueue >> ');
-
     if(end){
       queue.setStatus('scheduled');
       return;
@@ -221,20 +246,16 @@ export class UtilsService {
     
     await this.http.getServerDate("serverDate")
       .then(dateObjs => {
-        console.log("currentTime 1 >> server " + dateObjs.timestapmIST);
 
         let utcMillies: number = this.getUtCMillies(dateObjs.timestapmIST);
 
         currentTime = this.getMillisFromDate(new Date(utcMillies));;
-        console.log("currentTime 1 " + currentTime);
       })
       .catch(error => {
       
         //error
       });
-    console.log("currentTime 2    startMs => " + startMs);
-    console.log("currentTime 2    endMs => " + endMs);
-    
+
     if(+currentTime <= endMs && +currentTime >= startMs){
       return true;
     }else{
@@ -244,6 +265,19 @@ export class UtilsService {
   }
   public getUtCMillies(istMillies: number): number{
     return (istMillies - (5.5 * 60 * 60 * 1000));
+  }
+
+  public shouldShowTimingDisplay(millies:number):boolean {
+
+    let difference = this.getTriggerTime(millies);
+
+    console.log("difference >> display >> "+difference);
+    
+    if (difference <= 7200000) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }

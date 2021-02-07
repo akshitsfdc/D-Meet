@@ -79,7 +79,7 @@ export class MeetingHostService {
   }
 
   private getRemoteTracks(): void{
-    
+
     this.peerConnection.addEventListener('track', event => {
       console.log('Got remote track..');
       event.streams[0].getTracks().forEach(track => {        
@@ -142,7 +142,7 @@ export class MeetingHostService {
     });
   }
 
-  private setIceCandidates(): void{
+  private setIceCandidates(callerCandidateCollection:string, document:string): void{
 
     this.peerConnection.addEventListener('icecandidate', event => {
       if (!event.candidate) {
@@ -150,21 +150,70 @@ export class MeetingHostService {
         return;
       }
       console.log('Got candidate.. ');
-      // callerCandidatesCollection.add(event.candidate.toJSON());
-      //add server code here
+
+      this.firestore.save(callerCandidateCollection, document, event.candidate.toJSON())
+      .then(() => {
+      
+      })
+      .catch(error => {
+      
+      });
 
     });
   }
 
-  private async createOffer(){
+  private async createOffer(room:string, roomId:string){
     // Add code for creating a room here
     const offer = await this.peerConnection.createOffer({
       offerToReceiveAudio: true,
       offerToReceiveVideo: true
     });
 
-    // roomRef.set(roomWithOffer);
-    //add server code here
+    await this.peerConnection.setLocalDescription(offer);
+
+    const roomWithOffer = {
+      offer: {
+        type: offer.type,
+        sdp: offer.sdp
+      }
+    }
+
+    this.firestore.save(room, roomId, roomWithOffer)
+      .then(() => {
+      
+      })
+      .catch(error => {
+      
+      });
+    
+  }
+
+  private async setAnswer(room:string, roomId:string) {
+
+    this.firestore.getDocChanges(room, roomId)
+      .subscribe(async(change) => {
+
+        const type: string = change.type;
+        const data: any = change.payload.data() as any;
+
+        if (!this.peerConnection.currentRemoteDescription && data.answer) {
+                console.log('Got remote description..');
+                const answer = new RTCSessionDescription(data.answer)
+                this.peerConnection.setRemoteDescription(answer);
+                // return { id, ...data };
+              }
+      });
+  }
+
+  private async setRemoteIceCandidate(calleeCandidateCollection:string, document:string) {
+
+    this.firestore.getDocChanges(calleeCandidateCollection, document)
+      .subscribe(async(change) => {
+        const type: string = change.type;
+        const data: any = change.payload.data() as any;     
+        await this.peerConnection.addIceCandidate(new RTCIceCandidate(data));
+        
+    });
   }
 
   

@@ -116,25 +116,25 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
     this.setTimerForAvailability();
 
 
-    if (!this.currentQueue.isConsultingStarted()) {
+    // if (!this.currentQueue.isConsultingStarted()) {
 
-      this.consultingStartWaitingTime = this.utils.getTimeDifference(this.currentQueue.getConsultingStarting());
+    //   this.consultingStartWaitingTime = this.utils.getTimeDifference(this.currentQueue.getConsultingStarting());
 
-      this.consultingStartWaitingTimeLabel = this.utils.getDateDigits(this.consultingStartWaitingTime);
+    //   this.consultingStartWaitingTimeLabel = this.utils.getDateDigits(this.consultingStartWaitingTime);
   
-      this.initConsultingWaitingTime();
+    //   this.initConsultingWaitingTime();
 
       
-    }
+    // }
 
-    if (!this.currentQueue.isBookingAvailable()) {
+    // if (!this.currentQueue.isBookingAvailable()) {
 
-      this.bookingStartingWaitingTime = this.utils.getTimeDifference(this.currentQueue.getBookingStarting());
+    //   this.bookingStartingWaitingTime = this.utils.getTimeDifference(this.currentQueue.getBookingStarting());
 
-      this.bookingStartingWaitingTimeLabel = this.utils.getDateDigits(this.bookingStartingWaitingTime);
+    //   this.bookingStartingWaitingTimeLabel = this.utils.getDateDigits(this.bookingStartingWaitingTime);
 
-      this.initBookingWaitingTime();
-    }
+    //   this.initBookingWaitingTime();
+    // }
    
 
     // this.startTimerCounter();
@@ -173,9 +173,11 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
   initBookingWaitingTime(){
     setInterval(() => {
-      this.bookingStartingWaitingTime -= 60000;
-      this.bookingStartingWaitingTimeLabel = this.utils.getDateDigits(this.bookingStartingWaitingTime);
-      console.log(this.bookingStartingWaitingTime);
+      if (this.bookingStartingWaitingTime > 0) {
+        this.bookingStartingWaitingTime -= 60000;
+        this.bookingStartingWaitingTimeLabel = this.utils.getDateDigits(this.bookingStartingWaitingTime);
+        console.log(this.bookingStartingWaitingTime);
+      }     
     }, 60000);
   }
   drop(event: CdkDragDrop<string[]>) {
@@ -379,21 +381,13 @@ finalizeCurrent(makePending:boolean): void {
       this.firestoreService.update("queue-bookings", documentString, serverInput)
         .then(() => {
 
-
           this.nextPatient = this.findNextPatient();
 
-          let pendingStarted: boolean = false;
-
-          if (this.nextPatient === null) {
-            pendingStarted = true;
-            this.nextPatient = this.findNextPendingPatient();
-            if (this.nextPatient === null) {
-              this.hideLoading();
-              console.log("queue ended.");
-              this.currentQueue.setCurrentPatient(null);
-              
-              return;
-            }
+          if (this.nextPatient === null) {            
+            this.hideLoading();
+            console.log("queue ended.");
+            this.currentQueue.setCurrentPatient(null);            
+            return;            
           }
 
           
@@ -429,15 +423,26 @@ finalizeCurrent(makePending:boolean): void {
 
  startQueueProcessing() {
 
+   
+   if (this.currentQueue.getBookings().length < 1) {
+     //error
+     return;
+   }
 
    let currentUserInput;
    this.showLoading();
+
     currentUserInput = {
       "currentPatient": true, "processed": false, "pending": false
     };
 
-    let patientId = this.currentQueue.getBookings()[0].getPatientId();
-    let bookingId = this.currentQueue.getBookings()[0].getBookingId();
+   let firstPatient: BookedPatient = this.findNextPatient();
+   if (firstPatient === null) {
+    this.hideLoading();
+     return;
+   }
+    let patientId = firstPatient.getPatientId();
+    let bookingId = firstPatient.getBookingId();
 
    let documentString = patientId + "_" + bookingId;
    
@@ -482,16 +487,27 @@ finalizeCurrent(makePending:boolean): void {
 
     }
 
-    return null;
+    return this.findNextPendingPatient();
 
   }
+  
   private findNextPendingPatient():BookedPatient {
     
-    this.currentQueue.getBookings().forEach(patient => {
-      if (patient.isPending()) {
+    // this.currentQueue.getBookings().forEach(patient => {
+    //   if (patient.isPending() && !patient.isProcessed()) {
+    //     return patient;
+    //   }
+    // });
+
+    for (let i = 0; i < this.currentQueue.getBookings().length; ++i){
+      console.log("searching for pending candidates..");
+      let patient = this.currentQueue.getBookings()[i];
+
+      if (patient.isPending() && !patient.isProcessed()) {
         return patient;
       }
-    });
+
+    }
 
     return null;
 

@@ -150,7 +150,6 @@ export class DoctorConferenceComponent implements OnInit {
     this.disableCallButton = true;
     this.openfullscreen();
     this.startCallText = "Ringing...";
-
   }
   playAudio(){
     this.audio.load();
@@ -191,6 +190,7 @@ export class DoctorConferenceComponent implements OnInit {
     //   divF.requestFullscreen();
     // }
   }
+  
   private addDataChannelListeners(){
 
        // Enable textarea and button when opened
@@ -253,6 +253,7 @@ export class DoctorConferenceComponent implements OnInit {
       offerToReceiveAudio: true,
       offerToReceiveVideo: true
     });
+
     await this.peerConnection.setLocalDescription(offer);
 
     const roomWithOffer = {
@@ -604,6 +605,7 @@ export class DoctorConferenceComponent implements OnInit {
    this.cameraOn = !this.cameraOn;
   
   }
+
   micToggle(){
     if(this.micOn){
       this.localStream.getAudioTracks().forEach(track => {track.enabled = false;} );

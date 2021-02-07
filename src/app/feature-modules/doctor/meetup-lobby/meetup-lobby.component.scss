@@ -76,6 +76,23 @@
       height:60px;
       background-color: $grey-lighter;
   }
+  .header-status-icon{
+    font-size: 24px;
+    height: fit-content;
+    width: fit-content;
+  }
+  .header-status-lable{
+    font-size: 16px;
+  }
+  .icon-live{
+    color: $warn;
+  }
+  .icon-booking{
+    color: $alert;
+  }
+  .icon-scheduled{
+    color: $primary;
+  }
   .booking-list-wrapper{
     overflow-x: hidden;
     overflow-y: auto;;
@@ -110,7 +127,7 @@
   }
   .processing-patient-card{
     width: fit-content;
-    max-width: 300px;
+    max-width: 250px;
     height: fit-content;
     align-self: center;
     z-index: 1;
@@ -239,6 +256,16 @@
     margin-top: 20px;
   }
 
+  .processing-card-title{
+    font-size: 18px;
+    
+  }
+ .doctor-indicator{
+   font-size: 20px;
+   width: fit-content;
+   height: fit-content;
+ }
+ 
 // .temp{
 //     width: 0;
 //     height: 0;

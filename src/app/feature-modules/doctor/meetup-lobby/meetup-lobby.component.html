@@ -3,61 +3,41 @@
     
     <div fxLayout="column" fxFlex="1 1 auto" fxLayoutGap="25px" >
         
-     
         <div fxLayout="column" >
             
               <mat-card class="processing-card" [class.mat-elevation-z8]="true">
                   <mat-card-content  fxLayout="column" class="processing-card-content" >
                     <mat-toolbar class="header-toolbar" >
-                        <mat-label>Meeting Room</mat-label>
-                        
-                        <span fxFlex="1 1 auto"></span>
-                       
-                        <mat-icon>meeting_room</mat-icon> 
+
+                      <mat-icon class="header-status-icon" [ngClass]="{'header-status-icon':true, 
                       
+                      'icon-live': (currentQueue.getStatus()==='live'), 'icon-booking': (currentQueue.getStatus()==='booking'),
+                    'icon-scheduled': (currentQueue.getStatus()==='scheduled')}">lens</mat-icon> 
+
+                      <mat-label class="header-status-lable" fxFlexOffset="5px">{{currentQueue.getStatus()==='live'?utils.capitalize(currentQueue.getStatus()):utils.initCap(currentQueue.getStatus())}}</mat-label>
+                        <span fxFlex="1 1 auto"></span>
                       </mat-toolbar> 
                      <div fxLayout="column" class="processing-card-content-div" fxLayoutAlign="center center">
-                        
 
                       <div class="buffet-wrapper" >
-
-                      
-                       
-
                          <div class="process-container" fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="center center" >
 
-                            <!-- <div class="timing-container" fxLayout="column"  fxLayoutAlign="space-between center">
-                                <div  class="timer-box" fxLayout="column" fxLayoutAlign="center center">
-                                    <mat-label class="small-label">Time Passed</mat-label>
-                                    <mat-label class="header-label big-label" fxFlexOffset="2px">{{consultingStartWaitingTimeLabel}}</mat-label>
-                                  </div>
-                                  <div  class="timer-box" fxLayout="column" fxLayoutAlign="center center">
-                                    <mat-label class="small-label">Current</mat-label>
-                                    <mat-label class="header-label big-label" fxFlexOffset="2px">286476</mat-label>
-                                  </div>
-                                  <div class="timer-box" fxLayout="column" fxLayoutAlign="center center">
-                                    <mat-label class="small-label">Next</mat-label>
-                                    <mat-label class="header-label big-label" fxFlexOffset="2px">286476</mat-label>
-                                  </div>
-                            </div> -->
-
                             <mat-card class="processing-patient-card doctor-card"  [class.mat-elevation-z2]="true">
-                                <mat-card-header *ngIf="consultStarted" >
+                                <mat-card-header >
                                     <img mat-card-avatar src="https://images.theconversation.com/files/304957/original/file-20191203-66986-im7o5.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=1200.0&fit=crop">
-                                    <mat-card-title> <mat-label class="header-label">Dr. {{currentDoctor.getFirstName()+' '+currentDoctor.getLastName() }}</mat-label></mat-card-title>     
-                                    <mat-card-subtitle>{{currentDoctor.getStatus() || "offline"}}</mat-card-subtitle>                                                                  
+                                    <mat-card-title> <mat-label class="header-label processing-card-title">Dr. {{currentDoctor.getFirstName()+' '+currentDoctor.getLastName() }}</mat-label></mat-card-title>     
+                                    <mat-card-subtitle  >
+                                      {{currentDoctor.getStatus() || "offline"}} </mat-card-subtitle>                                                                  
                                     <span fxFlex="1 1 auto"></span>
-                                   <mat-icon>medical_services</mat-icon>
+                                   <mat-icon class="doctor-indicator">medical_services</mat-icon>
                                 </mat-card-header>
                                 <mat-card-content fxLayout="column" fxLayoutGap="5px">
                                     
                                    <mat-label class="small-label">{{currentDoctor.getDegree()}}</mat-label>
                                    <mat-label class="small-label">{{currentDoctor.getSpeciality()}}</mat-label>
                                    <mat-label class="small-label highlighted-text">www.doctormeetup.com/@{{currentDoctor.getProfileId()}}</mat-label>
-                                 
-                                   
-                                   
-                                   <ng-container *ngIf="!currentQueue.isConsultingStarted()">
+
+                                   <!-- <ng-container *ngIf="!currentQueue.isConsultingStarted() && utils.shouldShowTimingDisplay(currentQueue.getConsultingStarting())">
                                     <div  class="timer-box footer-div" fxLayout="row" fxLayoutAlign="center center" fxFlexOffset="10px">
                                   
                                       <mat-label class="small-label">Consulting will start in </mat-label>
@@ -66,7 +46,8 @@
                                     </div>
                                    </ng-container>
 
-                                   <ng-container *ngIf="!currentQueue.isBookingAvailable() && currentQueue.getBookings().length == 0">
+                                   <ng-container *ngIf="!currentQueue.isBookingAvailable() && currentQueue.getBookings().length == 0 
+                                   && utils.shouldShowTimingDisplay(currentQueue.getBookingStarting())">
 
                                     <div  class="timer-box footer-div" fxLayout="row" fxLayoutAlign="center center" fxFlexOffset="10px">
                                   
@@ -75,7 +56,7 @@
   
                                     </div>
 
-                                   </ng-container>
+                                   </ng-container> -->
 
                                    
                                 </mat-card-content>
@@ -85,7 +66,7 @@
 
                               
                               
-                              <ng-container *ngIf="currentQueue.isConsultingStarted() && currentQueue.getBookings().length > 0">
+                              <ng-container *ngIf="currentQueue.getCurrentPatient() && currentQueue.getBookings().length > 0">
 
                               <div class="processing-indicator-wrapper" *ngIf="currentQueue.getCurrentPatient()">
 
@@ -100,7 +81,7 @@
                               </div>
                               
                               <mat-card *ngIf="currentQueue.getCurrentPatient()"  class="processing-patient-card"  [class.mat-elevation-z2]="true">
-                                <mat-card-header *ngIf="consultStarted" >
+                                <mat-card-header  >
                                     <img mat-card-avatar src="https://material.angular.io/assets/img/examples/shiba1.jpg">
                                     <mat-card-title> <mat-label class="header-label">{{currentQueue.getCurrentPatient().getName()}}</mat-label></mat-card-title>                                                                                                
                                     <mat-card-subtitle >{{currentQueue.getCurrentPatient().getStatus()}}</mat-card-subtitle>       
@@ -108,23 +89,27 @@
                                     <mat-icon>single_bed</mat-icon>                         
                                 </mat-card-header>
     
-                                  <mat-card-content fxLayout="column" fxLayoutGap="15px">
-                                    <div fxLayout="row" fxLayoutGap="30px">
+                                  <mat-card-content fxLayout="column" fxLayoutGap="10px">
+                                    <div fxLayout="row" >
                                       <mat-label class="small-label">Booking Time</mat-label>
                                       <span fxFlex="1 1 auto"></span>
                                       <mat-label class="small-label">{{utils.millisToTimeString(currentQueue.getCurrentPatient().getBookingTimeServer())}}</mat-label>
                                   </div>
-                                  <div fxLayout="row" fxLayoutGap="30px">
-                                      <mat-label class="small-label">Booking Id</mat-label>
+                                  <div fxLayout="row" >
+                                      <mat-label class="small-label">Age</mat-label>
                                       <span fxFlex="1 1 auto"></span>
-                                      <mat-label class="small-label">{{currentQueue.getCurrentPatient().getBookingId()}}</mat-label>
+                                      <mat-label class="small-label">{{currentQueue.getCurrentPatient().getAge()}}</mat-label>
                                   </div>
-                                  <div fxLayout="row" fxLayoutGap="30px">
+                                  <div fxLayout="row">
                                       <mat-label class="small-label">Position</mat-label>
                                       <span fxFlex="1 1 auto"></span>
                                       <mat-label class="small-label">#{{currentQueue.getCurrentPatient().getQueuePlace()}}</mat-label>
                                   </div>
-                                                                                                
+                                           
+                                  <div fxLayout="row" fxLayoutGap="10px">
+                                    <button mat-flat-button class="lighter-button" (click)="finalizeCurrent(true)">Mark Pending</button>
+                                    <button mat-raised-button >Start Meeting</button>
+                                </div>
                                   </mat-card-content>
                                   
                               </mat-card>
@@ -135,7 +120,7 @@
                          <mat-progress-bar mode="buffer" *ngIf="currentQueue.getCurrentPatient()"></mat-progress-bar>
                         </div>
                         
-                        <ng-container *ngIf="!currentQueue.getCurrentPatient() && currentQueue.getBookings().length > 0 && !currentQueue.isQueueEnded()
+                        <!-- <ng-container *ngIf="!currentQueue.getCurrentPatient() && currentQueue.getBookings().length > 0 && !currentQueue.isQueueEnded()
                           && currentQueue.isConsultingStarted()
                           " >
 
@@ -156,7 +141,7 @@
                           <button mat-raised-button class="start-button" (click)="finalizeCurrent(false)">Next</button>
 
                         
-                        </ng-container>
+                        </ng-container> -->
 
                           
                      </div> 
@@ -168,8 +153,27 @@
             <!-- </ng-container> -->
         </div>
        
+        <div class="timing-container" fxLayout="row wrap" fxFlexOffset="5px"  fxLayoutAlign="space-between center">
+          <!-- <span></span> -->
+          <div   fxLayout="row" fxLayoutAlign="center center">
+                
+              <button mat-raised-button class="start-button" (click)="startQueueProcessing()"
+               [disabled]="currentQueue.getCurrentPatient() || currentQueue.getBookings().length === 0 || !currentQueue.isConsultingStarted()
+                || currentQueue.isQueueEnded()">Start/Resume</button>
+
+            </div>
+           
+            <div  fxLayout="row" fxLayoutAlign="center center">
+             
+                <button mat-raised-button #nextButton class="start-button" (click)="finalizeCurrent(false)"
+                [disabled]="currentQueue.isQueueEnded() || currentQueue.getBookings().length === 0 || !currentQueue.getCurrentPatient()">
+                {{(!nextButton.disabled && currentQueue.getNextNumber().length) === 0?"End":"Next"}}
+              </button>
+            </div>
+           
+      </div>
       
-        <div class="timing-container" fxLayout="row wrap" fxFlexOffset="20px"  fxLayoutAlign="space-between center">
+        <div class="timing-container" fxLayout="row wrap" fxFlexOffset="30px"  fxLayoutAlign="space-between center">
           <!-- <span></span> -->
           <div  class="timer-box" fxLayout="row" fxLayoutAlign="center center">
               <mat-label class="small-label">Current patient</mat-label>
@@ -317,7 +321,9 @@
                  
                  
                     <mat-card-header   class="patient-info-header" >
-                      <img mat-card-avatar src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4QcsAkyJy8YJXzB_ODAR9Q88d50--zfXfNw&usqp=CAU">
+                      
+                        <img mat-card-avatar src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4QcsAkyJy8YJXzB_ODAR9Q88d50--zfXfNw&usqp=CAU">                                      
+                      
                       <mat-card-title fxLayout="row">
                         <mat-label class="header-label">{{booking.getName()}}</mat-label>
                         
@@ -331,18 +337,25 @@
                       <mat-card-subtitle fxLayout="row">
                          {{booking.getStatus()}}                        
                       </mat-card-subtitle> 
+                     
+                     
                     </mat-card-header>
   
                     <span fxFlex="1 1 auto"></span>
-                    <mat-card  [ngClass]="{'position-card': true, 'position-card-1': i==0, 'position-card-2': i==1, 'position-card-3': i==2}" >
-                      <mat-card-content>
-                        <mat-label [ngClass]="{'first-label': i===0 || i===1 || i===2}">#{{i+1}}</mat-label>
-                        <!-- [ngClass]="{'live-label': (queue.getStatus() !=='scheduled')}" -->
-                      </mat-card-content>                      
-                    </mat-card> 
-                    <span fxFlex="1 1 10px"></span>  
-                 
-                              
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                      <mat-card  [ngClass]="{'position-card': true, 'position-card-1': i==0, 'position-card-2': i==1, 'position-card-3': i==2}" >
+                        <mat-card-content>
+                          <mat-label [ngClass]="{'first-label': i===0 || i===1 || i===2}">#{{i+1}}</mat-label>
+                          <!-- [ngClass]="{'live-label': (queue.getStatus() !=='scheduled')}" -->
+                        </mat-card-content>                      
+                      </mat-card> 
+                      <span fxFlex="1 1 10px"></span>  
+                   
+                      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Other options">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                    </div>
+                             
 
                   <!-- {{movie}} -->
                 </div>
@@ -351,5 +364,24 @@
           
     </div>
    
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>emoji_people</mat-icon>
+        <span>Attend Now</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>account_circle</mat-icon>
+        <span>Profile</span>
+      </button>
+      <button mat-menu-item disabled="false">
+        <mat-icon>details</mat-icon>
+        <span>Booking Details</span>
+      </button>
+      
+      <button mat-menu-item>
+        <mat-icon>flutter_dash</mat-icon>
+        <span>Poke</span>
+      </button>
+    </mat-menu>
      
 </div>
