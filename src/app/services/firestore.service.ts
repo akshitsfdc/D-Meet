@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentChangeAction, DocumentData, QuerySnapshot} from '@angular/fire/firestore';
+import { Action, AngularFirestore, DocumentChangeAction, DocumentData, DocumentSnapshot, QuerySnapshot} from '@angular/fire/firestore';
 
 import * as firebase from 'firebase';
 
@@ -15,42 +15,42 @@ export class FirestoreService {
   ) { 
   }
 
-  save(collection:string, document:string, data:any):Promise<void>{
+  public save(collection:string, document:string, data:any):Promise<void>{
 
     return this.firestore.collection(collection).doc(document).set(data);
    
   }
-  getEqualsObs(collection:string, key:string, value:string):Observable<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>>{
+  public getEqualsObs(collection:string, key:string, value:string):Observable<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>>{
     return this.firestore.collection(collection, ref => ref.where(key, "==" , value)).get();    
   } 
-  getEquals(collection:string, key:string, value:string):Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>>{
+  public getEquals(collection:string, key:string, value:string):Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>>{
     return this.firestore.collection(collection, ref => ref.where(key, "==" , value)).get().toPromise();    
   }
-  getEqualsDouble(collection:string, key1:string, value1:string, key2:string, value2:string):Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>>{
+  public getEqualsDouble(collection:string, key1:string, value1:string, key2:string, value2:string):Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>>{
     return this.firestore.collection(collection, ref => ref.where(key1, "==" , value1).where(key2, "==", value2)).get().toPromise();    
   }
-  get(collection:string, document:string):Promise<firebase.firestore.DocumentSnapshot>{
+  public get(collection:string, document:string):Promise<firebase.firestore.DocumentSnapshot>{
 
     return this.firestore.collection(collection).doc(document).get().toPromise();
    
   }
   
-  getObs(collection:string, document:string):Observable<firebase.firestore.DocumentSnapshot>{
+  public getObs(collection:string, document:string):Observable<firebase.firestore.DocumentSnapshot>{
 
     return this.firestore.collection(collection).doc(document).get();
    
   }
-  getValueChanges(collection:string, document:string):Observable<unknown>{
+  public getValueChanges(collection:string, document:string):Observable<unknown>{
 
     return this.firestore.collection(collection).doc(document).valueChanges();
    
   }
-  getRealtimeCollection(collection:string):Observable<unknown[]>{
+  public getRealtimeCollection(collection:string):Observable<unknown[]>{
 
     return this.firestore.collection(collection).valueChanges();
    
   }
-  getQueuesCollection(collection:string):Observable<DocumentChangeAction<unknown>[]>{
+  public getQueuesCollection(collection:string):Observable<DocumentChangeAction<unknown>[]>{
 
     return this.firestore.collection(collection).stateChanges();
    
@@ -72,23 +72,26 @@ export class FirestoreService {
         .orderBy(orderBy))
       .stateChanges();
   }
-  update(collection:string, document:string, data:any):Promise<void>{
+  public update(collection:string, document:string, data:any):Promise<void>{
     return this.firestore.collection(collection).doc(document).set(data, {merge:true});
   }
-  delete(collection:string, document:string):Promise<void>{
+  public delete(collection:string, document:string):Promise<void>{
     return this.firestore.collection(collection).doc(document).delete();
   }
 
-  getAllStartAfter(collection:string, limit:number, document:DocumentData):Promise<QuerySnapshot<DocumentData>>{
+  public getAllStartAfter(collection:string, limit:number, document:DocumentData):Promise<QuerySnapshot<DocumentData>>{
 
     return this.firestore.collection(collection,ref => ref.startAfter(document).limit(limit))
     .get().toPromise();
    
   }
-  getAll(collection:string, limit:number):Promise<QuerySnapshot<DocumentData>>{
+  public getAll(collection:string, limit:number):Promise<QuerySnapshot<DocumentData>>{
 
     return this.firestore.collection(collection,ref => ref.limit(limit))
     .get().toPromise();
    
+  }
+  public getDocChanges(collection:string, document:string):Observable<Action<DocumentSnapshot<unknown>>> {
+    return this.firestore.collection(collection).doc(document).snapshotChanges();
   }
 }
