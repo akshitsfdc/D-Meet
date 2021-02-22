@@ -1,23 +1,31 @@
-import { FirestoreService } from 'src/app/services/firestore.service';
+import { R } from '@angular/cdk/keycodes';
 import { Injectable } from '@angular/core';
-import { Subscription } from 'rxjs';
-
+import { Action, DocumentSnapshot } from '@angular/fire/firestore';
+import { Observable, Subscription } from 'rxjs';
+import { FirestoreService } from './firestore.service';
+import adapter from 'webrtc-adapter';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MeetingHostService {
+export class MeetingClientService {
 
   private remoteIceObs: Subscription = null;
-  private answerObs: Subscription = null;
-  
+  private offerObs: Subscription = null;
+
   private configuration:any = {
     iceServers: [
+      // {
+      //   urls: [
+      //     'stun:stun1.l.google.com:19302',
+      //     'stun:stun2.l.google.com:19302',
+      //   ]
+      // },
       {
-          urls: "turn:doctormeetup.com:3478",
-          username: "test",
-          credential: "test123"
-
+            urls: "turn:doctormeetup.com:3478",
+            username: "test",
+            credential: "test123"
+  
       },
     ],
     iceCandidatePoolSize: 10,
@@ -25,6 +33,7 @@ export class MeetingHostService {
 
   private ringTimer: any;
   private audio = new Audio();
+
 
   private peerConnection: RTCPeerConnection;
   private dataChannel: RTCDataChannel;
@@ -44,28 +53,26 @@ export class MeetingHostService {
 
   private selectedCamera: string;
   private selectedMic: string;
-
   private conferenceCallback: any;
-  private callStartCallback: any;
-  
 
+  private iceCollectionRef: string[] = [];
+  private remoteIceCollectionRef: string[] = [];
+  
   constructor(private firestore: FirestoreService) { 
 
     this.roomCollection = "meeting_rooms";
     this.callerCollection = "caller_candidates";
-    this.calleeCollection = "callee_candidates";
+    this.calleeCollection = "callee_candidates"
 
     this.audio.src = "/assets/audio/ringing.wav";
     this.audio.addEventListener('ended', function() {
       this.currentTime = 0;
       this.play();
-  }, false);
-   
-
+    }, false);
+    
   }
-
-  public setCallStartCallback(callStartCallback) {
-    this.callStartCallback = callStartCallback;
+  public setCallBack(callnback:any): void{
+    this.conferenceCallback = callnback;
   }
   public getLocalStream():MediaStream {
     return this.localStream;
@@ -87,12 +94,11 @@ export class MeetingHostService {
     this.roomId = roomId;
   }
 
-  public setCallBack(callnback:any): void{
-    this.conferenceCallback = callnback;
-  }
+
+
   private async openUserMedia() {
     
-    this.localStream = await navigator.mediaDevices.getUserMedia({
+    const stream = await navigator.mediaDevices.getUserMedia({
           video: {
             deviceId: this.selectedCamera
           },
@@ -108,8 +114,9 @@ export class MeetingHostService {
     console.log("this.localStream selectedCamera >> "+this.selectedCamera);
     console.log("this.localStream selectedMic >> "+this.selectedMic);
   
-    // this.localStream = stream;
-    this.createRoom();
+    this.localStream = stream;
+
+    this.joinRoom();
 
     
     
@@ -178,48 +185,33 @@ export class MeetingHostService {
     );
   }
 
-  public callNow():void {
+  public pickupNow():void {
     this.setupDevice();
   }
-  public async createRoom() {
 
-   // await this.openUserMedia();
-    //await this.setupDevice();
-    //ring
-    //this.startRingTimer();
+  public joinRoom() {
 
     this.createPeerConnection();
 
     this.registerPeerConnectionListeners();
 
-    this.createDataChannel("Chatting Channel");
-
-    this.addDataChannelListeners();
-
     this.addTracks();
 
     this.getRemoteTracks();
 
-    const collectionRef = this.roomCollection + '/' + this.roomId + '/' + this.callerCollection;
+    const collectionRef = this.roomCollection + '/' + this.roomId + '/' + this.calleeCollection;
     
-    this.setIceCandidates(collectionRef, this.callerIceDoc);
+    this.setIceCandidates(collectionRef, this.calleeIceDoc);
 
-    this.createOffer(this.roomCollection, this.roomId);
+    this.fetchOffer(this.roomCollection, this.roomId);
 
-    this.setAnswer(this.roomCollection, this.roomId);
+    const collectionRefRemoteIce = this.roomCollection + '/' + this.roomId + '/' + this.callerCollection;
+    this.setRemoteIceCandidate(collectionRefRemoteIce, this.callerIceDoc);
 
-    const collectionRefRemoteIce = this.roomCollection + '/' + this.roomId + '/' + this.calleeCollection;
-
-    this.setRemoteIceCandidate(collectionRefRemoteIce, this.calleeIceDoc);
   }
 
   private createPeerConnection():void {
     this.peerConnection = new RTCPeerConnection(this.configuration);
-  }
-  private createDataChannel(channelName:string):void {
-
-    this.dataChannel = this.peerConnection.createDataChannel(channelName, { ordered: true });
-    
   }
 
   private addTracks(): void {
@@ -259,13 +251,15 @@ export class MeetingHostService {
         'ICE connection state change: ' + this.peerConnection.iceConnectionState);
     });
 
-    this.peerConnection.addEventListener('datachannel', (event) => {
-      console.log(
-        'ICE connection state change:..datachannel ' + this.peerConnection.iceConnectionState);
+  this.peerConnection.addEventListener('datachannel', (event) => {
+      console.log('ICE connection state change:..datachannel ' + this.peerConnection.iceConnectionState);
       
-      // this.dataChannel = event.channel;
-      
-      });
+    
+    this.dataChannel = event.channel;
+    this.addDataChannelListeners();
+    
+    
+    });
     
   }
 
@@ -293,50 +287,67 @@ export class MeetingHostService {
     });
   }
 
-  private setIceCandidates(callerCandidateCollection:string, document:string): void{
+  private setIceCandidates(calleeCandidateCollection:string, document:string): void{
 
-    console.log("callerCandidateCollection : "+callerCandidateCollection);
-    
     this.peerConnection.addEventListener('icecandidate', event => {
       if (!event.candidate) {
         console.log('Got final candidate!');
         return;
       }
-      console.log('Got candidate.. ');
-
+      console.log('Got candidate..');
       document = (+Date.now()).toString();
-      this.firestore.save(callerCandidateCollection, document, event.candidate.toJSON())
+      this.iceCollectionRef.push(document);
+      this.firestore.save(calleeCandidateCollection, document, event.candidate.toJSON())
       .then(() => {
-        console.log("Caller candidates added!");
-        
+        console.log("Callee candidates added!");
       })
       .catch(error => {
-        console.log("Error : caller candidates could not be added.");
+        console.log("error adding callee candidate.");
+        
       });
 
     });
   }
 
-  private async createOffer(room:string, roomId:string){
-    // Add code for creating a room here
-    const offer = await this.peerConnection.createOffer({
-      offerToReceiveAudio: true,
-      offerToReceiveVideo: true
-    });
+  private async createAnswer(room: string, roomId: string) {
+    
 
-    await this.peerConnection.setLocalDescription(offer);
+    
 
-    const roomWithOffer = {
-      offer: {
-        type: offer.type,
-        sdp: offer.sdp
-      }
-    }
-
-    this.firestore.update(room, roomId, roomWithOffer)
+    const answer = await this.peerConnection.createAnswer()
+      // .then(() => {
+      //   console.log("Answer sdp created");
+        
+      // })
+      // .catch(error => {
+      //   console.log("Error creating answer sdp");
+        
+      // });
+    
+      console.log("Answer sdp created : "+answer);
+    // console.log('Created answer..');
+    
+    await this.peerConnection.setLocalDescription(answer)
       .then(() => {
-        console.log("Room created with offer!");
-        this.callStartCallback();
+        console.log("added  answer sdp.");
+      })
+      .catch(error => {
+        console.log("could not add answer sdp");
+        
+      });
+    
+    const roomWithAnswer = {
+      answer: {
+        type: answer.type,
+        sdp: answer.sdp,
+      },
+    };
+    
+    
+
+    await this.firestore.update(room, roomId, roomWithAnswer)
+      .then(() => {
+        console.log("answer added!");
         
       })
       .catch(error => {
@@ -345,47 +356,46 @@ export class MeetingHostService {
     
   }
 
-  private async setAnswer(room:string, roomId:string) {
+  private async fetchOffer(room:string, roomId:string) {
 
-    this.answerObs = this.firestore.getDocChanges(room, roomId)
-      .subscribe(async(change) => {
+    this. offerObs = this.firestore.getDocChanges(room, roomId)
+    .subscribe(async(change) => {
 
-        const type: string = change.type;
-        const data: any = change.payload.data() as any;
+      const type: string = change.type;
+      const data: any = change.payload.data() as any;
 
-        if (!this.peerConnection.currentRemoteDescription && data.answer) {
-                console.log('Got remote description..');
-                const answer = new RTCSessionDescription(data.answer)
-                this.peerConnection.setRemoteDescription(answer);
-                // return { id, ...data };
-              }
-      });
-  }
-
-  private async setRemoteIceCandidate(calleeCandidateCollection:string, document:string) {
-
-    this.remoteIceObs = this.firestore.getIceChangesCollection(calleeCandidateCollection)
-      .subscribe(docChangeList => {
-
-        docChangeList.forEach(async (change) => {
       
-          // console.log("patient >>> 123 >> "+JSON.stringify(patient));
         
+
+      if (!this.peerConnection.currentRemoteDescription && data.offer) {
+        console.log('Got remote description..offer');
+        await this.peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
+        this.createAnswer(room, roomId);
+              // return { id, ...data };              
+    }
+    });
+      
+  }
+  private async setRemoteIceCandidate(callerCandidateCollection:string, document:string) {
+    
+    this.remoteIceObs = this.firestore.getIceChangesCollection(callerCandidateCollection)
+      .subscribe(docChangeList => {
+        docChangeList.forEach(async (change) => {
           switch (change.payload.type) {
-          
             case "added":
               const ice = change.payload.doc.data() as any;
+              this.remoteIceCollectionRef.push(change.payload.doc.id);
+                
               if (ice) {
                 await this.peerConnection.addIceCandidate(new RTCIceCandidate(ice))
                   .then(() => {
-                    this.stopRinging();
+                   
                     this.conferenceCallback();
                   })
-                .catch(error => {
-                  console.log("Could not add this ice candidate");
-                  
-                });;
-               
+                  .catch(error => {
+                    console.log("Could not add this ice candidate");
+                    
+                  });
               }
               break;
             case "modified":
@@ -399,37 +409,19 @@ export class MeetingHostService {
         });
 
       });
-
-  }
-
-  public startRingTimer() {
-    this.ringTimer = setTimeout(() => {
-      this.audio.pause();
-      // this.callingInterfaceActive=false;
-      clearTimeout( this.ringTimer);
-    }, 35000);
-
-    this.audio.play();
-  }
-
-  public stopRinging() {
-    if (this.ringTimer) {
-      this.audio.pause();
-      clearTimeout( this.ringTimer);
-    }
-   
+      
   }
 
   public unsubscribe() {
     if (this.remoteIceObs) {
       this.remoteIceObs.unsubscribe();
     }
-    if (this.answerObs) {
-      this.answerObs.unsubscribe();
+    if (this.offerObs) {
+      this.offerObs.unsubscribe();
     }
     this.hangUp();
   }
-  
+
   public async hangUp() {
     const tracks = this.localStream.getTracks();
     tracks.forEach(track => {
@@ -445,17 +437,16 @@ export class MeetingHostService {
       this.peerConnection.close();
     };
 
-    // this.remoteIceCollectionRef.forEach(element => {
-    //   let remoteCollectionref = this.roomCollection + "/" + this.roomId + "/" + this.callerCollection;
-    //   this.firestore.delete(remoteCollectionref, element);
-    // });
-    // this.iceCollectionRef.forEach(element => {
-    //   let collectionref = this.roomCollection + "/" + this.roomId + "/" + this.calleeCollection;
-    //   this.firestore.delete(collectionref, element);
-    // });
+    this.remoteIceCollectionRef.forEach(element => {
+      let remoteCollectionref = this.roomCollection + "/" + this.roomId + "/" + this.callerCollection;
+      this.firestore.delete(remoteCollectionref, element);
+    });
+    this.iceCollectionRef.forEach(element => {
+      let collectionref = this.roomCollection + "/" + this.roomId + "/" + this.calleeCollection;
+      this.firestore.delete(collectionref, element);
+    });
 
-    // this.remoteIceCollectionRef = [];
-    // this.iceCollectionRef = [];
+    this.remoteIceCollectionRef = [];
+    this.iceCollectionRef = [];
   }
-  
 }

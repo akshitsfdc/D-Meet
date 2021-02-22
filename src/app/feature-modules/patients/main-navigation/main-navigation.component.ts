@@ -1,3 +1,4 @@
+import { SessionService } from './../service/session.service';
 import { Component } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
@@ -22,8 +23,9 @@ export class MainNavigationComponent {
       shareReplay()
     );
 
-  constructor(private breakpointObserver: BreakpointObserver, private authService: AuthService, private router: Router, private route: ActivatedRoute) { 
+  constructor(private breakpointObserver: BreakpointObserver, private authService: AuthService, private router: Router, private route: ActivatedRoute, private session:SessionService) { 
 
+    this.session.initSession();
     this.gotoHome();
   }
 
@@ -45,6 +47,7 @@ export class MainNavigationComponent {
   logOut(){
     this.authService.signOut().then(() => {
       this.router.navigate(['login']);
+
     }).catch(error => {
       console.log("Could not log you out : "+error);
     });

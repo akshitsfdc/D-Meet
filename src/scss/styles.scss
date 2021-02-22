@@ -133,6 +133,55 @@ div::-webkit-scrollbar-thumb {
   color: $icon;
 }
 
+.conference-bg{
+  background-color: $conferenceBg;
+  height: 100%;
+  width: 100%;
+}
+.conference-bottom-bar{
+  width: 100%;
+  height: 75px;
+  background-color: $conferenceBottomBg;
+  // position:absolute;
+  // bottom: 0;
+}
+.callee-bg{
+  background-color: $conferenceBottomBg;;
+}
+.conference-center-image{
+  height: 200px;
+  width: 200px;
+  z-index: 10px;
+  overflow: hidden;
+  border-radius: 50%;
+  border-style: solid;
+  border-color: $grey-lighter;
+  border-width: 2px;
+ 
+}
+
+.call-status-label{
+
+  font-size: small;
+}
+.call-header-label{
+  color: white;
+  font-size: 24px;
+}
+.conference-status-div{
+  width: fit-content;
+  height: fit-content;
+  position: absolute;
+  left: 20px;
+  top: 20px;
+}
+
+.media-botton-container{
+  width: fit-content;
+  height: fit-content;
+}
+
+
 .timer-box {
   width: fit-content;
   height: fit-content;

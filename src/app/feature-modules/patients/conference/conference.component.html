@@ -1,0 +1,88 @@
+<mat-sidenav-container class="sidenav-container" fxLayout="row" autosize="true">
+    <mat-sidenav #drawer position="end" class="sidenav" fixedInViewport
+        [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+        [mode]="(isHandset$ | async) ? 'over' : 'side'"
+        opened = "true"
+        [opened]="(isHandset$ | async) === false"
+        fxFlex="1 1 auto"
+        >
+   
+        <div id="sidenavInner"  fxLayout="column">
+  
+         
+  
+        </div>
+    </mat-sidenav>
+    <mat-sidenav-content >
+
+        <!-- <video id="remoteVideo" autoplay playsinline [srcObject]="meetingService.getRemoteStream()" [muted]="localMute"
+        class="remote-video-player"></video>
+        
+        <video id="localVideo" autoplay="true" [muted]="true" [srcObject]="meetingService.getLocalStream()"
+                class="local-video-player"></video>  -->
+        
+        <div class="conference-status-div" fxLayout="column" fxLayoutGap="2px">
+            <mat-label class="header-label call-header-label">{{caller.getCallerName()}}</mat-label>
+            <mat-label class="header-label call-status-label" >{{connectionStatus}}</mat-label>
+        </div>
+       
+
+        <div class="conference-bg" fxLayout="column" >
+        
+            <video id="localVideo" autoplay="true" cdkDrag  [muted]="true" [srcObject]="meetingService.getLocalStream()"
+            class="local-video-player"></video> 
+        
+            <ng-container *ngIf="!meetingService.getRemoteStream()">
+                <div fxFlex="1 1 auto" fxLayout="column" fxLayoutAlign="center center">
+                    <img src="https://imagevars.gulfnews.com/2020/11/19/20201119-Ishita-Karuturi_175df2027da_large.jpg" class="conference-center-image"/>
+                </div>
+            </ng-container>
+           <ng-container *ngIf="meetingService.getRemoteStream()">
+                <video id="remoteVideo" autoplay playsinline [srcObject]="meetingService.getRemoteStream()" fxFlex="1 1 auto"
+                    class="remote-video-player"></video>
+           </ng-container>
+          
+
+            <div class="conference-bottom-bar" fxflex="1 1 75px" fxLayout="row" fxLayoutAlign="center center"  >
+                <div fxFlex="1 1 100%">
+        
+                </div>
+                <div class="media-botton-container"  fxLayout="row" fxLayoutGap="15px" > 
+        
+                    <button mat-mini-fab [ngClass]="{'conference-mute-button':micOn, 'conference-unmute-button':!micOn}" aria-label="mute" (click)="micToggle()">
+                        <mat-icon *ngIf="micOn">mic</mat-icon>
+                        <mat-icon *ngIf="!micOn" class="white-icon">mic_off</mat-icon>
+                    </button>
+                    <button mat-mini-fab aria-label="Camera" [ngClass]="{'conference-camera-button':videoOn, 'conference-camera-cut-button':!videoOn}" (click)="videoToggle()">
+                        <mat-icon *ngIf="videoOn">videocam</mat-icon>
+                        <mat-icon  *ngIf="!videoOn" class="white-icon">videocam_off</mat-icon>
+                    </button>
+                    <button mat-mini-fab  [ngClass]="{'conference-call-disconnect':true}" aria-label="End call" (click)="sendReject()">
+                        <mat-icon [ngStyle]="{'color':'white'}">call_end</mat-icon>
+                    </button>
+                </div>
+                
+                <div  fxFlex="1 1 100%"  >
+                    <span fxFlex="1 1 auto"></span>
+                    <div class="action-wrapper" fxLayout="row" fxLayoutAlign="center center" >
+                        <!-- <div fxLayout="column"  fxLayoutGap="10px" fxLayoutAlign="center center">                   
+                            <mat-icon [ngStyle]="{'color':'red'}" >fiber_manual_record</mat-icon>                
+                             <mat-label class="action-label">Record</mat-label>
+                        </div> -->
+                        <div fxLayout="column"  fxLayoutGap="10px" fxLayoutAlign="center center" (click)="drawer.toggle()">                   
+                            <mat-icon class="chat-action-icon" >chat</mat-icon>                
+                             <mat-label class="action-label">Chat</mat-label>
+                        </div>
+                        <span fxFlex="1 1 40px"></span>
+                     </div>
+                     <!-- <span fxFlex="1 1 30px"></span> -->
+                </div>
+                
+            </div>
+        
+            
+        </div>
+
+
+    </mat-sidenav-content>
+  </mat-sidenav-container>

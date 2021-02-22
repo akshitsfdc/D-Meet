@@ -55,6 +55,11 @@ export class FirestoreService {
     return this.firestore.collection(collection).stateChanges();
    
   }
+  public getIceChangesCollection(collection:string):Observable<DocumentChangeAction<unknown>[]>{
+
+    return this.firestore.collection(collection).stateChanges();
+   
+  }
   // stateChanges
   public getRealTimeCollectionWithQuery(collection:string, key1:string, value1:string, key2:string, value2:string, key3:string, value3:string, orderBy:string):Observable<unknown[]> {
     return this.firestore.collection(collection, ref =>

@@ -1,9 +1,12 @@
+
 import { Component } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import { SessionService } from '../services/session.service';
+import { DoctorUserData } from 'src/app/models/doctor-user-data';
 
 @Component({
   selector: 'app-main-navigation',
@@ -22,7 +25,7 @@ export class MainNavigationComponent {
       shareReplay()
     );
 
-  constructor(private breakpointObserver: BreakpointObserver, private authService: AuthService, private router: Router, private route: ActivatedRoute) { 
+  constructor(private breakpointObserver: BreakpointObserver, private authService: AuthService, private router: Router, private route: ActivatedRoute, private session:SessionService) { 
 
     this.liveQueueClick();
   }
@@ -39,6 +42,7 @@ export class MainNavigationComponent {
   logOut(){
     this.authService.signOut().then(() => {
       this.router.navigate(['login']);
+      this.session.setUserData(new DoctorUserData());
     }).catch(error => {
       console.log("Could not log you out : "+error);
     });

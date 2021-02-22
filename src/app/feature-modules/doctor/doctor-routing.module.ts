@@ -1,3 +1,4 @@
+import { ConferenceComponent } from './conference/conference.component';
 
 import { EditQueueComponent } from './edit-queue/edit-queue.component';
 import { NgModule } from '@angular/core';
@@ -34,7 +35,12 @@ const routes: Routes = [
         { path: 'home/queue', component: LiveQueueDetailsComponent },
         { path: 'liveQueue/queueDetails/patientMeet', component: DoctorConferenceComponent }
       ]
-    }
+
+
+  },
+  {
+    path: 'conference', component: ConferenceComponent,
+  }
 
 ];
 

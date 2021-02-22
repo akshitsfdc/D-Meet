@@ -1,0 +1,59 @@
+@import "src/scss/vars";
+
+.white-icon{
+  color: white;
+}
+.conference-mute-button{
+    background-color: white;
+  }
+  .conference-unmute-button{
+    background-color: transparent;
+  }
+  .conference-camera-button{
+    background-color: white;
+  }
+  .conference-camera-cut-button{
+    background-color: transparent;
+  }
+  .conference-call-disconnect{
+    background-color: $warn;
+  }
+  .chat-icon-wrapper{
+    width: 100%;
+    height: fit-content;
+  }
+  .action-wrapper{
+    // background-color: violet;
+    cursor: pointer;
+  }
+  .chat-action-icon{
+    height: fit-content;
+    width: fit-content;
+    font-size: 16px;
+    color: white;
+  }
+  .action-label{
+    color: white;
+    size: 12px;
+  }
+  .remote-video-player{
+    // width: 100%;
+    // height: 100%;
+    // position: absolute;
+    background-color: $conferenceBg;
+  }
+  .local-video-player{
+    width: 100px;
+    height: 150px;
+    position: absolute;
+    background-color: violet;
+    left: 20px;
+    bottom: 95px;
+  }
+  mat-sidenav-content{
+    width: 100%;
+    height: 100vh;
+  }
+  .sidenav{
+    width: 300px;
+  }

@@ -11,6 +11,7 @@ import { LoadingDialogComponent } from 'src/app/loading-dialog/loading-dialog.co
 import { BookedPatient } from '../../../models/booked-patient';
 import { MessageDialogComponent } from 'src/app/message-dialog/message-dialog.component';
 import { SessionService } from '../services/session.service';
+import { Router } from '@angular/router';
 
 declare var Razorpay: any; 
 
@@ -95,7 +96,7 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
   userData: PatientUserData;
 
-  constructor(private matDialog: MatDialog,
+  constructor(private matDialog: MatDialog, private router: Router,
      public utils:UtilsService, private session:SessionService, private firestoreService: FirestoreService) {
 
    
@@ -511,6 +512,17 @@ finalizeCurrent(makePending:boolean): void {
 
     return null;
 
+  }
+  navigateToMeeting(currentPatient: BookedPatient): void{
+   
+    let data = {
+      queue: this.session.getSharedData().queue as QueueModel,
+      doctor: this.session.getSharedData().doctor as DoctorUserData,
+      currentPatient: currentPatient
+    }
+    
+    this.session.setSharedData(data);
+    this.router.navigate(['doctor/conference']);
   }
   ngOnDestroy(): void {
     if (this.myWaitingTimeTimer) {

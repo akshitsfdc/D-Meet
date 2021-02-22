@@ -1,0 +1,23 @@
+<div class="parent-div" fxLayout="column" fxLayoutGap="40px" fxLayout="row" fxLayoutAlign="start center">
+    <!-- <img id="meetupImage" src="/assets/imgs/meetup_logo_with.png" alt="Meetup Logo">     -->
+    <img  src="https://images.theconversation.com/files/304957/original/file-20191203-66986-im7o5.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=1200.0&fit=crop      " class="caller-pic"/>
+    <div class="name-wrapper" fxLayout="column">
+        <mat-label class="header-label">Doctor Name</mat-label>
+        <mat-label class="small-label">Incoming call...</mat-label>
+    </div>
+    <span fxFlex="1 1 auto"></span>
+    <div class="media-botton-container"  fxLayout="row" fxLayoutGap="15px" > 
+
+        <button mat-mini-fab [ngClass]="{'conference-button':true}" aria-label="mute" >
+            <mat-icon class="button-icon">videocam</mat-icon>
+            <!-- <mat-icon  [ngStyle]="{'color':'white'}">mic_off</mat-icon> -->
+        </button>
+        <button mat-mini-fab aria-label="Camera" [ngClass]="{'conference-button':true}" (click)="joinConf()">
+            <mat-icon class="button-icon">phone</mat-icon>
+            <!-- <mat-icon  [ngStyle]="{'color':'white'}">videocam_off</mat-icon> -->
+        </button>
+        <button mat-mini-fab  [ngClass]="{'conference-call-disconnect':true}" aria-label="End call" (click)="rejectConf()">
+            <mat-icon class="button-icon">call_end</mat-icon>
+        </button>
+    </div>
+</div>

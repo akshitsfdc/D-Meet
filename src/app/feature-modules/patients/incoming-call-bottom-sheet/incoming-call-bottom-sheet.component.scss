@@ -1,0 +1,65 @@
+@import "src/scss/vars";
+
+#meetupImage{
+    max-width: 100.5px;
+    max-height: 50.25px;
+    min-width: 50px;
+    min-height: 25px;
+}
+.patient-button{
+    border-radius: 7px;
+    margin: 0px 50px 0px 50px;
+}
+.doctor-button{
+    border-radius: 7px;
+    margin: 0px 50px 0px 50px;
+}
+.bottom-sheet-custom{
+    background-color: #1f1f1f;
+    padding: 0;
+}
+
+.conference-button{
+    background-color: $accent;
+  }
+.button-icon{
+    color: white;
+}
+  .conference-call-disconnect{
+    background-color: $warn;
+  }
+  .chat-icon-wrapper{
+    width: 100%;
+    height: fit-content;
+  }
+  .action-wrapper{
+    // background-color: violet;
+    cursor: pointer;
+  }
+  .chat-action-icon{
+    height: fit-content;
+    width: fit-content;
+    font-size: 16px;
+    color: white;
+  }
+  .action-label{
+    color: white;
+    size: 12px;
+  }
+  .caller-pic{
+    height: 60px;
+    width: 60px;
+    z-index: 10px;
+    overflow: hidden;
+    border-radius: 50%;
+    border-style: solid;
+    border-color: $grey-lighter;
+    border-width: 1px;
+    background-color: yellow;
+   
+  }
+  .name-wrapper{
+      width: fit-content;
+      height: fit-content;
+     
+  }

@@ -14,7 +14,7 @@ import { QueueModel } from 'src/app/models/queue-model';
 export class HomeComponent implements OnInit {
 
   constructor(private session:SessionService) {
-   
+    this.session.initSession();
   }
 
   

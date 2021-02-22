@@ -1,7 +1,7 @@
 
 <div id="videos" class="container-parent">
 
-    <video id="remoteVideo" autoplay playsinline [srcObject]="remoteStream" [muted]="localMute"
+    <video id="remoteVideo" autoplay playsinline [srcObject]="meetingService.getRemoteStream()" [muted]="localMute"
         class="patient-details"></video>
 
     <div class="bottom-control-container" fxLayout="row">
@@ -42,7 +42,7 @@
         <mat-icon [ngStyle]="{'color':'white'}">note_add</mat-icon>
     </button>
 
-    <video id="localVideo" autoplay="true" [muted]="localMute" [srcObject]="localStream"
+    <video id="localVideo" autoplay="true" [muted]="localMute" [srcObject]="meetingService.getLocalStream()"
         class="patient-details"></video>
 
 
@@ -75,7 +75,7 @@
             <span fxFlex="1 1 auto"></span>
             <mat-card class="current-patient-card" fxLayout="column" >
                 <img mat-card-image id="profilePicPatient" src="{{userProfileImage}}" alt="Photo of a Shiba Inu">
-                <button mat-flat-button color="primary" fxFlexAlign="center" (click)="createRoom()" [disabled]="disableCallButton">{{startCallText}}</button>
+                <button mat-flat-button color="primary" fxFlexAlign="center" (click)="callPatient()" [disabled]="disableCallButton">{{startCallText}}</button>
             </mat-card>
             <span fxFlex="1 1 auto"></span>
         </div>
@@ -157,11 +157,5 @@
 
      </div>
 
-     
-
-     <div fxLayout="row" id="tempDiv">
-        <button mat-flat-button color="primary"  (click)="joinRoom()" class="temp-buttons">Answer</button>
-        <button mat-flat-button color="primary"   class="temp-buttons">Send msg</button>
-     </div>
     
 </div>

@@ -23,16 +23,21 @@ export class SessionService {
     this.userData = new DoctorUserData();
     this.queues = [];
 
+    
+   
+   }
+
+   public initSession() {
     this.authService.getUser()
       .then(userData => {
         this.loadDoctorData( userData.uid);
       })
       .catch(error => {
         //error
+        console.log("no auth >> ");
+        
       });
-   
-   }
-
+}
    public getUserData(): DoctorUserData {
     return this.userData;
   }
@@ -70,12 +75,15 @@ export class SessionService {
       
       {
         next(userData){
-          let userdata:DoctorUserData = new DoctorUserData();
-          Object.assign(userdata, userData); 
+          let user:DoctorUserData = new DoctorUserData();
+          Object.assign(user, userData); 
           if (currentRef.getUserData() === null) {
-            currentRef.setUserData(userdata);
+            currentRef.setUserData(user);
+            
+            console.log("got user data >> new ");
           } else {
-            currentRef.updateUserData(userdata);
+            currentRef.updateUserData(user);
+            console.log("got user data updated ");
           }
          
        },
@@ -366,7 +374,8 @@ private updateQueueOfUser(queueUpdate:QueueModel) {
     this.userData.setStatus(userDataUpdate.getStatus());
     
 
-
+    console.log("new user user id : "+this.getUserData().getUserId());
+    
   }
 
   private updateQueueModel(queueOriginal:QueueModel,  queue: QueueModel): void {

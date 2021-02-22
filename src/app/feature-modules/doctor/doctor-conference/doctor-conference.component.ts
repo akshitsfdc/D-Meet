@@ -1,3 +1,4 @@
+import { MeetingHostService } from './../../../services/meeting-host.service';
 import { Component, OnInit, ViewChild, ElementRef, EventEmitter } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { map } from 'rxjs/operators';
@@ -35,6 +36,7 @@ export class DoctorConferenceComponent implements OnInit {
   disableCallButton = false;
   private audio = new Audio();
   private ringTimer: any;
+  
 
 
   
@@ -74,7 +76,7 @@ export class DoctorConferenceComponent implements OnInit {
 
   
 
-  constructor(private firestore: AngularFirestore, private _snackBar: MatSnackBar) {
+  constructor(private firestore: AngularFirestore, private _snackBar: MatSnackBar, public meetingService:MeetingHostService) {
     this.setupDevice();
     this.initMediaDevices();
     this.audio.src = "/assets/audio/ringing.wav";
@@ -143,6 +145,9 @@ export class DoctorConferenceComponent implements OnInit {
 
   }
 
+  callPatient() {
+    this.callNow();
+  }
 
   callNow(){
     this.startRingTimer();
@@ -330,6 +335,7 @@ export class DoctorConferenceComponent implements OnInit {
     this.remoteStream = new MediaStream();
 
     const roomRef = this.firestore.collection('rooms').doc(roomId);
+
     const roomSnapshot = await roomRef.get();
    
 
@@ -348,6 +354,7 @@ export class DoctorConferenceComponent implements OnInit {
 
       // Code for collecting ICE candidates below
       const calleeCandidatesCollection = roomRef.collection('calleeCandidates');
+      
       // await calleeCandidatesCollection.add({});
       this.peerConnection.addEventListener('icecandidate', event => {
 

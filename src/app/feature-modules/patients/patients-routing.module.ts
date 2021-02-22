@@ -4,23 +4,28 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
+import { ConferenceComponent } from './conference/conference.component';
 
 
 const routes: Routes = [
-    { path: '', component: HomeComponent,
+  {
+    path: '', component: HomeComponent,
 
-      children: [
-        {
-          path: 'home', component: DashboardComponent
-        },
-        {
-          path: 'meetup-lobby', component: MeetupLobbyComponent
-        },
-        {
-          path: 'meetings', component: MeetingsComponent
-        }
-      ]
-    }
+    children: [
+      {
+        path: 'home', component: DashboardComponent
+      },
+      {
+        path: 'meetup-lobby', component: MeetupLobbyComponent
+      },
+      {
+        path: 'meetings', component: MeetingsComponent
+      }
+    ]
+  },
+  {
+    path: 'conference', component: ConferenceComponent,
+  }
 
 ];
 

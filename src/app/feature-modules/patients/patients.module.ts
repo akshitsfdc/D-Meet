@@ -13,6 +13,9 @@ import { MeetingsComponent } from './meetings/meetings.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MeetupLobbyComponent } from './meetup-lobby/meetup-lobby.component';
 import { BookingDialogComponent } from './booking-dialog/booking-dialog.component';
+import { IncomingCallBottomSheetComponent } from './incoming-call-bottom-sheet/incoming-call-bottom-sheet.component';
+import { ConferenceComponent } from './conference/conference.component';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 
 
@@ -24,7 +27,9 @@ import { BookingDialogComponent } from './booking-dialog/booking-dialog.componen
     DashboardComponent,
     MeetingsComponent,
     MeetupLobbyComponent,
-    BookingDialogComponent
+    BookingDialogComponent,
+    IncomingCallBottomSheetComponent,
+    ConferenceComponent
   ],
   imports: [
     CommonModule,
@@ -37,6 +42,7 @@ import { BookingDialogComponent } from './booking-dialog/booking-dialog.componen
     InfiniteScrollModule
   ],
   bootstrap: [HomeComponent]
+
 })
 
 export class PatientsModule { }

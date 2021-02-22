@@ -20,6 +20,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { EditQueueComponent } from './edit-queue/edit-queue.component';
 import { MeetupLobbyComponent } from './meetup-lobby/meetup-lobby.component';
+import { ConferenceComponent } from './conference/conference.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { MeetupLobbyComponent } from './meetup-lobby/meetup-lobby.component';
     ProfileEditComponent,
     QueuesComponent,
     EditQueueComponent,
-    MeetupLobbyComponent
+    MeetupLobbyComponent,
+    ConferenceComponent
   ],
   imports: [
     FlexLayoutModule,
