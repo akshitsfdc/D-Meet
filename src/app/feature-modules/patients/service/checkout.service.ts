@@ -1,9 +1,7 @@
 import { HttpService } from './../../../services/http.service';
 import { Injectable } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CheckoutService {
 
   constructor(private httpService:HttpService) { }

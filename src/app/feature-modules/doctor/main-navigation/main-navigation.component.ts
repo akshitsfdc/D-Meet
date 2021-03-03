@@ -1,5 +1,5 @@
 
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
@@ -13,7 +13,7 @@ import { DoctorUserData } from 'src/app/models/doctor-user-data';
   templateUrl: './main-navigation.component.html',
   styleUrls: ['./main-navigation.component.css']
 })
-export class MainNavigationComponent {
+export class MainNavigationComponent  implements OnInit {
 
 
   isExpanded = true;
@@ -27,6 +27,10 @@ export class MainNavigationComponent {
 
   constructor(private breakpointObserver: BreakpointObserver, private authService: AuthService, private router: Router, private route: ActivatedRoute, private session:SessionService) { 
 
+   
+  }
+  
+  ngOnInit(): void {
     this.liveQueueClick();
   }
 
@@ -34,7 +38,7 @@ export class MainNavigationComponent {
     this.router.navigate(['doctor-profile'], { relativeTo: this.route });
   }
   liveQueueClick() {
-    this.router.navigate(['home'], { relativeTo: this.route });
+    this.router.navigate(['dashboard'], { relativeTo: this.route });
   }
   queuesClick(){
     this.router.navigate(['queues'], { relativeTo: this.route });
@@ -47,4 +51,5 @@ export class MainNavigationComponent {
       console.log("Could not log you out : "+error);
     });
   }
+  
 }

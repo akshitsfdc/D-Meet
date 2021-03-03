@@ -2,6 +2,7 @@ import { HttpService } from './http.service';
 import { Injectable } from '@angular/core';
 import { start } from 'repl';
 import { QueueModel } from '../models/queue-model';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class UtilsService {
 
   // { "timestapmIST": 1609694762338, "timestapmUTC": 1609674962338, "date": "3 0 2021" }
   
-  constructor(private http:HttpService) { }
+  constructor(private http:HttpService, private _snackBar: MatSnackBar) { }
 
   public millisToTimeString(milliseconds:number):string{
 
@@ -278,6 +279,12 @@ export class UtilsService {
     } else {
       return false;
     }
+  }
+
+  public showMsgSnakebar(message:string) {
+    this._snackBar.open(message, null, {
+      duration: 2000,
+    });
   }
 
 }

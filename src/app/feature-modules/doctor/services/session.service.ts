@@ -8,9 +8,8 @@ import { FirestoreService } from 'src/app/services/firestore.service';
 import { HttpService } from 'src/app/services/http.service';
 import { BookedPatient } from 'src/app/models/booked-patient';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
+  
 export class SessionService {
 
   private userData: DoctorUserData;
@@ -19,12 +18,12 @@ export class SessionService {
   
   private queues:QueueModel[];
 
-  constructor(private utils:UtilsService, private firestore:FirestoreService, private http:HttpService, private authService:AuthService) {
-    this.userData = new DoctorUserData();
+  constructor(private utils: UtilsService, private firestore: FirestoreService, private http: HttpService, private authService: AuthService) {
+  
     this.queues = [];
 
-    
-   
+    this.initSession();
+  
    }
 
    public initSession() {
@@ -77,7 +76,7 @@ export class SessionService {
         next(userData){
           let user:DoctorUserData = new DoctorUserData();
           Object.assign(user, userData); 
-          if (currentRef.getUserData() === null) {
+          if (currentRef.getUserData() === null || currentRef.getUserData() === undefined) {
             currentRef.setUserData(user);
             
             console.log("got user data >> new ");

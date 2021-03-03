@@ -3,30 +3,36 @@ import { MeetingsComponent } from './meetings/meetings.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { HomeComponent } from './home/home.component';
 import { ConferenceComponent } from './conference/conference.component';
+import { BaseComponent } from './base/base.component';
+import { MainNavigationComponent } from './main-navigation/main-navigation.component';
 
 
 const routes: Routes = [
-  {
-    path: '', component: HomeComponent,
 
+  {
+    path: '', component: BaseComponent,
     children: [
       {
-        path: 'home', component: DashboardComponent
+        path: '', component: MainNavigationComponent,
+    
+        children: [
+          {
+            path: 'home', component: DashboardComponent
+          },
+          {
+            path: 'meetup-lobby', component: MeetupLobbyComponent
+          },
+          {
+            path: 'meetings', component: MeetingsComponent
+          }
+        ]
       },
       {
-        path: 'meetup-lobby', component: MeetupLobbyComponent
-      },
-      {
-        path: 'meetings', component: MeetingsComponent
+        path: 'conference', component: ConferenceComponent,
       }
     ]
-  },
-  {
-    path: 'conference', component: ConferenceComponent,
   }
-
 ];
 
 @NgModule({

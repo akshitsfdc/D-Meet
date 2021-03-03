@@ -3,9 +3,7 @@ import { Injectable } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class MeetingHostService {
 
   private remoteIceObs: Subscription = null;
@@ -13,6 +11,17 @@ export class MeetingHostService {
   
   private configuration:any = {
     iceServers: [
+      {
+        urls: [
+              'stun:stun1.l.google.com:19302',
+              'stun:stun2.l.google.com:19302',
+            ]
+      },
+      {
+          urls: "stun:doctormeetup.com:3478",
+          username: "test",
+          credential: "test123"
+      },
       {
           urls: "turn:doctormeetup.com:3478",
           username: "test",
@@ -25,6 +34,7 @@ export class MeetingHostService {
 
   private ringTimer: any;
   private audio = new Audio();
+  private preRing = new Audio();
 
   private peerConnection: RTCPeerConnection;
   private dataChannel: RTCDataChannel;
@@ -45,8 +55,9 @@ export class MeetingHostService {
   private selectedCamera: string;
   private selectedMic: string;
 
-  private conferenceCallback: any;
+  private connectionStatus: string;
   private callStartCallback: any;
+  private onMessageCallback: any;
   
 
   constructor(private firestore: FirestoreService) { 
@@ -56,6 +67,14 @@ export class MeetingHostService {
     this.calleeCollection = "callee_candidates";
 
     this.audio.src = "/assets/audio/ringing.wav";
+    this.preRing.src = "/assets/audio/pre_ring.wav";
+
+    const currentRef = this;
+    this.preRing.addEventListener('ended', async function () {
+      
+      await currentRef.delay(1000);
+      this.play();
+    }, false);
     this.audio.addEventListener('ended', function() {
       this.currentTime = 0;
       this.play();
@@ -64,6 +83,9 @@ export class MeetingHostService {
 
   }
 
+  private  delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+  }
   public setCallStartCallback(callStartCallback) {
     this.callStartCallback = callStartCallback;
   }
@@ -73,6 +95,7 @@ export class MeetingHostService {
   public getRemoteStream():MediaStream {
     return this.remoteStream;
   }
+
 
   public setCallerIceDoc(iceDoc: string): void {
     
@@ -85,10 +108,6 @@ export class MeetingHostService {
   }
   public setRoomId(roomId: string) {
     this.roomId = roomId;
-  }
-
-  public setCallBack(callnback:any): void{
-    this.conferenceCallback = callnback;
   }
   private async openUserMedia() {
     
@@ -103,24 +122,30 @@ export class MeetingHostService {
         }
     
     );
-    
-
-    console.log("this.localStream selectedCamera >> "+this.selectedCamera);
-    console.log("this.localStream selectedMic >> "+this.selectedMic);
   
     // this.localStream = stream;
     this.createRoom();
-
     
     
-    // window.stream = stream; //for recording
-    // this.remoteStream = this.localStream;
-    // this.remoteStream = new MediaStream();
-
     
   }
 
 
+  public getDataChannel():RTCDataChannel {
+    return this.dataChannel;
+  }
+  public setOnMessageCallback(callback) {
+    this.onMessageCallback = callback;
+  }
+  public getConnectionStatus() {
+    return this.connectionStatus;
+  }
+  public playPreRing():void {
+    this.preRing.play();
+  }
+  public stopPrering(): void{
+    this.preRing.pause();
+  }
   private getConnectedDevices(type, callback) {
     navigator.mediaDevices.enumerateDevices()
         .then(devices => {
@@ -130,6 +155,8 @@ export class MeetingHostService {
   }
   
   private setupDevice(): void{
+
+    this.connectionStatus = "Preparing...";
 
     this.getConnectedDevices('videoinput',
     cameras => {
@@ -178,15 +205,14 @@ export class MeetingHostService {
     );
   }
 
+  public setConnectionStatus(status:string): void{
+    this.connectionStatus = status;
+  }
+
   public callNow():void {
     this.setupDevice();
   }
   public async createRoom() {
-
-   // await this.openUserMedia();
-    //await this.setupDevice();
-    //ring
-    //this.startRingTimer();
 
     this.createPeerConnection();
 
@@ -248,6 +274,7 @@ export class MeetingHostService {
 
     this.peerConnection.addEventListener('connectionstatechange', () => {
       console.log('Connection state change: ' + this.peerConnection.connectionState);
+      this.connectionStatus = this.peerConnection.connectionState.toUpperCase();
     });
 
     this.peerConnection.addEventListener('signalingstatechange', () => {
@@ -281,15 +308,7 @@ export class MeetingHostService {
     });
 
     this.dataChannel.addEventListener('message', event => {
-      // const message = event.data;
-        
-        // let messageObject = JSON.parse(message);
-
-        // messageObject.he = true;
-
-        // this.chats.push(messageObject);
-
-        // this.getNewMessageCount(this.chats);
+      this.onMessageCallback(event.data);
     });
   }
 
@@ -336,11 +355,13 @@ export class MeetingHostService {
     this.firestore.update(room, roomId, roomWithOffer)
       .then(() => {
         console.log("Room created with offer!");
+        this.connectionStatus = "Connecting...";
         this.callStartCallback();
         
       })
       .catch(error => {
-      
+        this.connectionStatus = "Failed";
+        this.stopPrering();
       });
     
   }
@@ -379,7 +400,6 @@ export class MeetingHostService {
                 await this.peerConnection.addIceCandidate(new RTCIceCandidate(ice))
                   .then(() => {
                     this.stopRinging();
-                    this.conferenceCallback();
                   })
                 .catch(error => {
                   console.log("Could not add this ice candidate");

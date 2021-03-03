@@ -117,9 +117,6 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
     this.currentDoctor = this.session.getSharedData().doctor;
     this.userData = this.session.getUserData(); 
 
-    this.searchService.getBookingsOfQueue(this.currentQueue);
-
-
     this.bookingAvailability();
     this.consultingStarted();
 

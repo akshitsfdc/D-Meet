@@ -1,3 +1,4 @@
+import { UtilsService } from './../../../services/utils.service';
 import { IncomingCallBottomSheetComponent } from './../incoming-call-bottom-sheet/incoming-call-bottom-sheet.component';
 import { Injectable } from "@angular/core";
 import { MatBottomSheet } from "@angular/material/bottom-sheet";
@@ -6,11 +7,10 @@ import { FirestoreService } from 'src/app/services/firestore.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { Subscription } from 'rxjs';
 import { CallerModel } from 'src/app/models/caller-model';
+import { Router } from '@angular/router';
 
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 
 export class SessionService {
 
@@ -20,19 +20,16 @@ export class SessionService {
     private audio = new Audio();
     private callerCollection:string = "caller_collection";
 
-    constructor(private _bottomSheet: MatBottomSheet, private firestore:FirestoreService, private authService: AuthService) {
+    constructor(private _bottomSheet: MatBottomSheet, private firestore:FirestoreService, private authService: AuthService, private utill:UtilsService, private route:Router) {
     
-        // this.openCallingBottomSheet();
-
-        
-        
+        console.log("SessionService created" );
           this.audio.src = "/assets/audio/ringing.wav";
           this.audio.addEventListener('ended', function() {
             this.currentTime = 0;
             this.play();
         }, false);
 
-        
+        this.initSession();
     }
 
     public initSession() {
@@ -75,33 +72,62 @@ export class SessionService {
             const caller: CallerModel = new CallerModel();
             Object.assign(caller, change.payload.data());
             // const caller: CallerModel = change.payload.data() as CallerModel;
-            if (caller.isNewCall()) {
-                console.log("got a call");
-                 this.startTone();
-                this.openCallingBottomSheet(caller);
-            }
+            this.routeAnswer(caller);
         
         });
     }
+    private routeAnswer(caller: CallerModel) {
+        
+        if (caller.isNewCall()) {
+            console.log("got a call");
+            this.startTone();
+            this.openCallingBottomSheet(caller);
+        } else if (caller.isReject()) {
+            this.route.navigate(['patient/home']);
+            this.endTone();
+            this._bottomSheet.dismiss();
+            this.utill.showMsgSnakebar("Call diconnected");
+        }
+    }
     private loadUserData(userId:string):void{
+
+        let currentRef = this;
     
         this.firestore.getValueChanges('user-data-patient', userId)
         .subscribe(
           
           {
             next(userData){
-              let userdata:PatientUserData = new PatientUserData();
-                  Object.assign(userdata, userData); 
-                  this.PatientUserData = userdata;
-                //   if (this.PatientUserData.) {
-                      
-                //   }
+              let user:PatientUserData = new PatientUserData();
+              Object.assign(user, userData); 
+              if (currentRef.getUserData() === null || currentRef.getUserData() === undefined) {
+                currentRef.setUserData(user);
+                
+                console.log("got user data >> new ");
+              } else {
+                currentRef.updateUserData(user);
+                console.log("got user data updated ");
+              }
+             
            },
            error(msg){
             console.log("Obs error >> : "+msg);
            },
            complete: () => console.log('completed')
-          });
+         });
+    }
+    
+
+    private updateUserData(userDataUpdate: PatientUserData): void {
+    
+        this.userData.setEmail(userDataUpdate.getEmail());
+        this.userData.setFirstName(userDataUpdate.getFirstName());
+        this.userData.setLastName(userDataUpdate.getLastName());
+        this.userData.setGender(userDataUpdate.getGender());
+        this.userData.setAge(userDataUpdate.getAge());
+        this.userData.setPicUrl(userDataUpdate.getPicUrl());
+        this.userData.setUserId(userDataUpdate.getUserId());
+        this.userData.setRegistrationLocalTimeStapm(userDataUpdate.getRegistrationLocalTimeStapm());
       }
 
     public getUserData(): PatientUserData {
@@ -120,8 +146,12 @@ export class SessionService {
         this.sharedData = sharedData;
     }
 
-    public openCallingBottomSheet(caller:any):void {
-        this._bottomSheet.open(IncomingCallBottomSheetComponent, {disableClose:true, closeOnNavigation:false, panelClass: 'bottom-sheet-custom', data:caller});
+    public openCallingBottomSheet(caller: any): void {
+        const objects = {
+            caller: caller,
+            session: this
+        }
+        this._bottomSheet.open(IncomingCallBottomSheetComponent, {disableClose:true, closeOnNavigation:false, panelClass: 'bottom-sheet-custom', data:objects});
     }
 
 

@@ -25,7 +25,7 @@ export class MainNavigationComponent {
 
   constructor(private breakpointObserver: BreakpointObserver, private authService: AuthService, private router: Router, private route: ActivatedRoute, private session:SessionService) { 
 
-    this.session.initSession();
+    
     this.gotoHome();
   }
 

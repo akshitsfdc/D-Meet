@@ -2,12 +2,10 @@ import { R } from '@angular/cdk/keycodes';
 import { Injectable } from '@angular/core';
 import { Action, DocumentSnapshot } from '@angular/fire/firestore';
 import { Observable, Subscription } from 'rxjs';
-import { FirestoreService } from './firestore.service';
+import { FirestoreService } from 'src/app/services/firestore.service';
 import adapter from 'webrtc-adapter';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class MeetingClientService {
 
   private remoteIceObs: Subscription = null;
@@ -63,6 +61,9 @@ export class MeetingClientService {
   private iceCollectionRef: string[] = [];
   private remoteIceCollectionRef: string[] = [];
   
+  private onMessageCallback: any;
+
+
   constructor(private firestore: FirestoreService) { 
 
     this.roomCollection = "meeting_rooms";
@@ -76,6 +77,16 @@ export class MeetingClientService {
     }, false);
     
   }
+
+
+  
+  public getDataChannel():RTCDataChannel {
+    return this.dataChannel;
+  }
+  public setOnMessageCallback(callback) {
+    this.onMessageCallback = callback;
+  }
+
   public setCallBack(callnback:any): void{
     this.conferenceCallback = callnback;
   }
@@ -280,15 +291,7 @@ export class MeetingClientService {
     });
 
     this.dataChannel.addEventListener('message', event => {
-      // const message = event.data;
-        
-        // let messageObject = JSON.parse(message);
-
-        // messageObject.he = true;
-
-        // this.chats.push(messageObject);
-
-        // this.getNewMessageCount(this.chats);
+      this.onMessageCallback(event.data);
     });
   }
 

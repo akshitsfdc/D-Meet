@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HomeComponent } from './home/home.component';
 import { PatientsRoutingModule } from './patients-routing.module';
 import { ProfileComponent } from './profile/profile.component';
 import { MainNavigationComponent } from './main-navigation/main-navigation.component';
@@ -16,12 +15,12 @@ import { BookingDialogComponent } from './booking-dialog/booking-dialog.componen
 import { IncomingCallBottomSheetComponent } from './incoming-call-bottom-sheet/incoming-call-bottom-sheet.component';
 import { ConferenceComponent } from './conference/conference.component';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { BaseComponent } from './base/base.component';
 
 
 
 @NgModule({
   declarations: [
-    HomeComponent,
     ProfileComponent,
     MainNavigationComponent,
     DashboardComponent,
@@ -29,7 +28,8 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
     MeetupLobbyComponent,
     BookingDialogComponent,
     IncomingCallBottomSheetComponent,
-    ConferenceComponent
+    ConferenceComponent,
+    BaseComponent
   ],
   imports: [
     CommonModule,
@@ -41,7 +41,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
     MaterialModule,
     InfiniteScrollModule
   ],
-  bootstrap: [HomeComponent]
+  bootstrap: [BaseComponent]
 
 })
 

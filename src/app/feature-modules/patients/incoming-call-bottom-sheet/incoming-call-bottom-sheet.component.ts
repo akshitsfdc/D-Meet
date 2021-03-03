@@ -13,8 +13,15 @@ import { FirestoreService } from 'src/app/services/firestore.service';
   
 export class IncomingCallBottomSheetComponent implements OnInit {
 
+  public caller: CallerModel;
+  private session: SessionService;
   constructor(private router: Router, private _bottomSheetRef: MatBottomSheetRef<IncomingCallBottomSheetComponent>,
-    @Inject(MAT_BOTTOM_SHEET_DATA) public caller: CallerModel, private firestore: FirestoreService, private session: SessionService) { }
+    @Inject(MAT_BOTTOM_SHEET_DATA) public sheetData: any, private firestore: FirestoreService) {
+      
+    this.caller = this.sheetData.caller;
+    this.session = this.sheetData.session;
+      
+     }
 
   ngOnInit(): void {
   }
@@ -24,11 +31,11 @@ export class IncomingCallBottomSheetComponent implements OnInit {
   }
 
 
-  joinConf() {
+  joinConf(videoEnabled:boolean) {
     this.session.endTone();
     this.closeBottomSheet();
+    this.session.setSharedData({'videoEnabled':videoEnabled});
     this.navigateToMeeting();
-
   }
   rejectConf(): void{
     this.session.endTone();

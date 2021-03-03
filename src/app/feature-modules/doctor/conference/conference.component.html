@@ -4,31 +4,61 @@
 
 
 <mat-sidenav-container class="sidenav-container" fxLayout="row" autosize="true">
+    <!-- [opened]="(isHandset$ | async) === false" -->
     <mat-sidenav #drawer position="end" class="sidenav" fixedInViewport
         [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
         [mode]="(isHandset$ | async) ? 'over' : 'side'"
-        opened = "true"
-        [opened]="(isHandset$ | async) === false"
+        opened="false"
         fxFlex="1 1 auto"
         >
    
         <div id="sidenavInner"  fxLayout="column">
-  
-         
-  
+            <mat-toolbar class="chat-toolbar" fxFlex="1 1 60px"  >
+                <mat-toolbar-row fxLayout="row" fxLayoutAlign="center center">
+
+                    <mat-icon class="close-icon">close</mat-icon>
+                   
+                    <span fxFlex="1 1 auto"></span>
+
+                    <mat-label class="header-label chat-text" >Chat</mat-label>
+                    <span fxFlex="1 1 auto"></span>
+                    <span fxFlex="1 1 24px"></span>
+                </mat-toolbar-row>
+                
+            </mat-toolbar>
+
+            <div class="chatbox-wrapper" #chatContainer fxFlex="1 1 auto" fxLayout="column" [scrollTop]="chatContainer.scrollHeight" >
+                <div  [ngClass]="{'chat-mgs-outer':true, 'left-label':chat.getSenderId() !== currentUser.getUserId(), 'right-label':chat.getSenderId() === currentUser.getUserId()}" *ngFor="let chat of chatCollection" fxLayout="row" fxLayoutGap="10px" >
+                    <img *ngIf="chat.getSenderId() !== currentUser.getUserId()" mat-card-avatar src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4QcsAkyJy8YJXzB_ODAR9Q88d50--zfXfNw&usqp=CAU">
+                    <div fxLayout="column">
+                            <mat-label [ngClass]="{'left-time-label': chat.getSenderId() !== currentUser.getUserId(),
+                             'right-time-label':chat.getSenderId() === currentUser.getUserId()}" class="small-label">
+                             {{chat.getSenderId() === currentUser.getUserId() ? chat.getTimeLabel():chat.getSenderLabel()}}</mat-label>
+                            <mat-label [ngClass]="{'chat-msg' : true, 'msg-left':chat.getSenderId() !== currentUser.getUserId(), 'msg-right':chat.getSenderId() === currentUser.getUserId()}">
+                               {{chat.getMsg()}}
+                            </mat-label>
+                    </div>
+                </div>
+            </div>
+            <mat-divider></mat-divider>
+            <div fxFlex="1 1 60px" class="text-box-wrapper" fxLayout="row" fxLayoutAlign="center center">
+                <div class="chat-input-wrapper" fxFlexOffset="10px" fxLayout="row" fxLayoutAlign="center center">
+                    <mat-icon>attach_file</mat-icon>
+                    <textarea  matInput [(ngModel)]="chatMsgRT" fxFlexOffset="10px"  fxFlex="1 1 auto" class="chat-input" placeholder="Write your message.." ></textarea>
+                </div>
+                
+                <div fxFlex="1 1 50px">
+                    <button mat-mini-fab class="send-button" (click)="sendMessage()"><mat-icon class="send-icon">send</mat-icon></button>
+                </div>
+            </div>
+
         </div>
     </mat-sidenav>
     <mat-sidenav-content >
-
-        <!-- <video id="remoteVideo" autoplay playsinline [srcObject]="meetingService.getRemoteStream()" [muted]="localMute"
-        class="remote-video-player"></video>
-        
-        <video id="localVideo" autoplay="true" [muted]="true" [srcObject]="meetingService.getLocalStream()"
-                class="local-video-player"></video>  -->
         
         <div class="conference-status-div" fxLayout="column" fxLayoutGap="2px">
             <mat-label class="header-label call-header-label">{{currentPatient.getName()}}</mat-label>
-            <mat-label class="header-label call-status-label" >{{connectionStatus}}</mat-label>
+            <mat-label class="header-label call-status-label" >{{meetingService.getConnectionStatus()}}</mat-label>
         </div>
        
 
@@ -37,12 +67,12 @@
             <video id="localVideo" autoplay="true" cdkDrag  [muted]="true" [srcObject]="meetingService.getLocalStream()"
             class="local-video-player"></video> 
         
-            <ng-container *ngIf="!meetingService.getRemoteStream()">
+            <ng-container *ngIf="!meetingService.getRemoteStream() || meetingService.getRemoteStream().getVideoTracks().length === 0">
                 <div fxFlex="1 1 auto" fxLayout="column" fxLayoutAlign="center center">
                     <img src="https://imagevars.gulfnews.com/2020/11/19/20201119-Ishita-Karuturi_175df2027da_large.jpg" class="conference-center-image"/>
                 </div>
             </ng-container>
-           <ng-container *ngIf="meetingService.getRemoteStream()">
+           <ng-container *ngIf="meetingService.getRemoteStream() && meetingService.getRemoteStream().getVideoTracks().length > 0">
                 <video id="remoteVideo" autoplay playsinline [srcObject]="meetingService.getRemoteStream()" fxFlex="1 1 auto"
                     class="remote-video-player"></video>
            </ng-container>
@@ -62,7 +92,7 @@
                         <mat-icon *ngIf="videoOn">videocam</mat-icon>
                         <mat-icon  *ngIf="!videoOn" class="white-icon">videocam_off</mat-icon>
                     </button>
-                    <button mat-mini-fab  [ngClass]="{'conference-call-disconnect':true}" aria-label="End call" >
+                    <button mat-mini-fab  [ngClass]="{'conference-call-disconnect':true}" aria-label="End call" (click)="endCall()" >
                         <mat-icon [ngStyle]="{'color':'white'}">call_end</mat-icon>
                     </button>
                 </div>

@@ -1,5 +1,6 @@
+import { PatientUserData } from 'src/app/models/patient-user-data';
+
 import { CallerModel } from 'src/app/models/caller-model';
-import { MeetingClientService } from './../../../services/meeting-client.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
@@ -8,11 +9,14 @@ import { FirestoreService } from 'src/app/services/firestore.service';
 import { SessionService } from '../service/session.service';
 import { map, shareReplay } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { MeetingClientService } from '../service/meeting-client.service';
+import { ChatModel } from 'src/app/models/chat-model';
 
 @Component({
   selector: 'app-conference',
   templateUrl: './conference.component.html',
-  styleUrls: ['./conference.component.scss']
+  styleUrls: ['./conference.component.scss'],
+  providers:[MeetingClientService]
 })
 export class ConferenceComponent implements OnInit, OnDestroy {
 
@@ -34,6 +38,12 @@ export class ConferenceComponent implements OnInit, OnDestroy {
   public micOn: boolean = true;
   public videoOn: boolean = true;
 
+  public chatMsgRT: string = "";
+  public currentUser: PatientUserData;
+
+  public chatCollection: ChatModel[] = [];
+  
+
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches),
@@ -42,20 +52,36 @@ export class ConferenceComponent implements OnInit, OnDestroy {
   
     
   constructor(public meetingService: MeetingClientService, private breakpointObserver: BreakpointObserver, private session: SessionService,
-    private firestore: FirestoreService, private router:Router,) { 
+    private firestore: FirestoreService, private router:Router) { 
     this.caller = this.session.getSharedData() as CallerModel;
   }
 
   ngOnInit(): void {
-    console.log("  >> "+this.caller.getCallerId());
+    console.log("  >> " + this.caller.getCallerId());
+    
+    const videoEnabled = this.session.getSharedData().videoEnabled;
+    // if (!videoEnabled) {
+    //   this.videoToggle();
+    // } else {
+      
+    // }
+
+    this.currentUser = this.session.getUserData();
     
     this.meetingService.setRoomId(this.caller.getRoomId());
-    this.meetingService.setCalleeIceDoc(this.session.getUserData().getUserId());
+    this.meetingService.setCalleeIceDoc(this.currentUser.getUserId());
     this.meetingService.setCallerIceDoc(this.caller.getCallerId());
 
     this.meetingService.setCallBack(() => {
       this.connectionStatus = "CONNECTED";
       // this.meetingService.st
+      if (!videoEnabled) {
+        this.videoToggle();
+      }
+    });
+
+    this.meetingService.setOnMessageCallback((data:string) => {
+      this.onMessage(data);
     });
 
     this.sendAnswer();
@@ -66,6 +92,7 @@ export class ConferenceComponent implements OnInit, OnDestroy {
   public sendAnswer(): void {
   
     this.connectionStatus = "Connecting...";
+
     this.firestore.update(this.session.getCallerCollection(), this.session.getUserData().getUserId(), Object.assign({}, this.setupAnswerObject()))
       .then(() => {
         console.log("answer sent");
@@ -81,8 +108,8 @@ export class ConferenceComponent implements OnInit, OnDestroy {
 
     this.firestore.update(this.session.getCallerCollection(), this.session.getUserData().getUserId(), Object.assign({}, this.setupRejectObject()))
       .then(() => {
-        this.meetingService.hangUp();
-        this.router.navigate(['patient/meetup-lobby']);
+        // this.meetingService.hangUp();
+        this.router.navigate(['patient/home']);
         //this.closeBottomSheet();
       })
       .catch(error => {
@@ -145,5 +172,46 @@ export class ConferenceComponent implements OnInit, OnDestroy {
       
      }
     this.videoOn = !this.videoOn;
+  }
+
+
+  public setSenderChatObj():ChatModel {
+
+    const date: Date = new Date();
+    const senderLabel: string = this.currentUser.getFirstName() + ", " + date.getHours() + ':' + date.getMinutes();
+    const timeLabel: string = date.getHours() + ':' + date.getMinutes();
+
+    let chat: ChatModel = new ChatModel();
+    chat.setMsg(this.chatMsgRT);
+    chat.setSenderId(this.currentUser.getUserId());
+    chat.setSenderLabel(senderLabel);
+    chat.setTime(+date.getTime());
+    chat.setTimeLabel(timeLabel);
+
+    this.chatCollection.push(chat);
+
+    this.chatMsgRT = "";
+
+    return chat;
+  }
+
+  public sendMessage(): void{
+
+    const dataChannel: RTCDataChannel = this.meetingService.getDataChannel();
+    if (dataChannel && dataChannel.readyState === 'open') {
+      const data: string = JSON.stringify(Object.assign({}, this.setSenderChatObj()));
+      console.log("message sent !");
+      dataChannel.send(data);
+    }
+
+  }
+
+  private onMessage(data: string) {
+    console.log("message recieved !");
+    const chatJson: any = JSON.parse(data);
+    const chat: ChatModel = new ChatModel();
+    Object.assign(chat, chatJson);
+
+    this.chatCollection.push(chat);
   }
 }

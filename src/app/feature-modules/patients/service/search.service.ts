@@ -12,9 +12,7 @@ import { BookedPatient } from 'src/app/models/booked-patient';
 import { queue } from 'rxjs/internal/scheduler/queue';
 import { SessionService } from './session.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class SearchService {
 
   nearbyDoctors:SearchedDoctor[];
@@ -33,6 +31,7 @@ export class SearchService {
     this.globalLastVisible = null;
     this.globalDocsLimit = 15;
     this.currentQueue = null;
+    this.loadDoctors();
   }
 
   public getCurrentQueue(): QueueModel {
@@ -136,10 +135,11 @@ public setCurrentQueue(currentQueue: QueueModel): void {
           let queue:QueueModel = new QueueModel();
           Object.assign(queue, element);           
           queues.push(queue);
+
           queue.setBookingAvailable(utils.isWithinTimeFrame(queue.getBookingStarting(), queue.getBookingEnding()));
           queue.setConsultingStarted(utils.isWithinTimeFrame(queue.getConsultingStarting(), queue.getConsultingEnding()));   
           
-         
+          parentObj.getBookingsOfQueue(queue);
         });
 
         searchedDoctor.setQueues(queues);
