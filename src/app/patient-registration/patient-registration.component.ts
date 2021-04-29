@@ -164,7 +164,7 @@ export class PatientRegistrationComponent implements OnInit {
   }
 
   private showLoading():void{
-    this.loadingIndicator = this.matDialog.open(LoadingDialogComponent, {disableClose: true});
+    this.loadingIndicator = this.matDialog.open(LoadingDialogComponent, {disableClose: true, data: { message: "Registering..." }});
   }
   private hideLoading():void{
     if(this.loadingIndicator){

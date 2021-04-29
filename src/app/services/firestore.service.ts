@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
-import { Injectable } from '@angular/core';
-import { Action, AngularFirestore, DocumentChangeAction, DocumentData, DocumentSnapshot, QuerySnapshot} from '@angular/fire/firestore';
+import { Injectable} from '@angular/core';
+import { Action, AngularFirestore, DocumentChangeAction, DocumentData, DocumentSnapshot, Query, QuerySnapshot} from '@angular/fire/firestore';
 
 import * as firebase from 'firebase';
 
@@ -99,4 +99,51 @@ export class FirestoreService {
   public getDocChanges(collection:string, document:string):Observable<Action<DocumentSnapshot<unknown>>> {
     return this.firestore.collection(collection).doc(document).snapshotChanges();
   }
+
+  public getPrescriptionChanges(collection:string, key1:string, value1:string, key2:string, value2:string, limit:number, orderBy:string):Observable<DocumentChangeAction<unknown>[]> {
+    return this.firestore.collection(collection, ref =>
+      ref.where(key1, "==", value1)
+        .where(key2, "==", value2)
+        .limit(limit)
+        .orderBy(orderBy))
+      .stateChanges();
+  }
+
+  public getMyBookingsP(patientId:string, dateStr:string, processed:boolean, cancelled:boolean, limit:number):Observable<DocumentChangeAction<unknown>[]> {
+
+    let collectionPath: string = "queue-bookings";
+
+    if (cancelled) {
+       return this.firestore.collection(collectionPath, ref =>
+        ref.where("patientId", "==", patientId)
+          .where("cancelled", "==", cancelled)
+          .limit(limit)
+          .orderBy("bookingTimeServer")
+        )
+         .stateChanges();
+    }
+    if (processed) {
+      return this.firestore.collection(collectionPath, ref =>
+        ref.where("patientId", "==", patientId)
+          .where("processed", "==", processed)
+          .limit(limit)
+          .orderBy("bookingTimeServer")
+        )
+        .stateChanges();
+    } else {
+      return this.firestore.collection(collectionPath, ref =>
+        ref.where("patientId", "==", patientId)
+          .where("processed", "==", processed)
+          .where("dateString", "==", dateStr)
+          .where("cancelled", "==", cancelled)
+          .limit(limit)
+          .orderBy("bookingTimeServer")
+        )
+        .stateChanges();
+    }
+   
+  }
+
+  
+
 }

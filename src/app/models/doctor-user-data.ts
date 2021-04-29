@@ -8,7 +8,8 @@ export class DoctorUserData {
     private lastName:string;
     private gender:string;
     private picUrl:string;
-    private userId:string;
+    private userId: string;
+    private phoneNumber: string;
     private profileId:string;
     private registrationNumber:string;
     private experience:number;
@@ -39,6 +40,14 @@ export class DoctorUserData {
     }
 
 
+    public getPhoneNumber(): string {
+        return this.phoneNumber;
+    }
+
+    public setPhoneNumber(phoneNumber: string): void {
+        this.phoneNumber = phoneNumber;
+    }
+    
     public getQueues(): QueueModel[] {
         return this.queues;
     }

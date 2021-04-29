@@ -58,8 +58,12 @@ export class MeetingHostService {
   private connectionStatus: string;
   private callStartCallback: any;
   private onMessageCallback: any;
-  
+  private noMediaCallback: any;
+  private conferenceCallback: any;
+  private timeUpCallback: any;
+  private hostDisconnectAction: boolean;
 
+    
   constructor(private firestore: FirestoreService) { 
 
     this.roomCollection = "meeting_rooms";
@@ -86,12 +90,29 @@ export class MeetingHostService {
   private  delay(ms: number) {
     return new Promise( resolve => setTimeout(resolve, ms) );
   }
+  public setTimeoverCallback(callback:any): void{
+    this.timeUpCallback = callback;
+  }
+  public setCallBack(callback:any): void{
+    this.conferenceCallback = callback;
+  }
+  public setNoMediaCallback(noMediaCallback):void {
+    this.noMediaCallback = noMediaCallback;
+  }
   public setCallStartCallback(callStartCallback) {
     this.callStartCallback = callStartCallback;
   }
   public getLocalStream():MediaStream {
     return this.localStream;
   }
+  public isHostDisconnectAction(): boolean {
+    return this.hostDisconnectAction;
+}
+
+public setHostDisconnectAction(hostDisconnectAction: boolean): void {
+    this.hostDisconnectAction = hostDisconnectAction;
+}
+
   public getRemoteStream():MediaStream {
     return this.remoteStream;
   }
@@ -110,6 +131,8 @@ export class MeetingHostService {
     this.roomId = roomId;
   }
   private async openUserMedia() {
+
+   
     
     this.localStream = await navigator.mediaDevices.getUserMedia({
           video: {
@@ -124,6 +147,7 @@ export class MeetingHostService {
     );
   
     // this.localStream = stream;
+    
     this.createRoom();
     
     
@@ -140,6 +164,7 @@ export class MeetingHostService {
   public getConnectionStatus() {
     return this.connectionStatus;
   }
+
   public playPreRing():void {
     this.preRing.play();
   }
@@ -148,9 +173,15 @@ export class MeetingHostService {
   }
   private getConnectedDevices(type, callback) {
     navigator.mediaDevices.enumerateDevices()
-        .then(devices => {
+      .then(devices => {
+          console.log("****"+type+"****");
+          
             const filtered = devices.filter(device => device.kind === type);
             callback(filtered);
+        })
+      .catch(error => {
+        console.log("Error finding : "+type);
+         
       }); 
   }
   
@@ -159,50 +190,37 @@ export class MeetingHostService {
     this.connectionStatus = "Preparing...";
 
     this.getConnectedDevices('videoinput',
-    cameras => {
-      console.log('Cameras found', cameras)
-      this.cameraArray = cameras;
-      if(this.cameraArray.length > 0){
-        this.selectedCamera = this.cameraArray[0].deviceId;
+      cameras => {
+        console.log('Cameras found', cameras)
+        this.cameraArray = cameras;
+        if (this.cameraArray.length > 0) {
+        
+          this.selectedCamera = this.cameraArray[0].deviceId;
 
-        this.getConnectedDevices('audioinput',
-        mics => {
-          console.log('mics found', mics)
-          this.micArray = mics;
-          if(this.micArray.length > 0){
-            this.selectedMic = this.micArray[0].deviceId;
-           
-            this.getConnectedDevices('audiooutput',
-            speakers => {
-              console.log('speakers found', speakers)
-              this.speakerArray = speakers;
-              this.openUserMedia();
-             
+          this.getConnectedDevices('audioinput',
+            mics => {
 
+              console.log('mics found', mics);
+              this.micArray = mics;
+              if (this.micArray.length > 0) {
+                this.selectedMic = this.micArray[0].deviceId;
+
+                this.openUserMedia(); 
+              
+              } else {
+                this.noMediaCallback("mic", "No microphone attached to this device. Kindly attach one to complete this call.", "Got It");
+                this.connectionStatus = "Unavailable";
+              }//no mic
             }
-            );
-          }
-         }
-        );
+          );
+        } else {
+          this.noMediaCallback("camera", "No webcam/camera attached to this device. Kindly attach one to complete this call.", "Got It");
+          this.connectionStatus = "Unavailable";
+        }//no camera
       }
-     }
     );
-    // this.getConnectedDevices('audioinput',
-    // mics => {
-    //   console.log('mics found', mics)
-    //   this.micArray = mics;
-    //   if(this.micArray.length > 0){
-    //     this.selectedMic = this.micArray[0].deviceId;
-    //     this.openUserMedia();
-    //   }
-    //  }
-    // );
-    this.getConnectedDevices('audiooutput',
-    speakers => {
-      console.log('speakers found', speakers)
-      this.speakerArray = speakers;
-     }
-    );
+
+    
   }
 
   public setConnectionStatus(status:string): void{
@@ -400,6 +418,7 @@ export class MeetingHostService {
                 await this.peerConnection.addIceCandidate(new RTCIceCandidate(ice))
                   .then(() => {
                     this.stopRinging();
+                    this.conferenceCallback();
                   })
                 .catch(error => {
                   console.log("Could not add this ice candidate");
@@ -425,7 +444,8 @@ export class MeetingHostService {
   public startRingTimer() {
     this.ringTimer = setTimeout(() => {
       this.audio.pause();
-      // this.callingInterfaceActive=false;
+      this.setHostDisconnectAction(true);
+      this.timeUpCallback();
       clearTimeout( this.ringTimer);
     }, 35000);
 
@@ -479,3 +499,21 @@ export class MeetingHostService {
   }
   
 }
+
+
+
+// this.getConnectedDevices('audiooutput',
+                //   speakers => {
+                //     console.log('speakers found', speakers);
+
+                //     if (this.speakerArray.length > 0) {
+                //       this.speakerArray = speakers;
+                        
+                      
+                //     } else {
+                //       this.noMediaCallback("mic", "No speaker attached to this device. Kindly attach one to complete this call.", "Got It");
+                //     }//no speaker
+                    
+
+                //   }
+                // );

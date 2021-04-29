@@ -1,0 +1,25 @@
+<div id="parent" fxLayout="column" fxLayoutAlign="center center">
+    
+   
+
+    
+    <ng-container *ngIf="data.type === 'camera'">
+        <mat-icon class="alert-icon">videocam_off</mat-icon>
+        <mat-label class="header-label" fxFlexOffset="10px">Not Connected!</mat-label>
+        
+    </ng-container>
+    <ng-container *ngIf="data.type === 'mic'">
+        <mat-icon class="alert-icon">mic_off</mat-icon>
+        <mat-label class="header-label" fxFlexOffset="10px">Not Connected!</mat-label>
+        
+    </ng-container>
+    <mat-label id="headerLabel message" fxFlexOffset="40px">{{data.message}}</mat-label>
+
+    <ng-container *ngIf="data.type !== 'alert'">
+        <div mat-dialog-actions fxLayoutAlign="center center" fxFlexOffset="15px">
+            <button class="lighter-button" mat-flat-button (click)="close()">{{data.okText||'Got It'}}</button>
+        </div>
+    </ng-container>
+    
+
+</div>

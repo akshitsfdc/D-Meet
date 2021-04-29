@@ -1,3 +1,4 @@
+import { PrescriptionDialogComponent } from './../../../prescription-dialog/prescription-dialog.component';
 import { QueueModel } from './../models/queue-model';
 import { UtilsService } from './../../../services/utils.service';
 import { SessionService } from './../services/session.service';
@@ -55,7 +56,7 @@ export class LiveQueueComponent implements OnInit {
 
     this.graphInit();
 
-   
+    
 
     
   }
@@ -257,6 +258,17 @@ export class LiveQueueComponent implements OnInit {
   }
 
   
+  private showPrescription() {
+
+    this.matDialog.open(PrescriptionDialogComponent, { maxWidth:'560px', width:'560px',
+
+      data: { doctor: this.session.getUserData() }
+    
+    }).afterClosed().toPromise()
+    .then(result => {
+      
+    });
+  }
 
 }
 

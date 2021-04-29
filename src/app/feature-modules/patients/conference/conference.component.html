@@ -4,13 +4,14 @@
         [mode]="(isHandset$ | async) ? 'over' : 'side'"
         opened = "false"
         fxFlex="1 1 auto"
+        (openedChange)="readAll()"
         >
    
         <div id="sidenavInner"  fxLayout="column">
             <mat-toolbar class="chat-toolbar" fxFlex="1 1 60px"  >
                 <mat-toolbar-row fxLayout="row" fxLayoutAlign="center center">
 
-                    <mat-icon class="close-icon">close</mat-icon>
+                    <mat-icon class="close-icon" (click)="drawer.toggle()">close</mat-icon>
                    
                     <span fxFlex="1 1 auto"></span>
 
@@ -48,49 +49,86 @@
 
         </div>
     </mat-sidenav>
+
     <mat-sidenav-content >
 
-        <!-- <video id="remoteVideo" autoplay playsinline [srcObject]="meetingService.getRemoteStream()" [muted]="localMute"
-        class="remote-video-player"></video>
-        
-        <video id="localVideo" autoplay="true" [muted]="true" [srcObject]="meetingService.getLocalStream()"
-                class="local-video-player"></video>  -->
-        
-        <div class="conference-status-div" fxLayout="column" fxLayoutGap="2px">
-            <mat-label class="header-label call-header-label">{{caller.getCallerName()}}</mat-label>
-            <mat-label class="header-label call-status-label" >{{connectionStatus}}</mat-label>
-        </div>
-       
-
-        <div class="conference-bg" fxLayout="column" >
-        
-            <video id="localVideo" autoplay="true" cdkDrag  [muted]="true" [srcObject]="meetingService.getLocalStream()"
-            class="local-video-player"></video> 
-        
-            <ng-container *ngIf="!meetingService.getRemoteStream()">
-                <div fxFlex="1 1 auto" fxLayout="column" fxLayoutAlign="center center">
-                    <img src="https://imagevars.gulfnews.com/2020/11/19/20201119-Ishita-Karuturi_175df2027da_large.jpg" class="conference-center-image"/>
+        <div class="conference-bg"  fxLayout="column" >
+            <!-- *ngIf="meetingService.getRemoteStream() && meetingService.getRemoteStream().getVideoTracks().length > 0 && mediaSignalRemote.isVideoOn()" -->
+            <div class="main-conf-div" fxFlex="1 1 100%">
+                <div class="main-inner video-wrapper" fxLayout="column" fxLayoutAlign="center center">
+                    <video  id="remoteVideo" autoplay playsinline [srcObject]="meetingService.getRemoteStream()"
+                    class="remote-video-player"
+                    (click)="bottombarVisible = !bottombarVisible"
+                    ></video>
                 </div>
-            </ng-container>
-           <ng-container *ngIf="meetingService.getRemoteStream()">
-                <video id="remoteVideo" autoplay playsinline [srcObject]="meetingService.getRemoteStream()" fxFlex="1 1 auto"
-                    class="remote-video-player"></video>
-           </ng-container>
+
+               
+                
+                <ng-container *ngIf="!meetingService.getRemoteStream() || meetingService.getRemoteStream().getVideoTracks().length === 0  || !mediaSignalRemote.isVideoOn()">
+
+                    <div class="image-overlay main-inner"  fxLayout="column" fxLayoutAlign="center center">
+                        <img src="https://imagevars.gulfnews.com/2020/11/19/20201119-Ishita-Karuturi_175df2027da_large.jpg" class="conference-center-image"/>
+                    </div>
+                </ng-container>
+
+                <div *ngIf="prescription" class="prescription-div" fxLayout="row">
+                    <span fxFlex="1 1 auto"></span>
+                    <mat-card class="prescription-card" (click)="showPrescription()">
+                        <mat-card-content fxLayout="row" fxLayoutAlign="center center">
+                            <img class="rx-img" src="/assets/imgs/rx_200.svg" />
+                            <mat-label fxFlexOffset="10px" class="small-label">You have got a prescription from doctor</mat-label>
+                        </mat-card-content>
+                    </mat-card>
+                    <span fxFlex="1 1 auto"></span>
+                </div>
+                <div class="conference-status-div" fxLayout="column" fxLayoutGap="2px">
+                    <mat-label class="header-label call-header-label">{{caller.getCallerName()}}</mat-label>
+                    <mat-label class="header-label call-status-label" >{{meetingService.getConnectionStatus()}}</mat-label>
+                </div>
+
+                <div class="remote-media-indicator-wrapper" fxLayout="column" fxLayoutGap="10px">
+                    <div *ngIf="!mediaSignalRemote.isAudioOn()" class="remote-media-indicator" fxLayout="row" fxLayoutAlign="start center">
+                        <mat-icon class="remote-media-icon">mic_off</mat-icon>
+                        <mat-label fxFlexOffset="6px" class="remote-media-label">{{caller.getCallerName()}} is on mute</mat-label>
+                    </div>
+                    <div *ngIf="!mediaSignalRemote.isVideoOn()" class="remote-media-indicator" fxLayout="row" fxLayoutAlign="start center">
+                        <mat-icon class="remote-media-icon">videocam_off</mat-icon>
+                        <mat-label fxFlexOffset="6px" class="remote-media-label">{{caller.getCallerName()}} turend off the camera</mat-label>
+                    </div>
+                </div>
+
+                <div class="local-video-player" cdkDrag cdkDragBoundary=".main-conf-div" >
+                    <ng-container *ngIf="mediaSignal.isVideoOn()">
+                        <video id="localVideo"   autoplay="true"  [muted]="true" [srcObject]="meetingService.getLocalStream()"
+                        ></video> 
+                    </ng-container>
+                    
+                    <ng-container *ngIf="!mediaSignal.isVideoOn()">
+                        <div   class="big-webcam-off-wrapper" fxLayout="column" fxLayoutAlign="center center" >
+                            <mat-icon  class="big-webcam-off">videocam_off</mat-icon>
+                        </div>  
+                    </ng-container>                  
+                </div>
+               
+                
+
+                <mat-icon class="white-icon full-screen-icon" (click)="togleFullScreen()" >{{fullScreenFlag?'fullscreen_exit':'fullscreen'}}</mat-icon>
+            </div>
           
 
-            <div class="conference-bottom-bar" fxflex="1 1 80px" fxLayout="row" fxLayoutAlign="center center"  >
+            <div *ngIf="bottombarVisible"  class="conference-bottom-bar" fxflex="1 1 100px" fxLayout="row" fxLayoutAlign="center center"  >
                 <div fxFlex="1 1 100%">
         
                 </div>
                 <div class="media-botton-container"  fxLayout="row" fxLayoutGap="15px" > 
         
-                    <button mat-mini-fab [ngClass]="{'conference-mute-button':micOn, 'conference-unmute-button':!micOn}" aria-label="mute" (click)="micToggle()">
-                        <mat-icon *ngIf="micOn">mic</mat-icon>
-                        <mat-icon *ngIf="!micOn" class="white-icon">mic_off</mat-icon>
+                    <button mat-mini-fab [ngClass]="{'conference-mute-button':mediaSignal.isAudioOn(), 'conference-unmute-button':!mediaSignal.isAudioOn()}" aria-label="mute" (click)="micToggle()">
+                        <mat-icon *ngIf="mediaSignal.isAudioOn()">mic</mat-icon>
+                        <mat-icon *ngIf="!mediaSignal.isAudioOn()" class="white-icon">mic_off</mat-icon>
                     </button>
-                    <button mat-mini-fab aria-label="Camera" [ngClass]="{'conference-camera-button':videoOn, 'conference-camera-cut-button':!videoOn}" (click)="videoToggle()">
-                        <mat-icon *ngIf="videoOn">videocam</mat-icon>
-                        <mat-icon  *ngIf="!videoOn" class="white-icon">videocam_off</mat-icon>
+                    <button mat-mini-fab aria-label="Camera" [ngClass]="{'conference-camera-button':mediaSignal.isVideoOn(), 'conference-camera-cut-button':!mediaSignal.isVideoOn()}" (click)="videoToggle()">
+                        <mat-icon *ngIf="mediaSignal.isVideoOn()">videocam</mat-icon>
+                        <mat-icon  *ngIf="!mediaSignal.isVideoOn()" class="white-icon">videocam_off</mat-icon>
                     </button>
                     <button mat-mini-fab  [ngClass]="{'conference-call-disconnect':true}" aria-label="End call" (click)="sendReject()">
                         <mat-icon [ngStyle]="{'color':'white'}">call_end</mat-icon>
@@ -104,18 +142,21 @@
                             <mat-icon [ngStyle]="{'color':'red'}" >fiber_manual_record</mat-icon>                
                              <mat-label class="action-label">Record</mat-label>
                         </div> -->
-                        <div fxLayout="column"  fxLayoutGap="10px" fxLayoutAlign="center center" (click)="drawer.toggle()">                   
-                            <mat-icon class="chat-action-icon" >chat</mat-icon>                
-                             <mat-label class="action-label">Chat</mat-label>
-                        </div>
+                        <ng-container *ngIf="meetingService.getDataChannel() && meetingService.getDataChannel().readyState === 'open'">
+                            <div fxLayout="column"   fxLayoutGap="10px" fxLayoutAlign="center center" (click)="drawer.toggle()" 
+                            [matBadge]="unreadMessages > 0?unreadMessages:null" matBadgeColor="warn"
+                            >                   
+                                <mat-icon class="chat-action-icon"  >chat</mat-icon>                
+                                 <mat-label class="action-label">Chat</mat-label>
+                            </div>
+                        </ng-container>
                         <span fxFlex="1 1 40px"></span>
                      </div>
                      <!-- <span fxFlex="1 1 30px"></span> -->
                 </div>
                 
             </div>
-        
-            
+
         </div>
 
 

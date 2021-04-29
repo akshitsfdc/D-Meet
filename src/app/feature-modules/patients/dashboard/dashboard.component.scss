@@ -17,7 +17,7 @@
 }
 .facility-map{
     height: 225px;
-   
+   min-width: 400px;
     border-radius: 10PX;
     /* margin-left: 25px; */
 }
@@ -86,4 +86,10 @@ background-color: $grey-lighter;
     font-size: 50px;
     height: fit-content;
     width: fit-content;
+}
+.d-details-value{
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-all;
+    max-width: 350px;
 }

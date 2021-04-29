@@ -18,7 +18,9 @@ export class SessionService {
     private userData: PatientUserData;
     private callerObs: Subscription = null;
     private audio = new Audio();
-    private callerCollection:string = "caller_collection";
+    private callerCollection: string = "caller_collection";
+    private isCallInit: boolean = false;
+    public profilePlaceholder: string = "/assets/imgs/profile_placeholder.svg";
 
     constructor(private _bottomSheet: MatBottomSheet, private firestore:FirestoreService, private authService: AuthService, private utill:UtilsService, private route:Router) {
     
@@ -65,7 +67,8 @@ export class SessionService {
     public getCallerCollection() {
         return this.callerCollection;
     }
-    private subscribeToCalls(callCollection: string, callDocument: string):void {
+    private subscribeToCalls(callCollection: string, callDocument: string): void {
+        
         this.callerObs = this.firestore.getDocChanges(callCollection, callDocument)
         .subscribe((change) => {
             const type: string = change.type;
@@ -73,7 +76,6 @@ export class SessionService {
             Object.assign(caller, change.payload.data());
             // const caller: CallerModel = change.payload.data() as CallerModel;
             this.routeAnswer(caller);
-        
         });
     }
     private routeAnswer(caller: CallerModel) {
@@ -82,11 +84,15 @@ export class SessionService {
             console.log("got a call");
             this.startTone();
             this.openCallingBottomSheet(caller);
+            this.isCallInit = true;
         } else if (caller.isReject()) {
             this.route.navigate(['patient/home']);
             this.endTone();
             this._bottomSheet.dismiss();
-            this.utill.showMsgSnakebar("Call diconnected");
+            if (this.isCallInit) {
+                this.utill.showMsgSnakebar("Call diconnected");
+            }
+            
         }
     }
     private loadUserData(userId:string):void{

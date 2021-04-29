@@ -1,0 +1,112 @@
+<div class="download-wrapper" fxLayout="row"  >
+    <span fxFlex="1 1 auto"></span>
+    <mat-icon class="download-btn" (click)="captureScreen()" matTooltip="Download prescription" matTooltipPosition="above">file_download</mat-icon>
+</div>
+
+<div id="parent" fxLayout="column">
+    <div id="pre-header" fxLayout="row" fxLayoutAlign="center center">
+
+        <div fxLayout="column" >
+
+            <!-- <mat-label id="clinic-name" class="header-label">{{doctor?doctor.getClinicName():''}}</mat-label> -->
+            <mat-label id="doctor-name" class="header-label">{{prescription?prescription.getName():''}}</mat-label>
+            <mat-label  fxFlexOffset="5px" class="doctor-address"  class="small-label">@ www.doctormeetup.com/{{prescription?prescription.getProfileId():''}}</mat-label>
+
+            <mat-label fxFlexOffset="5px" id="doctor-degree" class="small-label">{{prescription?prescription.getDegree():''}}</mat-label>
+            
+            <mat-label fxFlexOffset="5px" class="doctor-address" class="small-label">{{prescription?prescription.getFullClinicAddress():''}}</mat-label>
+            <!-- <div class="header-wrapper"></div> -->
+            
+        </div>
+        <span fxFlex="1 1 auto"></span>
+        <img id="meetupImageSmall"  src="/assets/imgs/meetup_logo_with.png" alt="Meetup Logo">
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div id="patient-title" fxLayout="row wrap" fxFlexOffset="5px" >
+        <div class="patient-child-div" fxLayout="row" fxLayoutGap="5px" >
+            <mat-label class="pa-header header-label" >Name: </mat-label>
+            <mat-label class="pa-value" >{{prescription.getPatientName()}}</mat-label>
+        </div>
+        <div class="patient-child-div" fxLayout="row" fxLayoutGap="5px" >
+            <mat-label class="pa-header header-label" >Sex: </mat-label>
+            <mat-label class="pa-value" >{{prescription.getPatientgender()}}</mat-label>
+        </div>
+        <div class="patient-child-div" fxLayout="row" fxLayoutGap="5px" >
+            <mat-label class="pa-header header-label" >Age: </mat-label>
+            <mat-label class="pa-value" >{{prescription.getAge()}}</mat-label>
+        </div>
+        <div class="patient-child-div" fxLayout="row" fxLayoutGap="5px" >
+            <mat-label class="pa-header header-label" >Address: </mat-label>
+            <mat-label class="pa-value" >{{prescription.getPatientAddress()}}</mat-label>
+        </div>
+        <div class="patient-child-div" fxLayout="row" fxLayoutGap="5px" >
+            <mat-label class="pa-header header-label" >Date: </mat-label>
+            <mat-label class="pa-value" >{{millisToDateString(prescription.getWrittenTime())}}</mat-label>
+        </div>
+        <div *ngIf="prescription.isEdited()" class="patient-child-div" fxLayout="row" fxLayoutGap="5px" >
+            <mat-label class="pa-header header-label" >Edited: </mat-label>
+            <mat-label class="pa-value" >{{getDateString()}}</mat-label>
+        </div>
+    </div>
+    <mat-divider></mat-divider>
+
+    <img id="rx_icon"  src="/assets/imgs/rx_200.png" alt="rx">
+
+    <!-- <div class="pre-devider" ></div> -->
+    <ng-container *ngIf="isDoctor">
+        <div id="pre-content" (click)="editModeActive = !editModeActive" fxLayout="column"> 
+
+            <mat-form-field *ngIf="editModeActive" appearance="outline"  fxFlex="1 1 auto" (click)="$event.stopPropagation()">
+                <textarea  matInput  class="prescription-edit-area" 
+                    placeholder="Start typing prescription"
+                    matTextareaAutosize
+                    [(ngModel)]='prescription.prescription'
+                    >
+                </textarea>
+            </mat-form-field>
+    
+            <mat-label  *ngIf="!editModeActive" class="hand-writting prescription-label" >{{prescription.getPrescription().length==0?"Write prescription here":prescription.getPrescription()}}</mat-label>
+    
+        </div>
+    </ng-container>
+    <ng-container *ngIf="!isDoctor">
+
+        <div id="pre-content" fxLayout="column"> 
+            <mat-label  *ngIf="!editModeActive" class="hand-writting prescription-label" >{{prescription.getPrescription()}}</mat-label>
+        </div>
+
+    </ng-container>
+    
+
+    <div class="signature-wrapper" fxLayout="row" fxLayoutAlign="center center">
+        <span fxFlex="1 1 20px"></span>
+        <mat-label class="header-label pre-sig-value">{{prescription.getClinicName()}}</mat-label>
+        <span fxFlex="1 1 auto"></span>
+        <div class="signature-div" fxLayout="row">
+            <mat-label class="small-label pre-sig-label">Prescribed by</mat-label>
+            <mat-label fxFlexOffset="10px" class="header-label pre-sig-value">Dr. {{prescription.getName()}}</mat-label>
+        </div>
+        <span fxFlex="1 1 20px"></span>
+    </div>
+        
+    <div id="pre-footer" class="pre-devider" fxLayout="row" fxLayoutAlign=" center">
+        <span fxFlex="1 1 20px"></span>
+        <div class="bottom-wrapper" fxLayout="row" fxLayoutAlign="center center">
+            <mat-icon class="bottom-icon">contact_phone</mat-icon>
+            <mat-label fxFlexOffset="8px" class="bottom-label" >{{prescription.getPhoneNumber()}}</mat-label>    
+        </div>
+
+        <span fxFlex="1 1 auto"></span>
+        <div class="bottom-wrapper" fxLayout="row" fxLayoutAlign="center center">
+            <mat-icon class="bottom-icon">email</mat-icon>
+            <mat-label fxFlexOffset="8px" class="bottom-label" >{{prescription.getEmail()}}</mat-label>    
+        </div>
+        <span fxFlex="1 1 20px"></span>
+    </div>
+   
+</div>
+<div *ngIf="isDoctor" class="download-wrapper" fxLayout="row" fxLayoutAlign="center center" >
+    <button  mat-flat-button (click)="sendPrrscription()" [disabled]="prescription.prescription.length==0">{{editModeActive?"Done":"Send Prescription"}}</button>
+</div>

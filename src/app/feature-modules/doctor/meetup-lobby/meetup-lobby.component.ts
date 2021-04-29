@@ -92,7 +92,7 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
   private consultingStartWaitingTime:number = 0;
   private loading: MatDialogRef<LoadingDialogComponent>;
 
-  selftWaitingTime: string = "tun tun";
+  selftWaitingTime: string = "";
 
   userData: PatientUserData;
 
@@ -188,27 +188,6 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
   goPatientMeet() {
     // this.router.navigate(['patientMeet'], { relativeTo: this.route });
     this.saveData();
-  }
-
-  private setTestPatients(){
-    for(let i = 0; i < 10; ++i){
-
-       let bookedPatient: BookedPatient = new BookedPatient();
-
-       bookedPatient.setName("Akshit"+i+1) ;
-       bookedPatient.setPicUrl("Akshit");
-       bookedPatient.setFrom("Delhi") ;
-       bookedPatient.setQueuePlace(i + 1);
-       bookedPatient.setStatus(i%2===0?"Online":"Offline");
-       bookedPatient.setBookingId("189457733"+i);
-       bookedPatient.setPhone("+918888985133");
-       bookedPatient.setBookingTime(998883267);
-
-      this.tempPatients.push(bookedPatient);
-
-    }
-
-    this.totalPatientSize = this.tempPatients.length;
   }
 
 
@@ -325,11 +304,11 @@ private showDialog(type:string, msg:string, ok:string):void{
 
   private showLoading() {
     
-    this.loading = this.matDialog.open(LoadingDialogComponent,{disableClose:true});
+    this.utils.showLoading("Please wait...");
 
   }
   private hideLoading() {
-    this.loading.close();
+    this.utils.hideLoading();
   }
 
   bookingAvailability(){
@@ -396,12 +375,7 @@ finalizeCurrent(makePending:boolean): void {
           
           this.firestoreService.update("queue-bookings", documentString, currentUserInput)
             .then(() => {
-              
-              // if (pendingStarted) {
-              //   this.nextPatient = this.findNextPendingPatient();
-              // } else {
-              //   this.nextPatient = this.findNextPatient();
-              // }
+
               this.hideLoading();
               console.log("Success.");
 
@@ -467,15 +441,6 @@ finalizeCurrent(makePending:boolean): void {
   }
 
   private findNextPatient():BookedPatient {
-    
-    // this.currentQueue.getBookings().forEach(patient => {
-    //   console.log("searching for candidate..");
-      
-    //   if (!patient.isPending() && !patient.isProcessed()) {
-    //     console.log("Canndidate..mached!");
-    //     return patient;
-    //   }
-    // });
 
     for (let i = 0; i < this.currentQueue.getBookings().length; ++i){
       console.log("searching for candidate..");
@@ -494,12 +459,6 @@ finalizeCurrent(makePending:boolean): void {
   
   private findNextPendingPatient():BookedPatient {
     
-    // this.currentQueue.getBookings().forEach(patient => {
-    //   if (patient.isPending() && !patient.isProcessed()) {
-    //     return patient;
-    //   }
-    // });
-
     for (let i = 0; i < this.currentQueue.getBookings().length; ++i){
       console.log("searching for pending candidates..");
       let patient = this.currentQueue.getBookings()[i];

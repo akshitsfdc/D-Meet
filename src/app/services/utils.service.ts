@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { start } from 'repl';
 import { QueueModel } from '../models/queue-model';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { LoadingDialogComponent } from '../loading-dialog/loading-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -10,9 +12,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class UtilsService {
 
 
+  private loadingIndicator: MatDialogRef<any>;
+  
   // { "timestapmIST": 1609694762338, "timestapmUTC": 1609674962338, "date": "3 0 2021" }
   
-  constructor(private http:HttpService, private _snackBar: MatSnackBar) { }
+  constructor(private http:HttpService, private _snackBar: MatSnackBar,  private matDialog: MatDialog) { }
 
   public millisToTimeString(milliseconds:number):string{
 
@@ -24,7 +28,9 @@ export class UtilsService {
   public millisToDateString(milliseconds:number):string{
     return new Date(milliseconds).toLocaleDateString();
   } 
-
+  public completeTimeString(milliseconds:number):string {
+    return new Date(milliseconds).toLocaleString();
+  }
   public get24Time(milliseconds:number){
     let date:Date = new Date(milliseconds);
     const hr = date.getUTCHours();
@@ -67,10 +73,6 @@ export class UtilsService {
 
     let currentTime: number = this.getMillisFromDate(new Date());
 
-    console.log("currentTime >> " + currentTime);
-    console.log("startMs >> " + startMs);
-    console.log("endMs >> "+endMs);
-    
     if(currentTime < endMs && currentTime >= startMs){
       return true;
     }else{
@@ -103,21 +105,11 @@ export class UtilsService {
 
     let targetHr: number = targetDate.getHours();
     let targetMi: number = targetDate.getMinutes();
-
-    console.log("trigger >> target : hr " + targetHr);
-    console.log("trigger >> target : minutes " + targetMi);
-    
-    console.log("trigger >> current : hr " + currentHr);
-    console.log("trigger >> current : minutes " + currentMi);
-
     
     let hrDifference: number, miDifference:number, totalMilliseconds:number;
 
     hrDifference = (24 - currentHr) - (24 - targetHr);
     miDifference = (60 - currentMi) - (60 - targetMi);
-
-    console.log("trigger >> target : hrDifference before " + hrDifference);
-    console.log("trigger >> target : miDifference before " + miDifference);
 
     if (hrDifference < 0) {
       hrDifference = 24 -  Math.abs(hrDifference);
@@ -128,11 +120,6 @@ export class UtilsService {
     }
 
     totalMilliseconds = ((hrDifference * 60 * 60) + (miDifference * 60)) * 1000;
-
-    console.log("trigger >> target : hrDifference " + hrDifference);
-    console.log("trigger >> target : miDifference " + miDifference);
-
-    console.log("trigger >> ********* >> difference >>>> "+totalMilliseconds);
 
     return totalMilliseconds;
 
@@ -271,8 +258,6 @@ export class UtilsService {
   public shouldShowTimingDisplay(millies:number):boolean {
 
     let difference = this.getTriggerTime(millies);
-
-    console.log("difference >> display >> "+difference);
     
     if (difference <= 7200000) {
       return true;
@@ -285,6 +270,16 @@ export class UtilsService {
     this._snackBar.open(message, null, {
       duration: 2000,
     });
+  }
+
+  public showLoading(message:string):void{
+    this.loadingIndicator = this.matDialog.open(LoadingDialogComponent, {disableClose: true,  data: { message: message } });
+  }
+  public hideLoading():void{
+    if(this.loadingIndicator){
+      this.loadingIndicator.close();
+    }   
+
   }
 
 }

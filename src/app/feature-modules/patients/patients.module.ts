@@ -16,6 +16,8 @@ import { IncomingCallBottomSheetComponent } from './incoming-call-bottom-sheet/i
 import { ConferenceComponent } from './conference/conference.component';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BaseComponent } from './base/base.component';
+import { ImgFallbackModule } from 'ngx-img-fallback';
+import { PatientFirestoreService } from './service/patient-firestore.service';
 
 
 
@@ -39,8 +41,10 @@ import { BaseComponent } from './base/base.component';
     AgmCoreModule,
     PatientsRoutingModule,
     MaterialModule,
-    InfiniteScrollModule
+    InfiniteScrollModule,
+    ImgFallbackModule
   ],
+  providers:[PatientFirestoreService],
   bootstrap: [BaseComponent]
 
 })

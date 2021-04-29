@@ -54,6 +54,8 @@ export class MeetingClientService {
   private micArray: MediaDeviceInfo[];
   private speakerArray: MediaDeviceInfo[];
 
+  private connectionStatus: string;
+
   private selectedCamera: string;
   private selectedMic: string;
   private conferenceCallback: any;
@@ -62,7 +64,8 @@ export class MeetingClientService {
   private remoteIceCollectionRef: string[] = [];
   
   private onMessageCallback: any;
-
+  private onDataChannelOpenCallback: any;
+  private noMediaCallback: any;
 
   constructor(private firestore: FirestoreService) { 
 
@@ -79,7 +82,13 @@ export class MeetingClientService {
   }
 
 
+  public setDataChannelOnOpenCallback(callback):void {
+    this.onDataChannelOpenCallback = callback;
+  }
   
+  public setNoMediaCallback(noMediaCallback):void {
+    this.noMediaCallback = noMediaCallback;
+  }
   public getDataChannel():RTCDataChannel {
     return this.dataChannel;
   }
@@ -134,11 +143,7 @@ export class MeetingClientService {
 
     this.joinRoom();
 
-    
-    
-    // window.stream = stream; //for recording
-    // this.remoteStream = this.localStream;
-    // this.remoteStream = new MediaStream();
+
 
     
   }
@@ -149,56 +154,56 @@ export class MeetingClientService {
         .then(devices => {
             const filtered = devices.filter(device => device.kind === type);
             callback(filtered);
-      }); 
+      })
+      .catch(error => {
+        console.log("Error finding : "+type);
+        
+      });
   }
   
   private setupDevice(): void{
 
+    this.connectionStatus = "Preparing...";
+
     this.getConnectedDevices('videoinput',
-    cameras => {
-      console.log('Cameras found', cameras)
-      this.cameraArray = cameras;
-      if(this.cameraArray.length > 0){
-        this.selectedCamera = this.cameraArray[0].deviceId;
+      cameras => {
+        console.log('Cameras found', cameras)
+        this.cameraArray = cameras;
+        if (this.cameraArray.length > 0) {
+        
+          this.selectedCamera = this.cameraArray[0].deviceId;
 
-        this.getConnectedDevices('audioinput',
-        mics => {
-          console.log('mics found', mics)
-          this.micArray = mics;
-          if(this.micArray.length > 0){
-            this.selectedMic = this.micArray[0].deviceId;
-           
-            this.getConnectedDevices('audiooutput',
-            speakers => {
-              console.log('speakers found', speakers)
-              this.speakerArray = speakers;
-              this.openUserMedia();
-             
+          this.getConnectedDevices('audioinput',
+            mics => {
 
+              console.log('mics found', mics);
+              this.micArray = mics;
+              if (this.micArray.length > 0) {
+                this.selectedMic = this.micArray[0].deviceId;
+
+                this.openUserMedia(); 
+              
+              } else {
+                this.noMediaCallback("mic", "No microphone attached to this device. Kindly attach one to complete this call.", "Got It");
+                this.connectionStatus = "Unavailable";
+              }//no mic
             }
-            );
-          }
-         }
-        );
+          );
+        } else {
+          this.noMediaCallback("camera", "No webcam/camera attached to this device. Kindly attach one to complete this call.", "Got It");
+          this.connectionStatus = "Unavailable";
+        }//no camera
       }
-     }
     );
-    // this.getConnectedDevices('audioinput',
-    // mics => {
-    //   console.log('mics found', mics)
-    //   this.micArray = mics;
-    //   if(this.micArray.length > 0){
-    //     this.selectedMic = this.micArray[0].deviceId;
-    //     this.openUserMedia();
-    //   }
-    //  }
-    // );
-    this.getConnectedDevices('audiooutput',
-    speakers => {
-      console.log('speakers found', speakers)
-      this.speakerArray = speakers;
-     }
-    );
+  
+  }
+
+  public setConnectionStatus(status:string): void{
+    this.connectionStatus = status;
+  }
+
+  public getConnectionStatus() {
+    return this.connectionStatus;
   }
 
   public pickupNow():void {
@@ -256,6 +261,7 @@ export class MeetingClientService {
 
     this.peerConnection.addEventListener('connectionstatechange', () => {
       console.log('Connection state change: ' + this.peerConnection.connectionState);
+      this.connectionStatus = this.peerConnection.connectionState.toUpperCase();
     });
 
     this.peerConnection.addEventListener('signalingstatechange', () => {
@@ -272,6 +278,7 @@ export class MeetingClientService {
       
     
     this.dataChannel = event.channel;
+
     this.addDataChannelListeners();
     
     
@@ -284,7 +291,10 @@ export class MeetingClientService {
 
     // Enable textarea and button when opened
    this.dataChannel.addEventListener('open', event => {
-        console.log("DataChannel opened!");
+     console.log("DataChannel opened!");
+
+       this.onDataChannelOpenCallback();
+     
       });
       this.dataChannel.addEventListener('close', event => {
         console.log("DataChannel closed!");
@@ -341,6 +351,7 @@ export class MeetingClientService {
       })
       .catch(error => {
         console.log("could not add answer sdp");
+        this.connectionStatus = "Failed";
         
       });
     
@@ -359,12 +370,14 @@ export class MeetingClientService {
         
       })
       .catch(error => {
-      
+        this.connectionStatus = "Failed";
       });
     
   }
 
   private async fetchOffer(room:string, roomId:string) {
+
+    this.connectionStatus = "Connecting...";
 
     this. offerObs = this.firestore.getDocChanges(room, roomId)
     .subscribe(async(change) => {
@@ -388,6 +401,9 @@ export class MeetingClientService {
     
     this.remoteIceObs = this.firestore.getIceChangesCollection(callerCandidateCollection)
       .subscribe(docChangeList => {
+
+       
+
         docChangeList.forEach(async (change) => {
           switch (change.payload.type) {
             case "added":

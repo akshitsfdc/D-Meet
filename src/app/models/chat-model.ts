@@ -6,8 +6,20 @@ export class ChatModel {
     private msg: string;
     private time: number;
     private timeLabel: string;
+    private read: boolean;
+
+   
+
 
     constructor() { }
+    
+    public isRead(): boolean {
+        return this.read;
+    }
+
+    public setRead(read: boolean): void {
+        this.read = read;
+    }
     
     public getTimeLabel(): string {
         return this.timeLabel;

@@ -25,7 +25,8 @@ import { AuthActionComponent } from './auth-action/auth-action.component';
 import { CreateAccountBottomSheetComponent } from './create-account-bottom-sheet/create-account-bottom-sheet.component';
 import { PatientRegistrationComponent } from './patient-registration/patient-registration.component'; 
 import { HttpClientModule } from '@angular/common/http';
-
+import { MediaAlertDialogComponent } from './media-alert-dialog/media-alert-dialog.component';
+import { PrescriptionDialogComponent } from './prescription-dialog/prescription-dialog.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,9 @@ import { HttpClientModule } from '@angular/common/http';
     MessageDialogComponent,
     AuthActionComponent,
     CreateAccountBottomSheetComponent,
-    PatientRegistrationComponent
+    PatientRegistrationComponent,
+    MediaAlertDialogComponent,
+    PrescriptionDialogComponent
   ],
   imports: [
     FlexLayoutModule,

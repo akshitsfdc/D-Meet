@@ -1,8 +1,10 @@
+import { Prescription } from './../../../models/prescription';
+import { MediaSignal } from './../../../models/media-signal';
 import { PatientUserData } from 'src/app/models/patient-user-data';
 
 import { CallerModel } from 'src/app/models/caller-model';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, HostListener, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { BookedPatient } from 'src/app/models/booked-patient';
 import { FirestoreService } from 'src/app/services/firestore.service';
@@ -11,6 +13,11 @@ import { map, shareReplay } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { MeetingClientService } from '../service/meeting-client.service';
 import { ChatModel } from 'src/app/models/chat-model';
+import { MatSidenav } from '@angular/material/sidenav';
+import { MatDialog } from '@angular/material/dialog';
+import { MediaAlertDialogComponent } from 'src/app/media-alert-dialog/media-alert-dialog.component';
+import { DOCUMENT } from '@angular/common';
+import { PrescriptionDialogComponent } from 'src/app/prescription-dialog/prescription-dialog.component';
 
 @Component({
   selector: 'app-conference',
@@ -18,8 +25,9 @@ import { ChatModel } from 'src/app/models/chat-model';
   styleUrls: ['./conference.component.scss'],
   providers:[MeetingClientService]
 })
-export class ConferenceComponent implements OnInit, OnDestroy {
+export class ConferenceComponent implements OnInit, OnDestroy,  AfterViewInit {
 
+  @ViewChild('drawer') public sidenav: MatSidenav;
 
   public localMute: boolean = true;
   public currentPatient: BookedPatient;
@@ -35,14 +43,20 @@ export class ConferenceComponent implements OnInit, OnDestroy {
 
   public caller: CallerModel;
 
-  public micOn: boolean = true;
-  public videoOn: boolean = true;
-
   public chatMsgRT: string = "";
   public currentUser: PatientUserData;
 
   public chatCollection: ChatModel[] = [];
   
+  public unreadMessages: number = 0;
+
+  public mediaSignal: MediaSignal;
+  public mediaSignalRemote: MediaSignal;
+  public bottombarVisible: boolean = true;
+  public fullScreenFlag: boolean = false;
+  public elem: HTMLElement;
+
+  public prescription: Prescription;
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -51,20 +65,35 @@ export class ConferenceComponent implements OnInit, OnDestroy {
   );
   
     
-  constructor(public meetingService: MeetingClientService, private breakpointObserver: BreakpointObserver, private session: SessionService,
-    private firestore: FirestoreService, private router:Router) { 
-    this.caller = this.session.getSharedData() as CallerModel;
+  constructor(private matDialog: MatDialog, public meetingService: MeetingClientService,
+    private breakpointObserver: BreakpointObserver, private session: SessionService,
+    private firestore: FirestoreService, private router: Router,
+    @Inject(DOCUMENT) private document: any) {
+    this.caller = this.session.getSharedData().caller as CallerModel;
+    this.mediaSignal = new MediaSignal();
+    this.mediaSignalRemote = new MediaSignal();
   }
 
+
+
+
   ngOnInit(): void {
+  
+    this.elem = document.documentElement;
+
+    this.elem.onfullscreenchange = () => {
+      this.fullScreenFlag = !this.fullScreenFlag;
+    }
+  
+  }
+
+
+  ngAfterViewInit(): void {
+
     console.log("  >> " + this.caller.getCallerId());
-    
-    const videoEnabled = this.session.getSharedData().videoEnabled;
-    // if (!videoEnabled) {
-    //   this.videoToggle();
-    // } else {
-      
-    // }
+  
+
+    const videoEnabled: boolean = this.session.getSharedData().videoEnabled as boolean;
 
     this.currentUser = this.session.getUserData();
     
@@ -73,25 +102,36 @@ export class ConferenceComponent implements OnInit, OnDestroy {
     this.meetingService.setCallerIceDoc(this.caller.getCallerId());
 
     this.meetingService.setCallBack(() => {
-      this.connectionStatus = "CONNECTED";
-      // this.meetingService.st
+      
+      this.meetingService.setConnectionStatus("CONNECTED");
+    
+    });
+    
+    this.meetingService.setDataChannelOnOpenCallback(() => {
       if (!videoEnabled) {
         this.videoToggle();
-      }
-    });
 
+      }
+      this.openFullscreen();
+    })
+    
     this.meetingService.setOnMessageCallback((data:string) => {
       this.onMessage(data);
     });
+    this.meetingService.setNoMediaCallback((type:string, msg:string, ok:string) => {
+      this.showMediaDialog(type, msg, ok);
+    })
 
     this.sendAnswer();
 
-  }
+    
+    this.subscribeToPrescription();
 
+  }
   
   public sendAnswer(): void {
   
-    this.connectionStatus = "Connecting...";
+    this.meetingService.setConnectionStatus("Preparing...");
 
     this.firestore.update(this.session.getCallerCollection(), this.session.getUserData().getUserId(), Object.assign({}, this.setupAnswerObject()))
       .then(() => {
@@ -101,6 +141,7 @@ export class ConferenceComponent implements OnInit, OnDestroy {
       })
       .catch(error => {
         console.log("Error : caller candidates could not be added.");
+        this.meetingService.setConnectionStatus("Failed...");
       });
   }
 
@@ -142,36 +183,25 @@ export class ConferenceComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.meetingService.unsubscribe();
+    this.closeFullscreen();
   }
 
-  micToggle(){
-    if (this.micOn) {
-
-      if (this.meetingService.getLocalStream().getAudioTracks().length > 0) {
-        this.meetingService.getLocalStream().getAudioTracks().forEach(track => { track.enabled = false; });
-      }
-      
-    } else {
-      if (this.meetingService.getLocalStream().getAudioTracks().length > 0) {
-        this.meetingService.getLocalStream().getAudioTracks().forEach(track => { track.enabled = true; });
-      }
-       
-    }
-    this.micOn = !this.micOn;
-  }
-  videoToggle(){
-    if (this.videoOn) {
-      if (this.meetingService.getLocalStream().getVideoTracks().length > 0) {
-        this.meetingService.getLocalStream().getVideoTracks().forEach(track => { track.enabled = false; });
-      }
-    } else {
-      if (this.meetingService.getLocalStream().getVideoTracks().length > 0) {
-        this.meetingService.getLocalStream().getVideoTracks().forEach(track => {track.enabled = true;});
-      }
+  micToggle() {
     
-      
-     }
-    this.videoOn = !this.videoOn;
+    this.meetingService.getLocalStream().getAudioTracks().forEach(track => { track.enabled = !track.enabled; });
+
+    this.mediaSignal.setAudioOn(!this.mediaSignal.isAudioOn());
+    this.sendMediaSignal();
+  }
+  videoToggle() {
+    
+    this.meetingService.getLocalStream().getVideoTracks().forEach(track => {
+      track.enabled = !track.enabled;
+    });
+
+    this.mediaSignal.setVideoOn(!this.mediaSignal.isVideoOn());
+    
+    this.sendMediaSignal();
   }
 
 
@@ -198,6 +228,7 @@ export class ConferenceComponent implements OnInit, OnDestroy {
   public sendMessage(): void{
 
     const dataChannel: RTCDataChannel = this.meetingService.getDataChannel();
+
     if (dataChannel && dataChannel.readyState === 'open') {
       const data: string = JSON.stringify(Object.assign({}, this.setSenderChatObj()));
       console.log("message sent !");
@@ -206,12 +237,158 @@ export class ConferenceComponent implements OnInit, OnDestroy {
 
   }
 
-  private onMessage(data: string) {
-    console.log("message recieved !");
+  private onMessage(data: string):void {
+    console.log("message recieved !"+data);
+
     const chatJson: any = JSON.parse(data);
+
+    if (chatJson.mediaSignal) {
+
+      const mediaSignal: MediaSignal = new MediaSignal();
+      Object.assign(mediaSignal, chatJson);
+
+      this.mediaSignalRemote.setAudioOn(mediaSignal.isAudioOn());
+      this.mediaSignalRemote.setVideoOn(mediaSignal.isVideoOn());
+
+      return;
+
+    }
     const chat: ChatModel = new ChatModel();
     Object.assign(chat, chatJson);
-
+    if (!this.sidenav.opened) {
+        this.unreadMessages += 1;
+    } else {
+      this.unreadMessages = 0;
+      chat.setRead(true);
+    }
     this.chatCollection.push(chat);
   }
+
+  public readAll(): void{
+
+    this.unreadMessages = 0;
+    this.chatCollection.forEach(chat => {
+      if (!chat.isRead()) {
+        chat.setRead(true);
+      }
+    })
+  }
+
+  public sendMediaSignal(): void{
+
+    console.log("this.mediaSignal : "+JSON.stringify(Object.assign({}, this.mediaSignal)));
+    
+    const dataChannel: RTCDataChannel = this.meetingService.getDataChannel();
+    if (dataChannel && dataChannel.readyState === 'open') {
+      const data: string = JSON.stringify(Object.assign({}, this.mediaSignal));
+      console.log("media signal sent !");
+      dataChannel.send(data);
+    }
+
+  }
+
+  private showMediaDialog(type:string, msg:string, ok:string):void{
+
+    let dialogData = {
+      type : type,
+      message : msg,
+      okText: ok
+    }
+
+    this.matDialog.open(MediaAlertDialogComponent, {data: dialogData , disableClose: false,
+      maxWidth : '300px'
+    }).afterClosed().toPromise()
+    .then(result => {      
+      this.sendReject();
+    });
+  }
+
+  public togleFullScreen() {
+    if (this.fullScreenFlag) {
+      this.closeFullscreen();
+    } else {
+      this.openFullscreen();
+    }
+  }
+  private openFullscreen():void {
+    if (this.elem["requestFullscreen"]) {
+      this.elem["requestFullscreen"]();
+
+    } else if (this.elem["mozRequestFullScreen"]) {
+      /* Firefox */
+      this.elem["mozRequestFullScreen"]();
+      
+    } else if (this.elem["webkitRequestFullscreen"]) {
+      /* Chrome, Safari and Opera */
+      this.elem["webkitRequestFullscreen"]();
+    
+    } else if (this.elem["msRequestFullscreen"]) {
+      /* IE/Edge */
+      this.elem["msRequestFullscreen"]();
+   
+    }
+  }
+
+  /* Close fullscreen */
+  private closeFullscreen(): void {
+    
+    if (this.document["exitFullscreen"]) {
+
+      this.document["exitFullscreen"]();
+      
+    } else if (this.document["mozCancelFullScreen"]) {
+      /* Firefox */
+      this.document["mozCancelFullScreen"]();
+      
+    } else if (this.document["webkitExitFullscreen"]) {
+      /* Chrome, Safari and Opera */
+      this.document["webkitExitFullscreen"]();
+    
+    } else if (this.document["msExitFullscreen"]) {
+      /* IE/Edge */
+      this.document["msExitFullscreen"]();
+    
+    }
+  }
+
+  private subscribeToPrescription(): void {
+
+    let collectionPath: string = "user-data-patient/" + this.currentUser.getUserId() + "/prescriptions";
+
+    this.firestore.getPrescriptionChanges(collectionPath, "doctorId", this.caller.getCallerId(), "roomId", this.caller.getRoomId(), 1, "writtenTime")
+      
+      .subscribe(docChangeList => {
+      
+        docChangeList.forEach(async (change) => {
+         
+          let remotePres = new Prescription();
+          Object.assign(remotePres, change.payload.doc.data());
+
+          if (!this.prescription) {
+            this.prescription = new Prescription();
+            this.prescription = remotePres;
+          } else {
+            this.updatePrescription(remotePres);
+          }
+          
+      });
+
+    });
+  }
+
+  private updatePrescription(presUpdate:Prescription) {
+    this.prescription.setPrescription(presUpdate.getPrescription());
+  }
+  public showPrescription() {
+
+    this.matDialog.open(PrescriptionDialogComponent, { maxWidth:'560px', width:'560px',
+
+      data: { prescription: this.prescription, isDoctor: false }
+    
+    }).afterClosed().toPromise()
+    .then(result => {
+      
+    });
+  }
+
 }

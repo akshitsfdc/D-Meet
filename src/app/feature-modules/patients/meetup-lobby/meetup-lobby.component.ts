@@ -329,6 +329,8 @@ private async bookNow(phoneNumber:string, from:string):Promise<void>{
       console.log( result );
     })
     .catch(error => {
+      console.log("bookNow >> error "+error);
+      
     //error
   })
  
@@ -337,7 +339,8 @@ private async bookNow(phoneNumber:string, from:string):Promise<void>{
     this.showDialog('fail', "This queue is no longer available for booking today. Please check your system date and time, in case you got any false availability of this queue. Or contact support if you have any further issue.", "Ok");
     this.hideLoading();
     return;
-  } 
+  }
+  
   let checkoutobject:any = this.checkoutService.getPaymentOptionObject();
   checkoutobject.amount = this.currentQueue.getFees() * 100;
   checkoutobject.currency = "INR";
@@ -350,7 +353,9 @@ private async bookNow(phoneNumber:string, from:string):Promise<void>{
   checkoutobject['handler'] =  (response)=>{
     this.processPaymentSuccess(phoneNumber, from , response)
   };
+
   this.getOrderId().then(data => {
+    
     if(data && data.status === "success"){
       let order:any = data.order;
       checkoutobject.order_id = order.id;      
@@ -412,7 +417,7 @@ private processPaymentSuccess(phoneNumber, from, response){
   bookedPaitient.setFrom(from);
   bookedPaitient.setPhone(phoneNumber);
   bookedPaitient.setStatus("online");
-  bookedPaitient.setQueuePlace(10);
+  bookedPaitient.setQueuePlace(this.currentQueue.getBookings().length+1);
   bookedPaitient.setBookingTime(+Date.now());
   bookedPaitient.setBookingId((+Date.now()).toString());
   bookedPaitient.setQueueId(this.currentQueue.getQueueId());
@@ -425,6 +430,10 @@ private processPaymentSuccess(phoneNumber, from, response){
   bookedPaitient.setCurrentPatient(false);
   bookedPaitient.setPending(false);
   bookedPaitient.setProcessed(false);
+  bookedPaitient.setCancelled(false);
+  bookedPaitient.setCancelledBy("");
+  bookedPaitient.setPostpond(null);
+
 
   let date: Date = new Date();
   let dateStr = date.getDay() + '' + date.getMonth() + '' + date.getFullYear();
@@ -503,11 +512,12 @@ private processPaymentError(response){
 
   private showLoading() {
     
-    this.loading = this.matDialog.open(LoadingDialogComponent,{disableClose:true});
+    // this.loading = this.matDialog.open(LoadingDialogComponent, { disableClose: true });
+    this.utils.showLoading("Please wait...");
 
   }
   private hideLoading() {
-    this.loading.close();
+    this.utils.hideLoading();
   }
 
   bookingAvailability(){

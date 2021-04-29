@@ -13,7 +13,9 @@ export class BookedPatient {
     private bookingTime:number;
     private bookingId: string;
     private queueId:string;
-    private doctorId: string;    
+    private doctorId: string;
+    private doctorName: string;
+    private doctorPic: string;
     private paymentId: string;
     private orderId: string;
     private age: number;
@@ -22,13 +24,83 @@ export class BookedPatient {
     private bookingTimeServer: number;
     private currentPatient: boolean;
     private processed: boolean;
+    private processedTimeServer: number;
     private pending: boolean;
     private selfWaitingTime: number;
+    private address: string;
+    private gender: string;
+    private cancelled: boolean;
+    private cancelledBy: string;
+    private postpond: BookingPostpond;
+
+    constructor() { }
+    
+
+    public getPostpond(): BookingPostpond {
+        return this.postpond;
+    }
+
+    public setPostpond(postpond: BookingPostpond): void {
+        this.postpond = postpond;
+    }
+
+    public getProcessedTimeServer(): number {
+        return this.processedTimeServer;
+    }
+
+    public setProcessedTimeServer(processedTimeServer: number): void {
+        this.processedTimeServer = processedTimeServer;
+    }
 
     
-  
-    constructor(){}
+    public isCancelled(): boolean {
+        return this.cancelled;
+    }
 
+    public setCancelled(cancelled: boolean): void {
+        this.cancelled = cancelled;
+    }
+
+    public getCancelledBy(): string {
+        return this.cancelledBy;
+    }
+
+    public setCancelledBy(cancelledBy: string): void {
+        this.cancelledBy = cancelledBy;
+    }
+
+
+    public getDoctorName(): string {
+        return this.doctorName;
+    }
+
+    public setDoctorName(doctorName: string): void {
+        this.doctorName = doctorName;
+    }
+
+    public getDoctorPic(): string {
+        return this.doctorPic;
+    }
+
+    public setDoctorPic(doctorPic: string): void {
+        this.doctorPic = doctorPic;
+    }
+    
+    public getGender(): string {
+        return this.gender;
+    }
+
+    public setGender(gender: string): void {
+        this.gender = gender;
+    }
+    
+    public getAddress(): string {
+        return this.address;
+    }
+
+    public setAddress(address: string): void {
+        this.address = address;
+    }
 
     public getSelfWaitingTime(): number {
         return this.selfWaitingTime;

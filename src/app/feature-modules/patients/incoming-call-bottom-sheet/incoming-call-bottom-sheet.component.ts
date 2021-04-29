@@ -34,7 +34,8 @@ export class IncomingCallBottomSheetComponent implements OnInit {
   joinConf(videoEnabled:boolean) {
     this.session.endTone();
     this.closeBottomSheet();
-    this.session.setSharedData({'videoEnabled':videoEnabled});
+    this.session.setSharedData({"caller": this.caller, 'videoEnabled':videoEnabled}); 
+
     this.navigateToMeeting();
   }
   rejectConf(): void{
@@ -43,8 +44,6 @@ export class IncomingCallBottomSheetComponent implements OnInit {
     this.sendReject();
   }
  navigateToMeeting(): void{
-   
-  this.session.setSharedData(this.caller); 
     this.router.navigate(['patient/conference']);
  }
   

@@ -1,0 +1,143 @@
+@import "src/scss/vars";
+
+#parent{
+    // border-width: 1px;
+    // border-style: solid;
+    // padding: 15px;
+    margin-top: 5px;
+    height: fit-content;
+    border-style: solid;
+    border-width: 1px;
+    border-color: $grey-lighter;
+    
+}
+#pre-header{
+    height: fit-content;
+    padding: 18px;
+}
+
+#clinic-name{
+    color: $accent;
+    font-size: 20px;
+}
+#doctor-name{
+    color: $accent;
+    font-size: 18px;
+}
+#doctor-degree{
+    max-width: 250px;
+    font-size: 10px;
+    line-height: 12px;
+}
+.doctor-address{
+    max-width: 250px;
+    font-size: 9px;
+    line-height: 10px;
+
+}
+.at-icon{
+    font-size: 20px;
+    height: fit-content;
+    width: fit-content;
+}
+#meetupImageSmall{
+   
+    height: 30px;
+}
+.pre-devider{
+    background-color: $accent;
+    height: 25px;
+    width: 100%;
+}
+.patient-child-div{
+    height: fit-content;
+    width: fit-content;
+    margin-left: 20px;
+}
+.header-child-div{
+    height: fit-content;
+    width: fit-content;
+}
+.pa-header{
+    font-size: 10px;
+}
+.do-header{
+    font-size: 10px;
+    line-height: 10px;
+}
+.pa-value{
+    font-size: 8px;
+}
+#rx_icon{
+    height: 30px;
+    width: 30px;
+    margin-top: 40px;
+    margin-left: 20px;
+}
+
+.bottom-icon{
+    color: white;
+    font-size: 14px;
+    height: fit-content;
+    width: fit-content;
+    line-height: 14px;
+}
+.bottom-label{
+    color: white;
+    font-size: 10px;
+    height: fit-content;
+    line-height: 10px;
+    margin-top: 1px;
+    
+}
+.bottom-wrapper{
+    height: fit-content;
+    width: fit-content;
+}
+#pre-content{
+    margin-left: 60px;
+    margin-right: 20px;
+    min-height: 200px;
+}
+.prescription-label{
+    font-size: 20px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-all;
+}
+.download-btn{
+    font-size: 16px;
+    height: fit-content;
+    width: fit-content;
+    cursor: pointer;
+}
+.download-wrapper{
+    width: 100%;
+    height: fit-content;
+   margin-top: 10px;
+}
+.prescription-edit-area{
+    min-height: 200px;
+    max-height: 200px;
+    width: 100%;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    
+}
+.signature-wrapper{
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: fit-content;
+}
+.signature-div{
+    height: fit-content;
+    width: fit-content;
+}
+.pre-sig-label{
+    font-size: 8px;
+    
+}
+.pre-sig-value{
+    font-size: 10px;
+}

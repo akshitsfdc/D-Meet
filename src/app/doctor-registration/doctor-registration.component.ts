@@ -50,7 +50,8 @@ export class DoctorRegistrationComponent implements OnInit {
 
   private loadingIndicator : MatDialogRef<any>;
 
-  constructor(private firebaseAuth: AuthService, private firestore: FirestoreService,  private matDialog: MatDialog, private router: Router, private geoService:GeoService) { 
+  constructor(private firebaseAuth: AuthService, private firestore: FirestoreService,
+    private matDialog: MatDialog, private router: Router, private geoService: GeoService) {
 
   }
 
@@ -492,7 +493,8 @@ export class DoctorRegistrationComponent implements OnInit {
   }
 
   private showLoading():void{
-    this.loadingIndicator = this.matDialog.open(LoadingDialogComponent, {disableClose: true});
+    this.loadingIndicator = this.matDialog.open(LoadingDialogComponent, { disableClose: true,  data: { message: "Registering..." } });
+    
   }
   private hideLoading():void{
     if(this.loadingIndicator){

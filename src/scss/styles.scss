@@ -1,7 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import "./vars";
-@import '@angular/material/prebuilt-themes/deeppurple-amber';
-
+@import "./theme";
 @font-face {
   font-family: 'roboto-regular';
   src: url(/assets/fonts/roboto/Roboto-Regular.ttf) format("truetype");
@@ -10,13 +9,19 @@
   font-family: 'roboto-bold';
   src: url(/assets/fonts/roboto/Roboto-Bold.ttf) format("truetype");
 }
-
+@font-face {
+  font-family: 'hr-medium';
+  src: url(/assets/fonts/caveat/Caveat-Medium.ttf) format("truetype");
+}
 
 html, body { height: 100%; width: 100%; }
 body { margin: 0;
   
 }
 
+.hand-writting{
+  font-family: 'hr-medium'
+}
 .parent-div{
   height: 100%;
 }
@@ -72,6 +77,7 @@ mat-icon{
   height: 100%;
   background-color: #ffffff;
   padding: 15px 15px 0px 15px;
+  overflow: auto;
 }
 .logo-form-top{
   max-width: 201.5px;
@@ -111,6 +117,7 @@ div::-webkit-scrollbar-thumb {
   background-color:$grey-lighter; 
   // border: 1px solid #000; 
 } 
+
 .link-label{
   color: $primary;
   font-size: small;
@@ -203,6 +210,15 @@ div::-webkit-scrollbar-thumb {
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
               0 8px 10px 1px rgba(0, 0, 0, 0.14),
               0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+.expansion-panel-icon{
+  font-size: 24px;
+  width: fit-content;
+  height: fit-content;
+
+}
+.loading-indicator-label{
+  font-size: 12px;
 }
 // .link-label:hover {
 //   text-decoration: underline;

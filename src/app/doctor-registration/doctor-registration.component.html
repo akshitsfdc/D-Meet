@@ -168,7 +168,7 @@
 
               <mat-form-field appearance="outline"  fxFlex="1 1 auto">
                 <mat-label>About you (optional)</mat-label>
-                <textarea class="about-textarea" matInput placeholder="write something beautiful about you" formControlName="about" class="about-textarea" matTextareaAutosize></textarea>
+                <textarea class="about-textarea" matInput placeholder="write something beautiful about you" formControlName="about"  matTextareaAutosize></textarea>
                 <mat-error *ngIf="about.touched && about.errors?.required">
                   Please provide some text about you
                 </mat-error>
