@@ -1,5 +1,6 @@
+import { FirestoreService } from 'src/app/services/firestore.service';
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentChangeAction, DocumentData } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentChangeAction, DocumentData, DocumentReference } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { PatientsModule } from '../patients.module';
 
@@ -8,7 +9,8 @@ import { PatientsModule } from '../patients.module';
 export class PatientFirestoreService {
 
   constructor(
-    private firestore: AngularFirestore
+    private firestore: AngularFirestore,
+    private mainService:FirestoreService
   ) { 
   }
 
@@ -178,7 +180,7 @@ export class PatientFirestoreService {
   }
   public getUnhandledFilteredBookings(patientId: string, limit: number, firstRequest:boolean, fromTime?:number, toTime?:number, document?:DocumentData): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>>{
     
-    let collectionPath: string = "queue-bookings";
+    const collectionPath: string = "queue-bookings";
 
     if (firstRequest) {
       return this.firestore.collection(collectionPath, ref =>
@@ -209,5 +211,27 @@ export class PatientFirestoreService {
     
       
   }
+  public updateDocument(docRef:DocumentReference, data:any):Promise<void> {
+    return this.mainService.updateDocument(docRef, data);
+  }
+
+  public sendPostpondRequest(doctorId: string, request: any, pDocRef:DocumentReference, pData:any):Promise<void>{
+    
+    let collectionPath: string = "user-data/" + doctorId + "/notifications";
+
+    let dNotiRef: DocumentReference = this.firestore.collection(collectionPath).doc(request.notificationId).ref;
+    
+    let batch = this.firestore.firestore.batch();
+
+
+    batch.set(dNotiRef, request, {merge:true});
+   
+    // pData.docReference = null;
+    batch.update(pDocRef, pData);
+
+    return batch.commit();
+
+  }
+  
 
 }

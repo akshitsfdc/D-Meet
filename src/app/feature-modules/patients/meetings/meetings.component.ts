@@ -1,3 +1,6 @@
+import { BookingRescheduleSelectorComponent } from './../booking-reschedule-selector/booking-reschedule-selector.component';
+import { BookingPostpond } from './../../../models/booking-postpond';
+import { PNBookingReschedule } from './../../../models/p-n-booking-reschedule';
 import { UtilsService } from './../../../services/utils.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BookedPatient } from 'src/app/models/booked-patient';
@@ -7,7 +10,8 @@ import { Subscription } from 'rxjs';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { PatientFirestoreService } from '../service/patient-firestore.service';
-import { DocumentData } from '@angular/fire/firestore';
+import { AngularFirestoreDocument, DocumentData } from '@angular/fire/firestore';
+import { MatDialog } from '@angular/material/dialog';
 
 
 
@@ -36,7 +40,7 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
 
   private loadLimit: number = 1;
-  private serverDateString:string = "";
+  private serverDate:number = 0;
 
   public myBokings: BookingWrapper = new BookingWrapper();
   public cancledBookings: BookingWrapper = new BookingWrapper();
@@ -59,7 +63,7 @@ export class MeetingsComponent implements OnInit, OnDestroy {
     start: new FormControl(),
     end: new FormControl()
   });
-  constructor(public session:SessionService, private firestore:PatientFirestoreService, private http: HttpService, public utils:UtilsService) {
+  constructor(public session:SessionService, private firestore:PatientFirestoreService, private http: HttpService, public utills:UtilsService, private matDialog: MatDialog) {
     this.liveBookings.bookings = [];
     this.myBokings.bookings = [];
     this.cancledBookings.bookings = [];
@@ -98,8 +102,9 @@ export class MeetingsComponent implements OnInit, OnDestroy {
       
       .then(dateObj => {
 
+        this.serverDate = dateObj.timestapmUTC;
 
-        const millies: number = this.utils.getUtCMillies(dateObj.timestapmIST);
+        const millies: number = this.utills.getUtCMillies(dateObj.timestapmIST);
         const date: Date = new Date(millies);
         const dateStr: string = date.getDate() + '' + date.getMonth() + '' + date.getFullYear();
 
@@ -124,13 +129,18 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
                 case "added":
                   let booking: BookedPatient = new BookedPatient();
+                  let postPone: BookingPostpond = new BookingPostpond();
                   Object.assign(booking, change.payload.doc.data());
+                  Object.assign(postPone, booking.getPostpond());
+                  booking.setPostpond(postPone);
                   this.liveBookings.bookings.push(booking);
+                  booking.setDocReference(change.payload.doc.ref);
                   break;
                 case "modified":
                   let bookingUpdate: BookedPatient = new BookedPatient();
                   Object.assign(bookingUpdate, change.payload.doc.data());
                   this.updateBookings(this.liveBookings, bookingUpdate);
+                  bookingUpdate.setDocReference(change.payload.doc.ref);
                   break;
                 case "removed":
 
@@ -140,15 +150,9 @@ export class MeetingsComponent implements OnInit, OnDestroy {
               
             });
           });
-        
-
-        this.serverDateString = dateStr;
-
-       
-
       })
       .catch(error => {
-        this.utils.hideLoading();
+        this.utills.hideLoading();
         console.log("Server date error "+error);
         
       });
@@ -206,6 +210,12 @@ export class MeetingsComponent implements OnInit, OnDestroy {
     oldBooking.setCurrentPatient(newBooking.isCurrentPatient());
     oldBooking.setAddress(newBooking.getAddress());
     oldBooking.setGender(newBooking.getGender());
+
+    let postPoneUpdate: BookingPostpond = new BookingPostpond();
+
+    Object.assign(postPoneUpdate, newBooking.getPostpond());
+
+    oldBooking.setPostpond(postPoneUpdate);
 
   }
 
@@ -508,9 +518,89 @@ export class MeetingsComponent implements OnInit, OnDestroy {
         let booking: BookedPatient = new BookedPatient();
         Object.assign(booking, doc.data());
         wrapper.bookings.push(booking);
+        
+        booking.setDocReference(doc.ref);
+
+        console.log("doc.ref : " + doc.ref);
+        console.log("booking.getDocReference : "+booking.getDocReference());
+        
+        
+       
       })
   }
 
+  public showReSchedulePopup(booking:BookedPatient): void{
+
+      let dialogData = {
+        currentDate: this.serverDate
+      }
+    
+      console.log("C5FG : "+booking.getDocReference());
+      
+    this.matDialog.open(BookingRescheduleSelectorComponent, {
+      data: dialogData, disableClose: false
+      }).afterClosed().toPromise()
+      .then(result => {
+        if(result.approved){
+          this.sendPostpondRequest(booking, result.selectedDateMillies, result.reason);
+        }        
+      });
+  }
+
+  private sendPostpondRequest(booking:BookedPatient, rescheduleDateMilli:number, reason:string): void {
+    
+
+    let date: Date = new Date();
+    const currentTime: number = date.getTime();
+
+    let postpondObject: PNBookingReschedule = new PNBookingReschedule();
+
+    postpondObject.setPatientName(booking.getName());
+    postpondObject.setQueuePlace(booking.getQueuePlace());
+    postpondObject.setQueueId(booking.getQueueId());
+    postpondObject.setRead(false);
+    postpondObject.setRequestHandled(false);
+    postpondObject.setNotificationId("" + currentTime);
+    
+    let finalBookingJson:any = Object.assign({}, booking);
+
+    let bookingPostpond: BookingPostpond = new BookingPostpond();
+    bookingPostpond.setRequested(true);
+    bookingPostpond.setApproved(false)
+    bookingPostpond.setProcessedAt(0);
+    bookingPostpond.setHandled(false);
+    bookingPostpond.setRequestedAt(currentTime);
+    bookingPostpond.setRequestReason(reason);
+    bookingPostpond.setRescheduleDate(rescheduleDateMilli);
+
+    booking.setPostpond(bookingPostpond);
+
+    finalBookingJson.postpond = Object.assign({}, bookingPostpond);
+    
+    this.firestore.sendPostpondRequest(booking.getDoctorId(), Object.assign({}, postpondObject)
+      , booking.getDocReference(), finalBookingJson
+    )
+      .then(() => {
+        console.log("Sent postpond request!");
+        
+      })
+      .catch(error => {
+        console.log("Error sending postpond Notification.");
+        booking.setPostpond(null);
+      });
+  }
+
+  public reasonFormatter(reason:string):string {
+    
+    if (reason.length === 0 ) {
+      return "N/A";
+    }
+    if (reason.length <= 15) {
+      return reason;
+    } else {
+      return reason.substring(0, 15) + "...";
+    }
+  }
 
 
 }

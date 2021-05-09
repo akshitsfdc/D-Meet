@@ -18,6 +18,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BaseComponent } from './base/base.component';
 import { ImgFallbackModule } from 'ngx-img-fallback';
 import { PatientFirestoreService } from './service/patient-firestore.service';
+import { BookingRescheduleSelectorComponent } from './booking-reschedule-selector/booking-reschedule-selector.component';
 
 
 
@@ -31,7 +32,8 @@ import { PatientFirestoreService } from './service/patient-firestore.service';
     BookingDialogComponent,
     IncomingCallBottomSheetComponent,
     ConferenceComponent,
-    BaseComponent
+    BaseComponent,
+    BookingRescheduleSelectorComponent
   ],
   imports: [
     CommonModule,

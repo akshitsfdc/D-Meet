@@ -1,3 +1,5 @@
+import { DocumentReference } from '@angular/fire/firestore';
+import { BookingPostpond } from './booking-postpond';
 import { PaymentInfo } from './payment-info';
 
 
@@ -32,9 +34,20 @@ export class BookedPatient {
     private cancelled: boolean;
     private cancelledBy: string;
     private postpond: BookingPostpond;
+    private docReference: DocumentReference;
 
+   
     constructor() { }
     
+
+    public getDocReference(): DocumentReference {
+        return this.docReference;
+    }
+
+    public setDocReference(docReference: DocumentReference): void {
+        this.docReference = docReference;
+    }
+
 
     public getPostpond(): BookingPostpond {
         return this.postpond;

@@ -1,0 +1,38 @@
+<form [formGroup]="dateForm" #f="ngForm">
+<div fxLayout="column">
+    <div fxFlex="1 1 auto" fxLayout="row" fxLayoutAlign="center center">
+        <mat-label class="header-label">Postpone Meeting</mat-label>
+    </div>
+    <span fxFlex="1 1 15px"></span>
+    <div fxLayout="row" fxLayoutGap="40px">
+        <div class="left-containt" fxFlex="1 1 auto">
+            <img class="clock-icon"  src="/assets/imgs/empty_list_girl.svg">
+        </div>
+        
+        <div class="right-containt" fxLayout="column" fxLayoutAlign="center start">
+            
+                <mat-form-field appearance="outline" class="picker-form" >
+                    <mat-label>Postpone to</mat-label>
+                    <input matInput [min]="minDate" [matDatepicker]="picker" formControlName="picker">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <!-- <mat-hint>Select date when you are available</mat-hint> -->
+                </mat-form-field>
+                <mat-checkbox color="primary" class="example-margin" formControlName="check">
+                    <mat-label  matTooltipPosition="above" matTooltip="Your booking postpond request will be sent to the doctor, and your booking will be rescheduled only if doctor approves that. The doctor can reject this request if he/she does not have time that day (e.g doctor holiday). Your current booking will be valid until doctor approves or rejects this request.">Agree with terms</mat-label>
+                </mat-checkbox>
+
+           
+              
+        </div>
+    
+    </div>
+
+    <div fxLayout="row">
+        <button mat-flat-button class="lighter-button" fxFlex="1 1 40%" (click)="cancel()">Cancel</button>
+        <span fxFlex="1 1 10px"></span>
+        <button mat-raised-button  fxFlex="1 1 auto" (click)="approve()">Send Request</button>
+    </div>
+</div>
+</form>
+

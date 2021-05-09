@@ -1,7 +1,8 @@
 
 <div id="parent" fxLayout="column" fxLayoutAlign="center center">
 
-    <form [formGroup]="loginForm" #f="ngForm" fxFlex.xs="100%" (ngSubmit)="onSubmit(f)" class="login-form" fxLayout="column">
+    <form  [formGroup]="loginForm" #f="ngForm" fxFlex.xs="100%" (ngSubmit)="onSubmit(f)" class="login-form" fxLayout="column">
+
     <mat-progress-bar *ngIf="showProgressBar" mode="indeterminate" id="progressIndicator" color="primary"></mat-progress-bar>
       <mat-card class="login-card">
         <mat-card-content fxLayout="row" >
@@ -59,7 +60,9 @@
                               </div>   
                         <mat-form-field appearance="outline" fxFlex="1 1 auto" fxFlexOffset="30px">
                             <mat-label>Email</mat-label>
+                            
                             <input matInput type="email" placeholder="enter a valid email address" formControlName="resetrEmailAddress">
+
                             <mat-error *ngIf="resetrEmailAddress.touched && resetrEmailAddress.errors?.required">
                                 Enter your email address
                             </mat-error>
@@ -78,7 +81,10 @@
                 </mat-step>
 
             </mat-horizontal-stepper>
+
         </mat-card-content>
+
       </mat-card>
+      
       </form>
 </div>

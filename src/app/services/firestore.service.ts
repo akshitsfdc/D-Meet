@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { Injectable} from '@angular/core';
-import { Action, AngularFirestore, DocumentChangeAction, DocumentData, DocumentSnapshot, Query, QuerySnapshot} from '@angular/fire/firestore';
+import { Action, AngularFirestore, DocumentChangeAction, DocumentData, DocumentSnapshot, Query, QuerySnapshot, DocumentReference } from '@angular/fire/firestore';
 
 import * as firebase from 'firebase';
 
@@ -20,6 +20,11 @@ export class FirestoreService {
     return this.firestore.collection(collection).doc(document).set(data);
    
   }
+  
+  public updateDocument(documentRef:DocumentReference, data:any):Promise<void> {
+    return documentRef.update(data);
+  }
+
   public getEqualsObs(collection:string, key:string, value:string):Observable<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>>{
     return this.firestore.collection(collection, ref => ref.where(key, "==" , value)).get();    
   } 

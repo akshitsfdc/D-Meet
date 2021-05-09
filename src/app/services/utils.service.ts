@@ -41,6 +41,10 @@ export class UtilsService {
     milliseconds -= 5.5 * 3600000;
     return milliseconds;
   }
+  public makeIstMillToUTCMilli(milliseconds:number) {
+    milliseconds += 5.5 * 3600000;
+    return milliseconds;
+  }
   public getDay(milliseconds:number):string{
 
     milliseconds -= 5.5 * 3600000; //for IST

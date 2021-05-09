@@ -103,6 +103,10 @@ mat-icon{
 .alert-icon{
   color: $alert;
 }
+.small-warn-label{
+  color: $warn;
+  font-size: small;
+}
 .google-black-button{
   background-color: $icon;
   color: $grey-lighter;

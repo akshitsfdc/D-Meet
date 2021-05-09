@@ -6,7 +6,6 @@
       <mat-label class="header-label section-header">Scheduled meetings ({{liveBookings.bookings.length}})</mat-label> 
       <mat-spinner *ngIf="!liveBookings.initCompleted" diameter="18"></mat-spinner>
 
-      
     </div>
     
     <ng-container *ngIf="liveBookings.initCompleted && liveBookings.noData && liveBookings.bookings.length == 0" >
@@ -36,6 +35,80 @@
             </mat-card-header>
             <mat-card-content class="scheduled-meetings-card-content" fxLayout="column"  fxLayoutGap="20px">
 
+              <ng-container *ngIf="booking.getPostpond().isRequested()">
+
+                <mat-accordion>
+                  <mat-expansion-panel >
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        <mat-label class="small-label">Reschedule Information</mat-label>
+                      </mat-panel-title>
+                      <mat-panel-description>
+                        <span fxFlex="1 1 auto"></span><mat-icon class="expansion-panel-icon">schedule_send</mat-icon>
+                      </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div fxLayout="column" fxLayoutGap="10px">
+                      
+                      
+                      <div fxLayout="row" fxLayoutGap="30px">
+                        <mat-label>Postpone to</mat-label>
+                        <span fxFlex="1 1 auto"></span>
+                        <mat-label>{{utills.millisToDateString(booking.getPostpond().getRescheduleDate())}}</mat-label>
+                      </div>
+                        <div fxLayout="row" fxLayoutGap="30px">
+                            <mat-label>Status</mat-label>
+                            <span fxFlex="1 1 auto"></span>
+                            <mat-label>{{(!booking.getPostpond().isApproved() && !booking.getPostpond().isRejected())?"Request Pending":
+                              (booking.getPostpond().isApproved()?"Request Approved":"Request Rejected")}}</mat-label>
+                        </div>
+                        
+
+                        <div fxLayout="row" fxLayoutGap="30px">
+                          <mat-label>Requested At</mat-label>
+                          <span fxFlex="1 1 auto"></span>
+                          <mat-label matTooltipPosition="above" matTooltip="This is your local machine time" >{{utills.completeTimeString(booking.getPostpond().getRequestedAt())}}</mat-label>
+                        </div>
+                        
+                        
+                        <ng-container *ngIf="booking.getPostpond().isApproved()">
+                          <div fxLayout="row" fxLayoutGap="30px">
+                            <mat-label>Approved At</mat-label>
+                            <span fxFlex="1 1 auto"></span>
+                            <mat-label>{{utills.completeTimeString(booking.getPostpond().getProcessedAt())}}</mat-label>
+                          </div>
+                        </ng-container>
+
+                       <ng-container *ngIf="booking.getPostpond().isRejected()">
+                          <div fxLayout="row" fxLayoutGap="30px">
+                            <mat-label>Rejected At</mat-label>
+                            <span fxFlex="1 1 auto"></span>
+                            <mat-label>{{utills.completeTimeString(booking.getPostpond().getProcessedAt())}}</mat-label>
+                          </div>
+                        </ng-container>
+
+                        <div fxLayout="row" fxLayoutGap="30px">
+                          <mat-label>Request Reason</mat-label>
+                          <span fxFlex="1 1 auto"></span>
+                          <mat-label matTooltipPosition="above" matTooltip={{booking.getPostpond().getRequestReason()}} >{{reasonFormatter(booking.getPostpond().getRequestReason())}}</mat-label>
+                      </div>
+
+                        <ng-container *ngIf="booking.getPostpond().isRejected()">
+                          <div fxLayout="row" fxLayoutGap="30px">
+                            <mat-label>Reject Reason</mat-label>
+                            <span fxFlex="1 1 auto"></span>
+                            <mat-label  matTooltipPosition="above" matTooltip={{booking.getPostpond().getRejectReason()}} >{{reasonFormatter(booking.getPostpond().getRejectReason())}}</mat-label>
+                          </div>
+                        </ng-container>
+                     </div>
+                      
+                      
+                  
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </ng-container>
+              
+
+              
                 <mat-accordion>
                     <mat-expansion-panel >
                       <mat-expansion-panel-header>
@@ -50,7 +123,7 @@
                         <div fxLayout="row" fxLayoutGap="30px">
                           <mat-label>Booked At</mat-label>
                           <span fxFlex="1 1 auto"></span>
-                          <mat-label>{{utils.completeTimeString(booking.getBookingTimeServer())}}</mat-label>
+                          <mat-label>{{utills.completeTimeString(booking.getBookingTimeServer())}}</mat-label>
                         </div>
                         
                           <div fxLayout="row" fxLayoutGap="30px">
@@ -91,7 +164,7 @@
                         </mat-panel-description>
                       </mat-expansion-panel-header>
                       <div fxLayout="column">
-                        <button  mat-raised-button class="lighter-button" >Meet later</button>                       
+                        <button  mat-raised-button class="lighter-button" (click)="showReSchedulePopup(booking)" >Meet later</button>                       
                         <button  mat-flat-button class="alert-button setting-buttons" fxFlexOffset="10px">Cancel meeting</button>
                                          
                       </div>     
@@ -174,7 +247,7 @@
                         <div fxLayout="row" fxLayoutGap="30px" >
                           <mat-label >Booked At</mat-label>
                           <span fxFlex="1 1 auto"></span>
-                          <mat-label >{{utils.completeTimeString(booking.getBookingTimeServer())}}</mat-label>
+                          <mat-label >{{utills.completeTimeString(booking.getBookingTimeServer())}}</mat-label>
                         </div>
                         
                           <div fxLayout="row" fxLayoutGap="30px">
@@ -443,7 +516,7 @@
                       <div fxLayout="row" fxLayoutGap="30px">
                         <mat-label>Booked At</mat-label>
                         <span fxFlex="1 1 auto"></span>
-                        <mat-label>{{utils.completeTimeString(booking.getBookingTimeServer())}}</mat-label>
+                        <mat-label>{{utills.completeTimeString(booking.getBookingTimeServer())}}</mat-label>
                       </div>
                       
                         <div fxLayout="row" fxLayoutGap="30px">

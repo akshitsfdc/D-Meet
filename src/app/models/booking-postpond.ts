@@ -1,17 +1,43 @@
 
 
-class BookingPostpond{
+export class BookingPostpond{
 
     private requested: boolean;
+    private handled: boolean;
     private approved: boolean;
+    private rejected: boolean;
     private requestedAt: number;
-    private approvedAt: number;
+    private processedAt: number;
     private rescheduleDate: number;
     private requestReason: string;
     private rejectReason: string;
 
    constructor(){}
 
+    
+     public getProcessedAt(): number {
+        return this.processedAt;
+    }
+
+    public setProcessedAt(processedAt: number): void {
+        this.processedAt = processedAt;
+    }
+
+    public isRejected(): boolean {
+        return this.rejected;
+    }
+
+    public setRejected(rejected: boolean): void {
+        this.rejected = rejected;
+    }
+   public isHandled(): boolean {
+        return this.handled;
+   }
+
+    public setHandled(handled: boolean): void {
+        this.handled = handled;
+    }
+    
     public getRequestReason(): string {
         return this.requestReason;
     }
@@ -50,14 +76,6 @@ class BookingPostpond{
 
     public setRequestedAt(requestedAt: number): void {
         this.requestedAt = requestedAt;
-    }
-
-    public getApprovedAt(): number {
-        return this.approvedAt;
-    }
-
-    public setApprovedAt(approvedAt: number): void {
-        this.approvedAt = approvedAt;
     }
 
     public getRescheduleDate(): number {

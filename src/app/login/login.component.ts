@@ -27,6 +27,7 @@ export class LoginComponent implements OnInit {
       emailAddress: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', Validators.required)
     });
+    
     this.sendResetEmail = new FormGroup({
       resetrEmailAddress: new FormControl('', [Validators.required, Validators.email])
     });
