@@ -232,6 +232,24 @@ export class PatientFirestoreService {
     return batch.commit();
 
   }
+
+  public sendCancelMeetingBatch(doctorId: string, request: any, pDocRef:DocumentReference, pData:any):Promise<void>{
+    
+    let collectionPath: string = "user-data/" + doctorId + "/notifications";
+
+    let dNotiRef: DocumentReference = this.firestore.collection(collectionPath).doc(request.notificationId).ref;
+    
+    let batch = this.firestore.firestore.batch();
+
+
+    batch.set(dNotiRef, request, {merge:true});
+   
+    // pData.docReference = null;
+    batch.update(pDocRef, pData);
+
+    return batch.commit();
+
+  }
   
 
 }

@@ -1,0 +1,26 @@
+<div fxLayout="column">
+    <div fxFlex="1 1 auto" fxLayout="row" fxLayoutAlign="center center">
+        <mat-label class="header-label">Meeting Cancellation</mat-label>
+    </div>
+    <span fxFlex="1 1 15px"></span>
+    <div fxLayout="row" fxLayoutGap="40px">
+        <div class="left-containt" fxFlex="1 1 auto">
+            <img class="clock-icon"  src="/assets/imgs/cancel_meeting_girl.svg">
+        </div>
+        
+        <div class="right-containt" fxLayout="column" fxLayoutAlign="center start">
+            
+                <mat-label>We do not take guarantee for your refund which you might have paid for this meeting. It is up to the doctor and his/her refund policy, you will get your refund only if the doctor initiates your refund. Please confirm if you still want to cancel this meeting.</mat-label>
+                <mat-checkbox color="primary" class="example-margin" [(ngModel)]="termCheck"  fxFlexOffset="15px">
+                    <mat-label matTooltipPosition="above" matTooltip="Check this if you are agree" >I agree with this condition</mat-label>
+                </mat-checkbox>
+        </div>
+    
+    </div>
+
+    <div fxLayout="row" fxFlexOffset="10px">
+        <button mat-flat-button class="lighter-button" fxFlex="1 1 40%" (click)="cancel()">Close</button>
+        <span fxFlex="1 1 10px"></span>
+        <button mat-raised-button  fxFlex="1 1 auto" (click)="approve()">Yes, Cancel Meeting</button>
+    </div>
+</div>

@@ -58,7 +58,7 @@
                         <div fxLayout="row" fxLayoutGap="30px">
                             <mat-label>Status</mat-label>
                             <span fxFlex="1 1 auto"></span>
-                            <mat-label>{{(!booking.getPostpond().isApproved() && !booking.getPostpond().isRejected())?"Request Pending":
+                            <mat-label [ngClass]="{'status-label':true, 'status-approved':booking.getPostpond().isApproved(), 'status-rejected':booking.getPostpond().isRejected() }">{{(!booking.getPostpond().isApproved() && !booking.getPostpond().isRejected())?"Request Pending":
                               (booking.getPostpond().isApproved()?"Request Approved":"Request Rejected")}}</mat-label>
                         </div>
                         
@@ -164,8 +164,8 @@
                         </mat-panel-description>
                       </mat-expansion-panel-header>
                       <div fxLayout="column">
-                        <button  mat-raised-button class="lighter-button" (click)="showReSchedulePopup(booking)" >Meet later</button>                       
-                        <button  mat-flat-button class="alert-button setting-buttons" fxFlexOffset="10px">Cancel meeting</button>
+                        <button  mat-raised-button class="lighter-button" (click)="showReSchedulePopup(booking)" [disabled]="booking.getPostpond().isRequested()" >Meet later</button>                       
+                        <button  mat-flat-button class="alert-button setting-buttons" fxFlexOffset="10px" [disabled]="booking.isCancelled()" (click)="showCancelMeetingPopup(booking)">Cancel meeting</button>
                                          
                       </div>     
                           

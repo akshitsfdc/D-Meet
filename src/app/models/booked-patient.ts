@@ -33,12 +33,21 @@ export class BookedPatient {
     private gender: string;
     private cancelled: boolean;
     private cancelledBy: string;
+    private cancelledAt: number;
     private postpond: BookingPostpond;
     private docReference: DocumentReference;
 
    
     constructor() { }
     
+    public getCancelledAt(): number {
+        return this.cancelledAt;
+    }
+
+    public setCancelledAt(cancelledAt: number): void {
+        this.cancelledAt = cancelledAt;
+    }
+
 
     public getDocReference(): DocumentReference {
         return this.docReference;

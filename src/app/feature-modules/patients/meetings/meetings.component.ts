@@ -1,3 +1,4 @@
+import { CancelMeetingAlertComponent } from './../cancel-meeting-alert/cancel-meeting-alert.component';
 import { BookingRescheduleSelectorComponent } from './../booking-reschedule-selector/booking-reschedule-selector.component';
 import { BookingPostpond } from './../../../models/booking-postpond';
 import { PNBookingReschedule } from './../../../models/p-n-booking-reschedule';
@@ -12,6 +13,7 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { PatientFirestoreService } from '../service/patient-firestore.service';
 import { AngularFirestoreDocument, DocumentData } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
+import { BookingCancledNotification } from 'src/app/models/n-booking-canceled';
 
 
 
@@ -72,12 +74,6 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.liveBookings.obsSubscription !== null && this.liveBookings.obsSubscription !== undefined) {
-      this.liveBookings.obsSubscription.unsubscribe();
-    }
-    if (this.myBokings.obsSubscription !== null && this.liveBookings.obsSubscription !== undefined) {
-      this.liveBookings.obsSubscription.unsubscribe();
-    }
-    if (this.cancledBookings.obsSubscription !== null && this.liveBookings.obsSubscription !== undefined) {
       this.liveBookings.obsSubscription.unsubscribe();
     }
   }
@@ -535,7 +531,6 @@ export class MeetingsComponent implements OnInit, OnDestroy {
         currentDate: this.serverDate
       }
     
-      console.log("C5FG : "+booking.getDocReference());
       
     this.matDialog.open(BookingRescheduleSelectorComponent, {
       data: dialogData, disableClose: false
@@ -547,8 +542,72 @@ export class MeetingsComponent implements OnInit, OnDestroy {
       });
   }
 
+  public showCancelMeetingPopup(booking:BookedPatient): void{
+
+    let dialogData = {
+      currentDate: this.serverDate
+    }
+
+    
+  this.matDialog.open(CancelMeetingAlertComponent, {
+    data: dialogData, disableClose: false,
+    maxWidth:550
+    }).afterClosed().toPromise()
+    .then(result => {
+      if(result.approved){
+        this.cancelMeeting(booking);
+      }        
+    });
+  }
+
+  private cancelMeeting(booking: BookedPatient) {
+    
+    this.utills.showLoading("Cancelling meeting...");
+
+    let date: Date = new Date();
+    const currentTime: number = date.getTime();
+
+    let bookingCanceledObject: BookingCancledNotification = new BookingCancledNotification();
+
+    bookingCanceledObject.setPatientName(booking.getName());
+    bookingCanceledObject.setQueuePlace(booking.getQueuePlace());
+    bookingCanceledObject.setQueueId(booking.getQueueId());
+    bookingCanceledObject.setRead(false);
+    bookingCanceledObject.setRequestHandled(false);
+    bookingCanceledObject.setNotificationId("" + currentTime);
+    bookingCanceledObject.setNotificationType("meeting_canceled");
+
+
+    booking.setCancelled(true);
+    booking.setCancelledBy('p');
+    booking.setCancelledAt(currentTime);
+
+    let finalBookingJson: any = Object.assign({}, booking);
+
+    finalBookingJson.postpond = Object.assign({}, booking.getPostpond());
+    
+    this.firestore.sendCancelMeetingBatch(booking.getDoctorId(), Object.assign({}, bookingCanceledObject)
+      , booking.getDocReference(), finalBookingJson
+    )
+      .then(() => {
+        this.utills.showMsgSnakebar("Meeting Cancelled!");
+        this.utills.hideLoading();
+        
+      })
+      .catch(error => {
+        console.log("Error sending cancel meeting Notification.");
+        this.utills.hideLoading();
+        booking.setCancelled(false);
+        booking.setCancelledBy('');
+        booking.setCancelledAt(0);
+      });
+    
+
+  }
+  
   private sendPostpondRequest(booking:BookedPatient, rescheduleDateMilli:number, reason:string): void {
     
+    this.utills.showLoading("Sending request...");
 
     let date: Date = new Date();
     const currentTime: number = date.getTime();
@@ -561,6 +620,7 @@ export class MeetingsComponent implements OnInit, OnDestroy {
     postpondObject.setRead(false);
     postpondObject.setRequestHandled(false);
     postpondObject.setNotificationId("" + currentTime);
+    postpondObject.setNotificationType("meeting_reschedule_request");
     
     let finalBookingJson:any = Object.assign({}, booking);
 
@@ -581,18 +641,19 @@ export class MeetingsComponent implements OnInit, OnDestroy {
       , booking.getDocReference(), finalBookingJson
     )
       .then(() => {
-        console.log("Sent postpond request!");
-        
+        this.utills.showMsgSnakebar("Meeting Postpone request has been sent!");
+        this.utills.hideLoading();
       })
       .catch(error => {
         console.log("Error sending postpond Notification.");
         booking.setPostpond(null);
+        this.utills.hideLoading();
       });
   }
 
   public reasonFormatter(reason:string):string {
     
-    if (reason.length === 0 ) {
+    if (reason.length === 0 || !reason) {
       return "N/A";
     }
     if (reason.length <= 15) {

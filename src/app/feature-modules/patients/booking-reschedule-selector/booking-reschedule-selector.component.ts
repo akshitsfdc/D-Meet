@@ -23,7 +23,8 @@ export class BookingRescheduleSelectorComponent implements OnInit {
 
     this.dateForm = new FormGroup({
       picker: new FormControl('', Validators.required),
-      check: new FormControl(false, Validators.required)
+      check: new FormControl(false, Validators.required),
+      reasonInput: new FormControl('')
     });
   }
 
@@ -37,7 +38,7 @@ export class BookingRescheduleSelectorComponent implements OnInit {
     let selectedDate: Date = new Date(this.dateForm.get('picker').value);
     console.log("selectedDate : "+selectedDate.getTime());
     
-    this.dialogRef.close({approved: true, selectedDateMillies:selectedDate.getTime()});
+    this.dialogRef.close({approved: true, selectedDateMillies:selectedDate.getTime(), reason:(this.dateForm.get('reasonInput').value as string).trim()});
   }
 
 }
