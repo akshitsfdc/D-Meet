@@ -20,6 +20,7 @@ import { ImgFallbackModule } from 'ngx-img-fallback';
 import { PatientFirestoreService } from './service/patient-firestore.service';
 import { BookingRescheduleSelectorComponent } from './booking-reschedule-selector/booking-reschedule-selector.component';
 import { CancelMeetingAlertComponent } from './cancel-meeting-alert/cancel-meeting-alert.component';
+import { RequestRefundComponent } from './request-refund/request-refund.component';
 
 
 
@@ -35,7 +36,8 @@ import { CancelMeetingAlertComponent } from './cancel-meeting-alert/cancel-meeti
     ConferenceComponent,
     BaseComponent,
     BookingRescheduleSelectorComponent,
-    CancelMeetingAlertComponent
+    CancelMeetingAlertComponent,
+    RequestRefundComponent
   ],
   imports: [
     CommonModule,

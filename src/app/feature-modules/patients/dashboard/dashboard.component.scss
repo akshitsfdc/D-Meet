@@ -73,7 +73,8 @@ background-color: $grey-lighter;
 
 }
 .queue-loading-container{
-    height: 200px;
+    height: fit-content;
+    padding: 50px 0px 50px 0px;
     width: 100%;
     
 
@@ -86,6 +87,10 @@ background-color: $grey-lighter;
     font-size: 50px;
     height: fit-content;
     width: fit-content;
+}
+.no-doctor-queue{
+    width: 300px;
+    height: 250px;
 }
 .d-details-value{
     word-wrap: break-word;

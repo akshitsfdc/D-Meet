@@ -105,7 +105,11 @@ mat-icon{
 }
 .small-warn-label{
   color: $warn;
-  font-size: small;
+  font-size: 12px;
+}
+.small-green-label{
+  color: $accent;
+  font-size: 12px;
 }
 .google-black-button{
   background-color: $icon;

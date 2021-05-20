@@ -1,0 +1,27 @@
+<div fxLayout="column">
+    <div fxFlex="1 1 auto" fxLayout="row" fxLayoutAlign="center center">
+        <mat-label class="header-label">Refund Request</mat-label>
+    </div>
+    <span fxFlex="1 1 15px"></span>
+    <div fxLayout="row" fxLayoutGap="40px">
+        <div class="left-containt" fxFlex="1 1 auto">
+            <img class="clock-icon"  src="/assets/imgs/cancel_meeting_girl.svg">
+        </div>
+        
+        <div class="right-containt" fxLayout="column" fxLayoutAlign="center start">
+            
+                <mat-label>Doctor did not try to connect you, you are eligible for this refund request. We will verify and process your full refund as per the <a href="https://www.google.com/" target="_blank"> refund policy</a>.</mat-label>
+                <mat-checkbox color="primary" class="example-margin" [(ngModel)]="termCheck"  fxFlexOffset="15px">
+                    <mat-label matTooltipPosition="above" matTooltip="Check this if you are agree" >I agree with refund policy</mat-label>
+                </mat-checkbox>
+        </div>
+    
+    </div>
+
+    <div fxLayout="row" fxFlexOffset="10px">
+        <button mat-flat-button class="lighter-button" fxFlex="1 1 40%" (click)="cancel()">Close</button>
+        <span fxFlex="1 1 10px"></span>
+        <button mat-raised-button  fxFlex="1 1 auto" (click)="approve()">Request Refund</button>
+    </div>
+</div>
+

@@ -1,3 +1,4 @@
+import { BookingRefund } from './booking-refund';
 import { DocumentReference } from '@angular/fire/firestore';
 import { BookingPostpond } from './booking-postpond';
 import { PaymentInfo } from './payment-info';
@@ -9,15 +10,18 @@ export class BookedPatient {
     private picUrl: string;
     private from: string;
     private patientId: string;
-    private phone:string;
+    private phone: string;
     private status: string;
     private queuePlace: number;
-    private bookingTime:number;
+    private bookingTime: number;
     private bookingId: string;
-    private queueId:string;
+    private queueId: string;
+    private queueRef: DocumentReference;
+    private doctorRef: DocumentReference;
     private doctorId: string;
     private doctorName: string;
     private doctorPic: string;
+    private paidFees: number;
     private paymentId: string;
     private orderId: string;
     private age: number;
@@ -33,13 +37,68 @@ export class BookedPatient {
     private gender: string;
     private cancelled: boolean;
     private cancelledBy: string;
+    private cancellationReason: string;
     private cancelledAt: number;
     private postpond: BookingPostpond;
+    private refund: BookingRefund;
     private docReference: DocumentReference;
+    private meetingTrials: number[] = [];
 
-   
+
+
     constructor() { }
-    
+
+
+    public getDoctorRef(): DocumentReference {
+        return this.doctorRef;
+    }
+
+    public setDoctorRef(doctorRef: DocumentReference): void {
+        this.doctorRef = doctorRef;
+    }
+
+
+    public getQueueRef(): DocumentReference {
+        return this.queueRef;
+    }
+
+    public setQueueRef(queueRef: DocumentReference): void {
+        this.queueRef = queueRef;
+    }
+
+    public getPaidFees(): number {
+        return this.paidFees;
+    }
+
+    public setPaidFees(paidFees: number): void {
+        this.paidFees = paidFees;
+    }
+
+    public getRefund(): BookingRefund {
+        return this.refund;
+    }
+
+    public setRefund(refund: BookingRefund): void {
+        this.refund = refund;
+    }
+
+
+    public getMeetingTrials(): number[] {
+        return this.meetingTrials;
+    }
+
+    public setMeetingTrials(meetingTrials: number[]): void {
+        this.meetingTrials = meetingTrials;
+    }
+
+    public getCancellationReason(): string {
+        return this.cancellationReason;
+    }
+
+    public setCancellationReason(cancellationReason: string): void {
+        this.cancellationReason = cancellationReason;
+    }
+
     public getCancelledAt(): number {
         return this.cancelledAt;
     }
@@ -74,7 +133,7 @@ export class BookedPatient {
         this.processedTimeServer = processedTimeServer;
     }
 
-    
+
     public isCancelled(): boolean {
         return this.cancelled;
     }
@@ -107,7 +166,7 @@ export class BookedPatient {
     public setDoctorPic(doctorPic: string): void {
         this.doctorPic = doctorPic;
     }
-    
+
     public getGender(): string {
         return this.gender;
     }
@@ -115,7 +174,7 @@ export class BookedPatient {
     public setGender(gender: string): void {
         this.gender = gender;
     }
-    
+
     public getAddress(): string {
         return this.address;
     }
@@ -139,7 +198,7 @@ export class BookedPatient {
     public setBookingTimeServer(bookingTimeServer: number): void {
         this.bookingTimeServer = bookingTimeServer;
     }
-    
+
     public isProcessed(): boolean {
         return this.processed;
     }
@@ -204,7 +263,7 @@ export class BookedPatient {
     public setSignature(signature: string): void {
         this.signature = signature;
     }
-    
+
     public getPatientId(): string {
         return this.patientId;
     }

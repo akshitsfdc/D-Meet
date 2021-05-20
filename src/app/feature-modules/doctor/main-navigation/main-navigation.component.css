@@ -72,15 +72,15 @@ mat-sidenav-content{
   width: 100%;
 }
 #meetupImage{
-  max-height: 54px;
-  max-width: 200px;  
+  width: 150px;
+  height: 700px;
   z-index: 10px;
   margin-right: 25px;
   
 }
 #meetupImageSmall{
-  max-height: 50px;
-  max-width: 50px;  
+  width: 50px;
+  height: 50px;  
   z-index: 10px;
 }
 #profileIcon{

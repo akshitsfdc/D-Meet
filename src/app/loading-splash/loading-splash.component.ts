@@ -17,7 +17,8 @@ export class LoadingSplashComponent implements OnInit {
     this.checkLogin();
   }
 
-  private async checkLogin(){
+  private async checkLogin() {
+    
     const user:firebase.User =  await this.authService.getUser().then(user => {return user;})
     .catch(error => {console.log("error occured in getting current user : "+error)
       return null;

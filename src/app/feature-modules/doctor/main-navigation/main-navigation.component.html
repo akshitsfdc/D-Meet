@@ -67,8 +67,8 @@
 
         <div fxFlex="1 1 auto" fxLayout="column">
           <mat-toolbar fxLayout="row" fxLayoutAlign="start center" fxFlex="1 1 100px">
-            <img id="meetupImage" *ngIf="isExpanded" src="/assets/imgs/meetup_logo_with.png" alt="Meetup Logo">
-            <img id="meetupImageSmall" *ngIf="!isExpanded"src="/assets/imgs/meet_up_logo_small.png" alt="Meetup Logo">
+            <img id="meetupImage" *ngIf="isExpanded" src="/assets/imgs/meetup_logo_with.svg" alt="Meetup Logo">
+            <img id="meetupImageSmall" *ngIf="!isExpanded"src="/assets/imgs/meetup_logo_without.svg" alt="Meetup Logo">
           </mat-toolbar>
           <mat-nav-list>
             <mat-list-item (click)="liveQueueClick()" >
@@ -103,6 +103,7 @@
         </div>
 
       </div>
+      
   </mat-sidenav>
   <mat-sidenav-content fxFlex="1 1 auto" fxLayout="column">
 

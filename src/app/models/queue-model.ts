@@ -1,3 +1,4 @@
+import { DocumentReference } from '@angular/fire/firestore';
 import { BookedPatient } from "./booked-patient";
 
 
@@ -30,14 +31,19 @@ export class QueueModel {
     private nextId: string;
     private myBooking: BookedPatient;
     private queueEnded: boolean;
+    private docRef: DocumentReference;
 
-    
-
-
-    
-
+  
     constructor() {
         this.bookings = [];
+    }
+
+    public getDocRef(): DocumentReference {
+        return this.docRef;
+    }
+
+    public setDocRef(docRef: DocumentReference): void {
+        this.docRef = docRef;
     }
 
 

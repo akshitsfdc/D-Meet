@@ -50,9 +50,9 @@ export class FirestoreService {
     return this.firestore.collection(collection).doc(document).valueChanges();
    
   }
-  public getRealtimeCollection(collection:string):Observable<unknown[]>{
+  public getRealtimeCollection(collection:string):Observable<DocumentChangeAction<unknown>[]>{
 
-    return this.firestore.collection(collection).valueChanges();
+    return this.firestore.collection(collection).snapshotChanges();
    
   }
   public getQueuesCollection(collection:string):Observable<DocumentChangeAction<unknown>[]>{

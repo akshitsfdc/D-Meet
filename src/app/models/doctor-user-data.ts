@@ -1,3 +1,4 @@
+import { DocumentReference } from '@angular/fire/firestore';
 import { QueueModel } from "./queue-model";
 
 
@@ -31,12 +32,23 @@ export class DoctorUserData {
     private coordinates: firebase.firestore.GeoPoint;
     private status: string;
     private queues: QueueModel[];
+    private ref: DocumentReference;
 
+
+   
 
 
     constructor() {
         this.diseaseSpecialist = [];
         this.queues = [];
+    }
+
+    public getRef(): DocumentReference {
+        return this.ref;
+    }
+
+    public setRef(ref: DocumentReference): void {
+        this.ref = ref;
     }
 
 

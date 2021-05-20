@@ -1,6 +1,6 @@
 
 import { UtilsService } from './../../../services/utils.service';
-import { DocumentData } from '@angular/fire/firestore';
+import { DocumentData, DocumentReference, QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { GeoService } from './../../../services/geo.service';
 import { FirestoreService } from './../../../services/firestore.service';
 import { SearchedDoctor } from './../models/searched-doctor';
@@ -15,17 +15,17 @@ import { SessionService } from './session.service';
 @Injectable()
 export class SearchService {
 
-  nearbyDoctors:SearchedDoctor[];
-  globalDoctors:SearchedDoctor[];
+  nearbyDoctors: SearchedDoctor[];
+  globalDoctors: SearchedDoctor[];
 
-  private globalLastVisible:DocumentData = null;
-  private globalDocsLimit:number = 15;
+  private globalLastVisible: DocumentData = null;
+  private globalDocsLimit: number = 15;
 
   private currentQueue: QueueModel;
 
-   
 
-  constructor(private firestore:FirestoreService, private utils: UtilsService, private http:HttpService, private session:SessionService) {
+
+  constructor(private firestore: FirestoreService, private utils: UtilsService, private http: HttpService, private session: SessionService) {
     this.nearbyDoctors = [];
     this.globalDoctors = [];
     this.globalLastVisible = null;
@@ -35,131 +35,159 @@ export class SearchService {
   }
 
   public getCurrentQueue(): QueueModel {
+
     return this.currentQueue;
-}
+  }
 
-public setCurrentQueue(currentQueue: QueueModel): void {
+  public gGetDoctorById(doctorId: string): SearchedDoctor {
+
+    for (let i = 0; i < this.globalDoctors.length; ++i) {
+      if (this.globalDoctors[i].getDoctor().getUserId() === doctorId) {
+        return this.globalDoctors[i];
+      }
+    }
+    return null;
+  }
+  public nGetDoctorById(doctorId: string): SearchedDoctor {
+
+    for (let i = 0; i < this.nearbyDoctors.length; ++i) {
+      if (this.nearbyDoctors[i].getDoctor().getUserId() === doctorId) {
+        return this.nearbyDoctors[i];
+      }
+    }
+    return null;
+  }
+
+  public setCurrentQueue(currentQueue: QueueModel): void {
     this.currentQueue = currentQueue;
-}
+  }
 
-  public getNearbyDoctors():SearchedDoctor[]{
+  public getNearbyDoctors(): SearchedDoctor[] {
     return this.nearbyDoctors;
   }
 
-  public getGlobalDoctors():SearchedDoctor[]{
+  public getGlobalDoctors(): SearchedDoctor[] {
     return this.globalDoctors;
   }
-  
+
   public getGlobalDocsLimit(): number {
-  return this.globalDocsLimit;
+    return this.globalDocsLimit;
   }
 
   public setGlobalDocsLimit(globalDocsLimit: number): void {
-      this.globalDocsLimit = globalDocsLimit;
+    this.globalDocsLimit = globalDocsLimit;
   }
 
-   public loadSearch():void{
-    
+  public loadSearch(): void {
+
     // this.firestore.get('userdata');
-    
-   }
-   public loadDoctors():void{
-     if(this.globalLastVisible === null){
-      this.firestore.getAll('user-data',this.globalDocsLimit).then(snapshots=>{
-        if(!snapshots || !snapshots.docs || snapshots.docs.length <= 0){
-          return;
-        }
 
-        this.globalLastVisible = snapshots.docs[snapshots.docs.length - 1];
-
-        this.setDoctor(this.globalDoctors, snapshots.docs);
-
-      }) 
-      .catch(error =>{
-        //error
-        console.log("error >> "+error);
-      });
-     }else{
-      this.firestore.getAllStartAfter('user-data',this.globalDocsLimit, this.globalLastVisible).then(snapshots=>{
-
-        if(!snapshots || !snapshots.docs || snapshots.docs.length <= 0){
-          return;
-        }
-
-        this.globalLastVisible = snapshots.docs[snapshots.docs.length - 1];
-
-        this.setDoctor(this.globalDoctors, snapshots.docs);
-
-      }) 
-      .catch(error =>{
-        //error
-        console.log("error >> "+error);
-      });
-     }     
-    
-   }
-   private setDoctor(doctors:SearchedDoctor[], docs):void{
-
-      docs.forEach(document => {
-
-        let searchedDoctor:SearchedDoctor = new SearchedDoctor();
-
-        searchedDoctor.setQueueInitialized(false);
-
-        let doctor:DoctorUserData = new DoctorUserData();
-
-        Object.assign(doctor, document.data()); 
-
-        searchedDoctor.setDoctor(doctor);
-
-        doctors.push(searchedDoctor);
-          
-       });
   }
 
-  public setDoctorQueues(searchedDoctor:SearchedDoctor):void{
+  public loadDoctors(): void {
+
+    if (this.globalLastVisible === null) {
+
+      this.firestore.getAll('user-data', this.globalDocsLimit).then(snapshots => {
+
+        if (!snapshots || !snapshots.docs || snapshots.docs.length <= 0) {
+          return;
+        }
+
+        this.globalLastVisible = snapshots.docs[snapshots.docs.length - 1];
+
+        this.setDoctor(this.globalDoctors, snapshots.docs);
+
+      })
+        .catch(error => {
+          //error
+          console.log("error >> " + error);
+        });
+    } else {
+      this.firestore.getAllStartAfter('user-data', this.globalDocsLimit, this.globalLastVisible).then(snapshots => {
+
+        if (!snapshots || !snapshots.docs || snapshots.docs.length <= 0) {
+          return;
+        }
+
+        this.globalLastVisible = snapshots.docs[snapshots.docs.length - 1];
+
+        this.setDoctor(this.globalDoctors, snapshots.docs);
+
+      })
+        .catch(error => {
+          //error
+          console.log("error >> " + error);
+        });
+    }
+
+  }
+  private setDoctor(doctors: SearchedDoctor[], docs: QueryDocumentSnapshot<firebase.firestore.DocumentData>[]): void {
+
+    docs.forEach(document => {
+
+      let searchedDoctor: SearchedDoctor = new SearchedDoctor();
+
+
+      searchedDoctor.setQueueInitialized(false);
+
+      let doctor: DoctorUserData = new DoctorUserData();
+
+      doctor.setRef(document.ref);
+
+      Object.assign(doctor, document.data());
+
+      searchedDoctor.setDoctor(doctor);
+
+      doctors.push(searchedDoctor);
+
+    });
+  }
+
+  public setDoctorQueues(searchedDoctor: SearchedDoctor): void {
 
     let utils: UtilsService = this.utils;
     let parentObj = this;
     searchedDoctor.setQueueLoading(true);
-   
-    let path:string = 'user-data/'+searchedDoctor.getDoctor().getUserId()+'/queues';
+
+    let path: string = 'user-data/' + searchedDoctor.getDoctor().getUserId() + '/queues';
     this.firestore.getRealtimeCollection(path)
-    
-    .subscribe({
-      next(data){
-      
-        let queues: QueueModel[] = [];
-        
-        data.forEach(element => {
-          let queue:QueueModel = new QueueModel();
-          Object.assign(queue, element);           
-          queues.push(queue);
 
-          queue.setBookingAvailable(utils.isWithinTimeFrame(queue.getBookingStarting(), queue.getBookingEnding()));
-          queue.setConsultingStarted(utils.isWithinTimeFrame(queue.getConsultingStarting(), queue.getConsultingEnding()));   
-          
-          parentObj.getBookingsOfQueue(queue);
-        });
+      .subscribe({
+        next(data) {
 
-        searchedDoctor.setQueues(queues);
-        utils.changeQueueStatus(queues);
-        searchedDoctor.setQueueInitialized(true);
-        searchedDoctor.setQueueLoading(false);
-        parentObj.reformCurrentQueue(searchedDoctor);
-     },
-     error(msg){
-      console.log("Obs error >> : "+msg);
-      searchedDoctor.setQueueInitialized(false);
-      searchedDoctor.setQueueLoading(false);
-     },
-     complete: () => console.log('queue loaded!')
-   });
+          let queues: QueueModel[] = [];
+
+          data.forEach(element => {
+            let queue: QueueModel = new QueueModel();
+            Object.assign(queue, element.payload.doc.data());
+            queues.push(queue);
+
+            queue.setDocRef(element.payload.doc.ref);
+            queue.setBookingAvailable(utils.isWithinTimeFrame(queue.getBookingStarting(), queue.getBookingEnding()));
+            queue.setConsultingStarted(utils.isWithinTimeFrame(queue.getConsultingStarting(), queue.getConsultingEnding()));
+
+            parentObj.getBookingsOfQueue(queue);
+          });
+
+          searchedDoctor.setQueues(queues);
+          utils.changeQueueStatus(queues);
+          searchedDoctor.setQueueInitialized(true);
+          searchedDoctor.setQueueLoading(false);
+          parentObj.reformCurrentQueue(searchedDoctor);
+        },
+        error(msg) {
+          console.log("Obs error >> : " + msg);
+          searchedDoctor.setQueueInitialized(false);
+          searchedDoctor.setQueueLoading(false);
+        },
+        complete: () => console.log('queue loaded!')
+      });
   }
 
-  private reformCurrentQueue(searchedDoctor:SearchedDoctor):void {
+  private reformCurrentQueue(searchedDoctor: SearchedDoctor): void {
 
-    for (let i = 0; i < searchedDoctor.getQueues().length; ++i){
+    for (let i = 0; i < searchedDoctor.getQueues().length; ++i) {
       let queue: QueueModel = searchedDoctor.getQueues()[i];
       if (this.currentQueue && this.currentQueue.getQueueId() === queue.getQueueId() && this.currentQueue.getOwnerId() === queue.getOwnerId()) {
         this.currentQueue.setBookingStarting(queue.getBookingStarting());
@@ -170,7 +198,7 @@ public setCurrentQueue(currentQueue: QueueModel): void {
         this.currentQueue.setConsultingStarted(this.utils.isWithinTimeFrame(this.currentQueue.getConsultingStarting(), this.currentQueue.getConsultingEnding()));
       }
     }
-   
+
   }
   public getBookingsOfQueue(queue: QueueModel) {
 
@@ -187,7 +215,7 @@ public setCurrentQueue(currentQueue: QueueModel): void {
           .subscribe(
             {
               next(patients) {
-                
+
                 let bookedPatients: BookedPatient[] = [];
                 let index = 1;
                 patients.forEach(element => {
@@ -215,17 +243,64 @@ public setCurrentQueue(currentQueue: QueueModel): void {
       });
   }
 
-  private setCurrentNext(queue:QueueModel) {
-    
-    
+  public getBookingsOfQueueOneTime(queue: QueueModel) {
+
+    let currentPatient: BookedPatient;
+    let currentRef = this;
+    this.http.getServerDate("serverDate")
+      .then(dateObj => {
+
+        const millies: number = this.utils.getUtCMillies(dateObj.timestapmIST);
+        const date: Date = new Date(millies);
+        const dateStr: string = date.getDate() + '' + date.getMonth() + '' + date.getFullYear();
+
+        this.firestore.getRealTimeCollectionWithQuery("queue-bookings", "doctorId",
+          queue.getOwnerId(), "dateString", dateStr,
+          "queueId", queue.getQueueId(), "bookingTimeServer")
+          .toPromise()
+          .then(patients => {
+
+            let bookedPatients: BookedPatient[] = [];
+            let index = 1;
+            patients.forEach(element => {
+              let patient: BookedPatient = new BookedPatient();
+              Object.assign(patient, element);
+              bookedPatients.push(patient);
+              patient.setQueuePlace(index);
+              ++index;
+              if (patient.isCurrentPatient()) {
+                currentPatient = patient;
+              }
+              if (patient.getPatientId() === currentRef.session.getUserData().getUserId()) {
+                queue.setMyBooking(patient)
+              }
+            });
+            queue.setCurrentPatient(currentPatient);
+            queue.setBookings(bookedPatients);
+            currentRef.setCurrentNext(queue);
+          })
+
+          .catch(error => {
+            console.log("Error getting booked patients : " + error);
+          });
+      })
+      .catch(error => {
+        console.log("Error getting current date from server : " + error);
+
+      });
+  }
+
+  private setCurrentNext(queue: QueueModel) {
+
+
     queue.getBookings().forEach(patient => {
       if ((!patient.isCurrentPatient() && !patient.isProcessed())) {
         queue.setNextId(patient.getBookingId());
         queue.setNextNumber("" + patient.getQueuePlace());
         return;
       }
-        
+
     });
   }
-  
+
 }

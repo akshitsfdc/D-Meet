@@ -17,7 +17,7 @@ infiniteScrollThrottle="50"
             <img id="profilePictureImage" matCardImageMedium src= "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBBbg59ufqwGDd2621kTDgGFWw_TNaWGH1FA&usqp=CAU" />
 
             <div fxLayout="column" fxLayoutGap="space-between start">
-                <mat-label class="header-label" fxFlexOffset="5px">Dr. {{doctor.getDoctor().getFirstName() +''+doctor.getDoctor().getLastName()}}</mat-label>
+                <mat-label class="header-label" fxFlexOffset="5px">Dr. {{doctor.getDoctor().getFirstName() +' '+doctor.getDoctor().getLastName()}}</mat-label>
                 <mat-label fxFlexOffset="10px">{{doctor.getDoctor().getDegree()}}</mat-label>
                 <mat-label fxFlexOffset="10px">{{doctor.getDoctor().getExperience()}} years of experience</mat-label>
                 <span fxFlex="1 1 auto"></span>
@@ -70,11 +70,13 @@ infiniteScrollThrottle="50"
               </ng-container>
               <ng-container *ngIf="doctor.isQueueInitialized() && doctor.getQueues().length<=0">
                 <div class="queue-loading-container" fxLayout="row" fxLayoutAlign="center center">
-                  
-                  <div fxLayout="column" fxLayoutAlign="center center">
-                    <mat-icon class="no-queue">nature_people</mat-icon>
 
-                    <mat-label fxFlexOffset="10px" class="loading-indicator-label">This doctor has not set any booking option yet. Please try again later once he set his timings for appointments.</mat-label>
+                  <div fxLayout="column" fxLayoutAlign="center center">
+
+                    <!-- <mat-icon class="no-queue">nature_people</mat-icon> -->
+                    <img class="no-doctor-queue"  src="/assets/imgs/no_queue_p.svg" alt="No queues">
+
+                    <mat-label fxFlexOffset="10px" class="header-label">WAIT! Till the doctor stes the Queue</mat-label>
                   </div>
                   
                 </div>

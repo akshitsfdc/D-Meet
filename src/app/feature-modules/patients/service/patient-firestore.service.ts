@@ -14,6 +14,9 @@ export class PatientFirestoreService {
   ) { 
   }
 
+  public getByRef(docRef:DocumentReference):Promise<firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>> {
+    return docRef.get();
+  }
   public getScheduledMeetings(patientId:string, dateStr:string, limit:number):Observable<DocumentChangeAction<unknown>[]> {
 
     let collectionPath: string = "queue-bookings";
@@ -225,6 +228,28 @@ export class PatientFirestoreService {
 
 
     batch.set(dNotiRef, request, {merge:true});
+   
+    // pData.docReference = null;
+    batch.update(pDocRef, pData);
+
+    return batch.commit();
+
+  }
+
+  public sendRefundRequest(doctorId: string, notification: any, pDocRef:DocumentReference, pData:any, request:any):Promise<void>{
+    
+    let notificationPath: string = "user-data/" + doctorId + "/notifications";
+    let requestPath: string = "refund-requests";
+
+
+    let dNotiRef: DocumentReference = this.firestore.collection(notificationPath).doc(notification.notificationId).ref;
+    let requestRef: DocumentReference = this.firestore.collection(requestPath).doc(notification.notificationId).ref;
+    
+    let batch = this.firestore.firestore.batch();
+
+    batch.set(dNotiRef, notification, {merge:true});
+
+    batch.set(requestRef, request, {merge:true});
    
     // pData.docReference = null;
     batch.update(pDocRef, pData);
