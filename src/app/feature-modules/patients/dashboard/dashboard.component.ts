@@ -1,3 +1,4 @@
+import { CalculationService } from './../service/calculation.service';
 import { DoctorUserData } from './../../../models/doctor-user-data';
 import { SessionService } from './../service/session.service';
 import { Router } from '@angular/router';
@@ -17,11 +18,11 @@ export class DashboardComponent implements OnInit {
 
   // doctorArray = [1, 2, 3, 4, 5];
   // sessionQueues = [1, 2 ,3];
-  holidayList = ['Sunday','Saturday']
+  holidayList = ['Sunday', 'Saturday']
 
-  constructor(public searchService:SearchService, public utils:UtilsService, private router:Router, private session:SessionService) { 
+  constructor(public searchService: SearchService, public utils: UtilsService, public calculation: CalculationService, private router: Router, private session: SessionService) {
 
-   
+
   }
 
   ngOnInit(): void {
@@ -34,7 +35,7 @@ export class DashboardComponent implements OnInit {
     //     console.log(element);
     //     console.log(element.data());
     //   });
-      
+
     // })
     // .catch(error =>{
     //   console.log("Error >> "+error);
@@ -42,27 +43,27 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  temp(){
+  temp() {
     // this.firestore.saveInGeoCollection((+new Date()).toString(), {testkey:"testing", coordinates:this.firestore.getGeopoints(29.608801, 78.349800)});
   }
 
-  onScroll(){
+  onScroll() {
     console.log("Scrolled!");
   }
 
-  bookingPannelExpended(searchedDoctor:SearchedDoctor):void{
-    if(!searchedDoctor.isQueueLoading() && !searchedDoctor.isQueueInitialized()){
+  bookingPannelExpended(searchedDoctor: SearchedDoctor): void {
+    if (!searchedDoctor.isQueueLoading() && !searchedDoctor.isQueueInitialized()) {
       this.searchService.setDoctorQueues(searchedDoctor);
     }
   }
 
-  viewLobby(queue:QueueModel, doctor:DoctorUserData):void{
+  viewLobby(queue: QueueModel, doctor: DoctorUserData): void {
 
     const object = {
-      doctor : doctor,
-      queue : queue
+      doctor: doctor,
+      queue: queue
     };
-    
+
     this.searchService.setCurrentQueue(queue);
     this.session.setSharedData(object);
     this.router.navigate(['patient/meetup-lobby']);

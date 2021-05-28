@@ -6,12 +6,12 @@ import { BookedPatient } from "./booked-patient";
 
 export class QueueModel {
 
-    private currency:string;
+    private currency: string;
     private fees: number;
     private status: string;
-    private active:boolean;
+    private active: boolean;
     private patientLimit: number;
-    private timePerPatient:number;
+    private timePerPatient: number;
     private bookingStarting: number;
     private bookingEnding: number;
     private consultingStarting: number;
@@ -19,9 +19,9 @@ export class QueueModel {
     private bookedPatients: number;
     private queueId: string;
     private ownerId: string;
-    private holidayList:string[] = [];
+    private holidayList: string[] = [];
     private loading: boolean;
-    private type:string;
+    private type: string;
     private paymentOption: string;
     private bookingAvailable: boolean;
     private consultingStarted: boolean;
@@ -32,11 +32,43 @@ export class QueueModel {
     private myBooking: BookedPatient;
     private queueEnded: boolean;
     private docRef: DocumentReference;
+    private todayDateString: string;
+    private currentBookingsCount: number;
+    private currentNumber: number;
 
-  
+
     constructor() {
         this.bookings = [];
     }
+
+
+    public getCurrentNumber(): number {
+        return this.currentNumber;
+    }
+
+    public setCurrentNumber(currentNumber: number): void {
+        this.currentNumber = currentNumber;
+    }
+
+
+    public getTodayDateString(): string {
+        return this.todayDateString;
+    }
+
+    public setTodayDateString(todayDateString: string): void {
+        this.todayDateString = todayDateString;
+    }
+
+
+    public getCurrentBookingsCount(): number {
+        return this.currentBookingsCount;
+    }
+
+    public setCurrentBookingsCount(currentBookingsCount: number): void {
+        this.currentBookingsCount = currentBookingsCount;
+    }
+
+
 
     public getDocRef(): DocumentReference {
         return this.docRef;
@@ -54,17 +86,17 @@ export class QueueModel {
     public setQueueEnded(queueEnded: boolean): void {
         this.queueEnded = queueEnded;
     }
-    
+
     public getMyBooking(): BookedPatient {
         return this.myBooking;
     }
-    
+
     public setMyBooking(myBooking: BookedPatient): void {
         this.myBooking = myBooking;
     }
 
 
-    
+
 
     public getNextNumber(): string {
         return this.nextNumber;
@@ -129,7 +161,7 @@ export class QueueModel {
     public setPaymentOption(paymentOption: string): void {
         this.paymentOption = paymentOption;
     }
-    
+
     public getCurrency(): string {
         return this.currency;
     }
@@ -137,7 +169,7 @@ export class QueueModel {
     public setCurrency(currency: string): void {
         this.currency = currency;
     }
-    
+
     public getTimePerPatient(): number {
         return this.timePerPatient;
     }
@@ -160,7 +192,7 @@ export class QueueModel {
     public setActive(active: boolean): void {
         this.active = active;
     }
-    
+
     public getHolidayList(): string[] {
         return this.holidayList;
     }
@@ -201,7 +233,7 @@ export class QueueModel {
     public setConsultingEnding(consultingEnding: number): void {
         this.consultingEnding = consultingEnding;
     }
-    
+
     public getFees(): number {
         return this.fees;
     }
@@ -226,7 +258,7 @@ export class QueueModel {
         this.patientLimit = patientLimit;
     }
 
-   
+
 
     public getBookedPatients(): number {
         return this.bookedPatients;

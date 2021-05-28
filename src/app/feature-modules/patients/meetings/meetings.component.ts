@@ -1,3 +1,4 @@
+import { CalculationService } from './../service/calculation.service';
 import { queue } from 'rxjs/internal/scheduler/queue';
 import { SearchedDoctor } from './../models/searched-doctor';
 import { BookingRefund } from './../../../models/booking-refund';
@@ -42,6 +43,13 @@ class BookingWrapper {
 
 }
 
+class IntervalWrapper {
+
+  bookingId: string;
+  interval: NodeJS.Timeout;
+
+}
+
 @Component({
   selector: 'app-meetings',
   templateUrl: './meetings.component.html',
@@ -57,6 +65,7 @@ export class MeetingsComponent implements OnInit, OnDestroy {
   private serverDate: number = 0;
 
   private subscriptions: Subscription[] = [];
+  private intervalWrappers: IntervalWrapper[] = [];
 
   public myBokings: BookingWrapper = new BookingWrapper();
   public cancledBookings: BookingWrapper = new BookingWrapper();
@@ -85,12 +94,14 @@ export class MeetingsComponent implements OnInit, OnDestroy {
     private matDialog: MatDialog,
     public searchService: SearchService,
     public utils: UtilsService,
+    public calculation: CalculationService,
     private router: Router) {
 
     this.liveBookings.bookings = [];
     this.myBokings.bookings = [];
     this.cancledBookings.bookings = [];
     this.notHandledBookings.bookings = [];
+
   }
 
   ngOnDestroy(): void {
@@ -100,6 +111,12 @@ export class MeetingsComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(sub => {
       if (sub !== null && sub !== undefined) {
         sub.unsubscribe();
+      }
+    });
+
+    this.intervalWrappers.forEach(intervalWrapper => {
+      if (intervalWrapper.interval) {
+        clearInterval(intervalWrapper.interval);
       }
     });
   }
@@ -118,7 +135,7 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
     const userId: string = this.session.getUserData().getUserId();
 
-    this.http.getServerDate("serverDate")
+    this.http.getServerDate()
 
       .then(dateObj => {
 
@@ -164,6 +181,8 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
                   booking.setDocReference(change.payload.doc.ref);
 
+                  this.subscribeToQueue(booking);
+
                   break;
                 case "modified":
                   let bookingUpdate: BookedPatient = new BookedPatient();
@@ -191,17 +210,72 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
   private subscribeToQueue(booking: BookedPatient) {
 
+    const thisRef = this;
+
     booking.getQueueRef().onSnapshot({
       next(snapshot) {
         let queue: QueueModel = new QueueModel();
         Object.assign(queue, snapshot.data());
-
+        booking.setSelfWaitingTime(thisRef.calculation.getRemainingTimeBeforeMeeting(queue, booking));
+        //console.log("Time : " + thisRef.calculation.getRemainingTimeBeforeMeeting(queue, booking));
+        thisRef.startTimer(booking);
       },
       error(msg) {
         console.log("Obs error subscribeToQueue >> : " + msg);
       },
       complete: () => console.log('subscribeToQueue >> completed')
     })
+
+
+  }
+
+  private startTimer(booking: BookedPatient) {
+
+
+
+    let interval: NodeJS.Timeout = setInterval(() => {
+
+      let timeLeft = booking.getSelfWaitingTime() - 1000;
+
+      if (timeLeft <= 0) {
+        booking.setSelfWaitingTime(0);
+        booking.setSelfWaitingTimeString("about to start...");
+        clearInterval(interval);
+      } else {
+        booking.setSelfWaitingTime(timeLeft);
+        booking.setSelfWaitingTimeString(this.calculation.getRemainingTimeString(timeLeft));
+      }
+    }, 1000);
+
+    let intervalWrapper: IntervalWrapper = this.getInterValWrapper(booking.getBookingId());
+
+    if (intervalWrapper !== null) {
+
+      if (intervalWrapper.interval) {
+        clearInterval(intervalWrapper.interval);
+      }
+      intervalWrapper.interval = interval;
+
+    } else {
+
+      let intervalWrapper: IntervalWrapper = new IntervalWrapper();
+
+      intervalWrapper.interval = interval;
+      intervalWrapper.bookingId = booking.getBookingId();
+
+      this.intervalWrappers.push(intervalWrapper);
+    }
+    // this.intervalWrappers.push(intervalWrappers);
+  }
+
+  private getInterValWrapper(bookingId: string): IntervalWrapper {
+
+    for (let i: number = 0; i < this.intervalWrappers.length; ++i) {
+      if (this.intervalWrappers[i].bookingId === bookingId) {
+        return this.intervalWrappers[i];
+      }
+    }
+    return null;
   }
 
   private updateBookings(bookingWrapper: BookingWrapper, bookingUpdate: BookedPatient): void {

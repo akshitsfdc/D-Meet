@@ -43,11 +43,18 @@ export class BookedPatient {
     private refund: BookingRefund;
     private docReference: DocumentReference;
     private meetingTrials: number[] = [];
-
+    private selfWaitingTimeString: string = "calculating time...";
 
 
     constructor() { }
 
+    public getSelfWaitingTimeString(): string {
+        return this.selfWaitingTimeString;
+    }
+
+    public setSelfWaitingTimeString(selfWaitingTimeString: string): void {
+        this.selfWaitingTimeString = selfWaitingTimeString;
+    }
 
     public getDoctorRef(): DocumentReference {
         return this.doctorRef;

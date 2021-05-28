@@ -1,3 +1,4 @@
+import { DoctorFirestoreService } from './services/doctor-firestore.service';
 import { QueuesComponent } from './queues/queues.component';
 import { ProfileEditComponent } from './profile-edit/profile-edit.component';
 import { MovePatientComponent } from './move-patient/move-patient.component';
@@ -39,7 +40,7 @@ import { BaseComponent } from './base/base.component';
   imports: [
     FlexLayoutModule,
     CommonModule,
-    FormsModule, 
+    FormsModule,
     ReactiveFormsModule,
     DoctorRoutingModule,
     MaterialModule,
@@ -47,7 +48,7 @@ import { BaseComponent } from './base/base.component';
     NgxMaterialTimepickerModule.setLocale('en-US')
   ],
   exports: [],
-  
-  bootstrap:[BaseComponent]
+  providers: [DoctorFirestoreService],
+  bootstrap: [BaseComponent]
 })
 export class DoctorModule { }

@@ -14,35 +14,36 @@ import { MainNavigationComponent } from './main-navigation/main-navigation.compo
 
 const routes: Routes = [
 
-    {
-      path: '', component: BaseComponent,
+  {
+    path: '', component: BaseComponent,
+    children: [
+      {
+        path: '', component: MainNavigationComponent,
+
         children: [
-                {
-                  path: '', component: MainNavigationComponent,
-            
-                  children: [
-                    {path: 'doctor-profile', component: DoctorProfileComponent},
-                    {
-                      path: 'dashboard', component: LiveQueueComponent
-                    },
-                    { path: 'queues', component: QueuesComponent },
-                    {
-                      path: 'meetup-lobby', component: MeetupLobbyComponent
-                    },
-                    {path: 'queues/createQueue', component: CreateQueueComponent},
-                    {path: 'queues/editQueue', component: EditQueueComponent},
-                    { path: 'home/queue', component: LiveQueueDetailsComponent }
-                  ]
-            
-            
-                },
-                {
-                  path: 'conference', component: ConferenceComponent,
-                }
-          ]
-      
-    }
-    
+
+          { path: 'doctor-profile', component: DoctorProfileComponent },
+          {
+            path: 'dashboard', component: LiveQueueComponent
+          },
+          { path: 'queues', component: QueuesComponent },
+          {
+            path: 'meetup-lobby', component: MeetupLobbyComponent
+          },
+          { path: 'queues/createQueue', component: CreateQueueComponent },
+          { path: 'queues/editQueue', component: EditQueueComponent },
+          { path: 'home/queue', component: LiveQueueDetailsComponent }
+        ]
+
+
+      },
+      {
+        path: 'conference', component: ConferenceComponent,
+      }
+    ]
+
+  }
+
 
 ];
 

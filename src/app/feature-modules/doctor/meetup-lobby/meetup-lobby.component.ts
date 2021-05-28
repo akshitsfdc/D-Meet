@@ -1,3 +1,4 @@
+import { DoctorFirestoreService } from './../services/doctor-firestore.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { PatientUserData } from './../../../models/patient-user-data'
 import { DoctorUserData } from './../../../models/doctor-user-data';
@@ -13,7 +14,7 @@ import { MessageDialogComponent } from 'src/app/message-dialog/message-dialog.co
 import { SessionService } from '../services/session.service';
 import { Router } from '@angular/router';
 
-declare var Razorpay: any; 
+declare var Razorpay: any;
 
 @Component({
   selector: 'app-meetup-lobby',
@@ -21,34 +22,35 @@ declare var Razorpay: any;
   styleUrls: ['./meetup-lobby.component.scss']
 })
 export class MeetupLobbyComponent implements OnInit, OnDestroy {
-  
+
   @ViewChild('bookingList') bookingListElement: ElementRef;
-  
+
   rippleColor = "#4294f4";
   selectedStatus = "live";
   selectStatusDisplay = "Live";
 
-  bookingavailable:boolean = false;
+  bookingavailable: boolean = false;
 
   disableNext = false;
 
-  tempPatients = []; 
+  tempPatients = [];
   processedPatients = [];
 
   consultStarted = true;
 
-  currentDoctor:DoctorUserData;
+  currentDoctor: DoctorUserData;
   currentPaient: BookedPatient;
   nextPatient: BookedPatient;
 
   totalPatientSize: Number;
-  currentQueue:QueueModel;
+  currentQueue: QueueModel;
 
-  extraheight:number = 75+15+60;
+  extraheight: number = 75 + 15 + 60;
   consultingStartWaitingTimeLabel: string = "0h:00m"
-  
+
   bookingStartingWaitingTime: number = 0;
   bookingStartingWaitingTimeLabel: String = "0h:00m";
+
   movies = [
     'Episode I - The Phantom Menace',
     'Episode II - Attack of the Clones',
@@ -84,12 +86,12 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
     'Episode VII - The Force Awakens',
     'Episode VIII - The Last Jedi',
     'Episode IV - A New Hope',
-        
+
   ];
 
   private myWaitingTimeTimer;
 
-  private consultingStartWaitingTime:number = 0;
+  private consultingStartWaitingTime: number = 0;
   private loading: MatDialogRef<LoadingDialogComponent>;
 
   selftWaitingTime: string = "";
@@ -97,13 +99,13 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
   userData: PatientUserData;
 
   constructor(private matDialog: MatDialog, private router: Router,
-     public utils:UtilsService, private session:SessionService, private firestoreService: FirestoreService) {
+    public utils: UtilsService, private session: SessionService, private firestoreService: DoctorFirestoreService) {
 
-   
+
   }
-  
 
-  
+
+
   ngOnInit(): void {
 
     this.currentQueue = this.session.getSharedData().queue as QueueModel;
@@ -122,10 +124,10 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
     //   this.consultingStartWaitingTime = this.utils.getTimeDifference(this.currentQueue.getConsultingStarting());
 
     //   this.consultingStartWaitingTimeLabel = this.utils.getDateDigits(this.consultingStartWaitingTime);
-  
+
     //   this.initConsultingWaitingTime();
 
-      
+
     // }
 
     // if (!this.currentQueue.isBookingAvailable()) {
@@ -136,35 +138,35 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
     //   this.initBookingWaitingTime();
     // }
-   
+
 
     // this.startTimerCounter();
 
-    
+
   }
 
- 
+
   private setTimerForAvailability() {
 
-    setInterval(() => {     
+    setInterval(() => {
       this.bookingAvailability();
       this.consultingStarted();
     }, 60000);
   }
 
   ngAfterViewInit() {
-  
+
     let windowHeight = window.innerHeight;
     // this.bookingListElement.nativeElement.style.height = 50 +'px';    // set height
-    this.bookingListElement.nativeElement.style.height = (windowHeight-this.extraheight)+'px'; 
+    this.bookingListElement.nativeElement.style.height = (windowHeight - this.extraheight) + 'px';
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize(event){
+  onResize(event) {
     let windowHeight = window.innerHeight;
-    this.bookingListElement.nativeElement.style.height = (windowHeight-this.extraheight)+'px'; 
+    this.bookingListElement.nativeElement.style.height = (windowHeight - this.extraheight) + 'px';
   }
-  initConsultingWaitingTime(){
+  initConsultingWaitingTime() {
     setInterval(() => {
       this.consultingStartWaitingTime -= 60000;
       this.consultingStartWaitingTimeLabel = this.utils.getDateDigits(this.consultingStartWaitingTime);
@@ -172,13 +174,13 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
     }, 60000);
   }
 
-  initBookingWaitingTime(){
+  initBookingWaitingTime() {
     setInterval(() => {
       if (this.bookingStartingWaitingTime > 0) {
         this.bookingStartingWaitingTime -= 60000;
         this.bookingStartingWaitingTimeLabel = this.utils.getDateDigits(this.bookingStartingWaitingTime);
         console.log(this.bookingStartingWaitingTime);
-      }     
+      }
     }, 60000);
   }
   drop(event: CdkDragDrop<string[]>) {
@@ -198,75 +200,75 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
   //   if(this.tempPatients.length > 0){
   //     this.currentPaient = this.tempPatients.splice(0, 1)[0];
   //   }
-    
+
   //   if(this.processedPatients.length === this.totalPatientSize){
   //     // this.processedPatients.push(this.currentPaient);
   //     // this.currentPaient = this.tempPatients.splice(0, 1)[0];
   //     this.disableNext = true;
   //   }
-    
+
   // }
-  movePatient(){
+  movePatient() {
 
     let dialogData = {
-      maxPosition : this.tempPatients.length,
-      minPosition : this.tempPatients.length > 2 ? 2 : this.tempPatients.length
+      maxPosition: this.tempPatients.length,
+      minPosition: this.tempPatients.length > 2 ? 2 : this.tempPatients.length
     }
-    
 
-    let dialog = this.matDialog.open(MovePatientComponent, {data: dialogData});
-    
+
+    let dialog = this.matDialog.open(MovePatientComponent, { data: dialogData });
+
     dialog.afterClosed().subscribe(result => {
 
-      if(result && !result.canceled){
-          if(result.defined){
-            this.shiftPatientToPosition(result.position);
-          }else{
-            this.shiftPatientToLast();
-          }
+      if (result && !result.canceled) {
+        if (result.defined) {
+          this.shiftPatientToPosition(result.position);
+        } else {
+          this.shiftPatientToLast();
+        }
       }
 
-      
-      
+
+
     });
   }
 
-  private shiftPatientToPosition(position: number){
+  private shiftPatientToPosition(position: number) {
 
-    if(this.tempPatients.length > 0){
+    if (this.tempPatients.length > 0) {
       this.tempPatients.splice(position, 0, this.currentPaient);
       this.currentPaient = this.tempPatients.splice(0, 1)[0];
     }
-  
+
   }
 
-  private shiftPatientToLast(){
+  private shiftPatientToLast() {
 
-    if(this.tempPatients.length > 0){
-      this.tempPatients.splice( this.tempPatients.length, 0, this.currentPaient);
+    if (this.tempPatients.length > 0) {
+      this.tempPatients.splice(this.tempPatients.length, 0, this.currentPaient);
       this.currentPaient = this.tempPatients.splice(0, 1)[0];
     }
-  
-    
+
+
   }
-  statusChanged(){
-    switch(this.selectedStatus){
-      case "live":{
+  statusChanged() {
+    switch (this.selectedStatus) {
+      case "live": {
         this.selectStatusDisplay = "Live";
         break;
       }
-      case "offline":{
+      case "offline": {
         this.selectStatusDisplay = "Offline";
         break;
       }
-     default:{
-      this.selectStatusDisplay = "Away";
-       break;
-     }
+      default: {
+        this.selectStatusDisplay = "Away";
+        break;
+      }
     }
   }
 
-  private saveData(){
+  private saveData() {
     // const roomRef = this.firestore.collection('doctor-meta').doc((+ new Date()).toString());
     // roomRef.set(this.getCitydata());
 
@@ -280,30 +282,31 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
     // });
   }
 
-  
 
- 
 
-private showDialog(type:string, msg:string, ok:string):void{
 
-  let dialogData = {
-    type : type,
-    message : msg,
-    okText: ok
+
+  private showDialog(type: string, msg: string, ok: string): void {
+
+    let dialogData = {
+      type: type,
+      message: msg,
+      okText: ok
+    }
+
+    this.matDialog.open(MessageDialogComponent, {
+      data: dialogData, disableClose: false,
+      maxWidth: '300px'
+    }).afterClosed().toPromise()
+      .then(result => {
+
+      });
   }
 
-  this.matDialog.open(MessageDialogComponent, {data: dialogData , disableClose: false,
-    maxWidth : '300px'
-  }).afterClosed().toPromise()
-  .then(result => {
-    
-  });
-}
-  
 
 
   private showLoading() {
-    
+
     this.utils.showLoading("Please wait...");
 
   }
@@ -311,142 +314,179 @@ private showDialog(type:string, msg:string, ok:string):void{
     this.utils.hideLoading();
   }
 
-  bookingAvailability(){
+  bookingAvailability() {
     this.currentQueue.setBookingAvailable(this.utils.isWithinTimeFrame(this.currentQueue.getBookingStarting(), this.currentQueue.getBookingEnding()));
   }
-  consultingStarted(){
+  consultingStarted() {
     this.currentQueue.setConsultingStarted(this.utils.isWithinTimeFrame(this.currentQueue.getConsultingStarting(), this.currentQueue.getConsultingEnding()));
   }
 
   startTimerCounter() {
-    this.myWaitingTimeTimer = setInterval(() => {     
+    this.myWaitingTimeTimer = setInterval(() => {
       this.changeSelfWaitingTime();
     }, 1000);
 
-    
+
   }
 
 
-  
+
   changeSelfWaitingTime() {
     console.log("Outside >> ");
     if (this.currentQueue.getBookings().length > 0 && this.currentQueue.getMyBooking()) {
-      
+
       console.log("Inside >> ");
-      
+
       this.currentQueue.getMyBooking().setSelfWaitingTime(+new Date());
     }
   }
 
-finalizeCurrent(makePending:boolean): void {
+  finalizeCurrent(makePending: boolean): void {
 
-      let serverInput;
-  let currentUserInput;
-  this.showLoading();
+    let serverInput;
+    let currentUserInput;
+    this.showLoading();
 
-      if (makePending) {
-        serverInput = {
-          "currentPatient": false, "processed": false, "pending": true
-        };
-      } else {
-        serverInput = {
-          "currentPatient": false, "processed": true, "pending": false
-        };
-      }
-      currentUserInput = {
-        "currentPatient": true, "processed": false, "pending": false
+    if (makePending) {
+      serverInput = {
+        "currentPatient": false, "processed": false, "pending": true
       };
-      let documentString = this.currentQueue.getCurrentPatient().getPatientId() + "_" + this.currentQueue.getCurrentPatient().getBookingId();
-      
-      this.firestoreService.update("queue-bookings", documentString, serverInput)
-        .then(() => {
+    } else {
+      serverInput = {
+        "currentPatient": false, "processed": true, "pending": false
+      };
+    }
+    currentUserInput = {
+      "currentPatient": true, "processed": false, "pending": false
+    };
 
-          this.nextPatient = this.findNextPatient();
+    this.nextPatient = this.findNextPatient();
 
-          if (this.nextPatient === null) {            
-            this.hideLoading();
-            console.log("queue ended.");
-            this.currentQueue.setCurrentPatient(null);            
-            return;            
-          }
+    let queueEnded: boolean = false;
+    let queueData: any;
 
-          
-          let documentString = this.nextPatient.getPatientId() + "_" + this.nextPatient.getBookingId();
-          
-          this.firestoreService.update("queue-bookings", documentString, currentUserInput)
-            .then(() => {
+    if (this.nextPatient === null) {
+      queueEnded = true;
+      queueData = { queueEnded: true, currentNumber: 0 };
+    } else {
+      queueEnded = false;
+      queueData = { queueEnded: false, currentNumber: this.nextPatient.getQueuePlace() };
+    }
 
-              this.hideLoading();
-              console.log("Success.");
+    this.firestoreService.finalizeCurrentPatient(this.currentQueue.getCurrentPatient().getDocReference(), this.nextPatient?.getDocReference(),
+      this.currentQueue.getDocRef(), serverInput, currentUserInput, queueData, queueEnded)
+      .then(() => {
 
-            })
-            .catch(error => {
-              //error
-              this.hideLoading();
-              console.log("Error making current user.");
-            });
-
-        })
-        .catch(error => {
-        //error
+        if (queueEnded) {
+          this.currentQueue.setCurrentPatient(null);
+        }
         this.hideLoading();
-        console.log("Error updating current user.");
       })
-    
-   
+      .catch(error => {
+        this.hideLoading();
+        console.log("Error in finalizing current patient");
+
+      });
+
+    // *******
+    // if (queueEnded) {
+    //   this.currentQueue.setCurrentPatient(null);
+    // }
+    // *******
+
+    // this.firestoreService.update("queue-bookings", documentString, serverInput)
+    //   .then(() => {
+
+    //     this.nextPatient = this.findNextPatient();
+
+    //     if (this.nextPatient === null) {
+    //       this.hideLoading();
+    //       console.log("queue ended.");
+    //       this.currentQueue.setCurrentPatient(null);
+    //       return;
+    //     }
+
+
+    //     let documentString = this.nextPatient.getPatientId() + "_" + this.nextPatient.getBookingId();
+
+    //     this.firestoreService.update("queue-bookings", documentString, currentUserInput)
+    //       .then(() => {
+
+    //         this.hideLoading();
+    //         console.log("Success.");
+
+    //       })
+    //       .catch(error => {
+    //         //error
+    //         this.hideLoading();
+    //         console.log("Error making current user.");
+    //       });
+
+    //   })
+    //   .catch(error => {
+    //     //error
+    //     this.hideLoading();
+    //     console.log("Error updating current user.");
+    //   })
+
+
   }
 
- startQueueProcessing() {
+  startQueueProcessing() {
 
-   
-   if (this.currentQueue.getBookings().length < 1) {
-     //error
-     return;
-   }
 
-   let currentUserInput;
-   this.showLoading();
+    if (this.currentQueue.getBookings().length < 1) {
+      //error
+      return;
+    }
+
+    let currentUserInput;
+    this.showLoading();
 
     currentUserInput = {
       "currentPatient": true, "processed": false, "pending": false
     };
 
-   let firstPatient: BookedPatient = this.findNextPatient();
-   if (firstPatient === null) {
-    this.hideLoading();
-     return;
-   }
-    let patientId = firstPatient.getPatientId();
-    let bookingId = firstPatient.getBookingId();
+    let firstPatient: BookedPatient = this.findNextPatient();
+    if (firstPatient === null) {
+      this.hideLoading();
+      return;
+    }
 
-   let documentString = patientId + "_" + bookingId;
-   
-   console.log("queue started with : "+documentString);
-   
-          
-          this.firestoreService.update("queue-bookings", documentString, currentUserInput)
-            .then(() => {
-                // this.nextPatient = this.findNextPatient();
-              this.hideLoading();
-              console.log("Success started queue!");
-              
-            })
-            .catch(error => {
-              //error
-              this.hideLoading();
-              console.log("Failed started queue!");
-            });
+    let queueData: any;
+
+
+    queueData = { currentNumber: firstPatient.getQueuePlace() };
+
+
+    console.log("queue started with : ");
+
+
+    this.firestoreService.startQueue(firstPatient.getDocReference(), this.currentQueue.getDocRef(), currentUserInput, queueData)
+      .then(() => {
+        // this.nextPatient = this.findNextPatient();
+        this.hideLoading();
+        console.log("Success started queue!");
+
+      })
+      .catch(error => {
+        //error
+        this.hideLoading();
+        console.log("Failed started queue!");
+      });
 
 
   }
 
-  private findNextPatient():BookedPatient {
+  private findNextPatient(): BookedPatient {
 
-    for (let i = 0; i < this.currentQueue.getBookings().length; ++i){
+    const pId: string = this.currentQueue.getCurrentPatient()?.getBookingId() || "";
+
+    for (let i = 0; i < this.currentQueue.getBookings().length; ++i) {
       console.log("searching for candidate..");
       let patient = this.currentQueue.getBookings()[i];
 
-      if (!patient.isPending() && !patient.isProcessed()) {
+      if (!patient.isPending() && !patient.isProcessed() && pId !== patient.getBookingId()) {
         console.log("Canndidate..mached!");
         return patient;
       }
@@ -456,10 +496,10 @@ finalizeCurrent(makePending:boolean): void {
     return this.findNextPendingPatient();
 
   }
-  
-  private findNextPendingPatient():BookedPatient {
-    
-    for (let i = 0; i < this.currentQueue.getBookings().length; ++i){
+
+  private findNextPendingPatient(): BookedPatient {
+
+    for (let i = 0; i < this.currentQueue.getBookings().length; ++i) {
       console.log("searching for pending candidates..");
       let patient = this.currentQueue.getBookings()[i];
 
@@ -472,14 +512,14 @@ finalizeCurrent(makePending:boolean): void {
     return null;
 
   }
-  navigateToMeeting(currentPatient: BookedPatient): void{
-   
+  navigateToMeeting(currentPatient: BookedPatient): void {
+
     let data = {
       queue: this.session.getSharedData().queue as QueueModel,
       doctor: this.session.getSharedData().doctor as DoctorUserData,
       currentPatient: currentPatient
     }
-    
+
     this.session.setSharedData(data);
     this.router.navigate(['doctor/conference']);
   }

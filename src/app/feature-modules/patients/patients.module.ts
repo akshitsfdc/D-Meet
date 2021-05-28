@@ -21,6 +21,7 @@ import { PatientFirestoreService } from './service/patient-firestore.service';
 import { BookingRescheduleSelectorComponent } from './booking-reschedule-selector/booking-reschedule-selector.component';
 import { CancelMeetingAlertComponent } from './cancel-meeting-alert/cancel-meeting-alert.component';
 import { RequestRefundComponent } from './request-refund/request-refund.component';
+import { CalculationService } from './service/calculation.service';
 
 
 
@@ -42,7 +43,7 @@ import { RequestRefundComponent } from './request-refund/request-refund.componen
   imports: [
     CommonModule,
     FlexLayoutModule,
-    FormsModule, 
+    FormsModule,
     ReactiveFormsModule,
     AgmCoreModule,
     PatientsRoutingModule,
@@ -50,7 +51,7 @@ import { RequestRefundComponent } from './request-refund/request-refund.componen
     InfiniteScrollModule,
     ImgFallbackModule
   ],
-  providers:[PatientFirestoreService],
+  providers: [PatientFirestoreService, CalculationService],
   bootstrap: [BaseComponent]
 
 })

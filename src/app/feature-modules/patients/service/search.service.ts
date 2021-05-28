@@ -204,7 +204,7 @@ export class SearchService {
 
     let currentPatient: BookedPatient;
     let currentRef = this;
-    this.http.getServerDate("serverDate")
+    this.http.getServerDate()
       .then(dateObj => {
 
         const millies: number = this.utils.getUtCMillies(dateObj.timestapmIST);
@@ -247,7 +247,7 @@ export class SearchService {
 
     let currentPatient: BookedPatient;
     let currentRef = this;
-    this.http.getServerDate("serverDate")
+    this.http.getServerDate()
       .then(dateObj => {
 
         const millies: number = this.utils.getUtCMillies(dateObj.timestapmIST);
@@ -295,7 +295,9 @@ export class SearchService {
 
     queue.getBookings().forEach(patient => {
       if ((!patient.isCurrentPatient() && !patient.isProcessed())) {
+
         queue.setNextId(patient.getBookingId());
+
         queue.setNextNumber("" + patient.getQueuePlace());
         return;
       }

@@ -1,207 +1,215 @@
-<div class="parent" fxLayout="column" fxLayoutGap="15px"
-infiniteScroll
-infiniteScrollDistance="1"
-infiniteScrollThrottle="50"
-(scrolled)="onScroll()"
-[scrollWindow]="false"
+<div class="parent" fxLayout="column" fxLayoutGap="15px" infiniteScroll infiniteScrollDistance="1"
+  infiniteScrollThrottle="50" (scrolled)="onScroll()" [scrollWindow]="false">
 
->
-  
   <!-- <button mat-raised-button (click)="temp()">Save Geo</button> -->
 
-   <mat-card *ngFor="let doctor of searchService.getGlobalDoctors()">
-       <mat-card-content fxLayout="column">
-        
-        <div fxLayout="row wrap" fxLayoutGap="15px">
+  <mat-card *ngFor="let doctor of searchService.getGlobalDoctors()">
+    <mat-card-content fxLayout="column">
 
-            <img id="profilePictureImage" matCardImageMedium src= "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBBbg59ufqwGDd2621kTDgGFWw_TNaWGH1FA&usqp=CAU" />
+      <div fxLayout="row wrap" fxLayoutGap="15px">
 
-            <div fxLayout="column" fxLayoutGap="space-between start">
-                <mat-label class="header-label" fxFlexOffset="5px">Dr. {{doctor.getDoctor().getFirstName() +' '+doctor.getDoctor().getLastName()}}</mat-label>
-                <mat-label fxFlexOffset="10px">{{doctor.getDoctor().getDegree()}}</mat-label>
-                <mat-label fxFlexOffset="10px">{{doctor.getDoctor().getExperience()}} years of experience</mat-label>
-                <span fxFlex="1 1 auto"></span>
-                <div fxLayout="row" fxFlexOffset="15px" fxLayoutGap="10px" fxLayoutAlign=" center">
-                    <mat-icon>location_city</mat-icon>
-                    <mat-label class="d-details-value">{{doctor.getDoctor().getFullClinicAddress()}}</mat-label>
-                </div>
-                <div fxLayout="row" fxFlexOffset="15px" fxLayoutGap="10px" fxLayoutAlign=" center">
-                    <mat-icon>medical_services</mat-icon>
-                    <mat-label class="d-details-value">www.doctormeetup.com/@{{doctor.getDoctor().getProfileId()}}</mat-label>
-                </div>
-                
-                <div fxLayout="row" fxFlexOffset="15px" fxLayoutGap="10px" fxLayoutAlign=" center">
-                    <mat-icon [ngClass]="{'varified-icon':doctor.getDoctor().isVarified(), 'not-varified-icon':!doctor.getDoctor().isVarified()}">verified_user</mat-icon>
-                    <mat-label class="d-details-value">{{doctor.getDoctor().isVarified()?'Verified doctor':'Not yet varified'}}</mat-label>
-                </div>
-                <span fxFlex="1 1 auto"></span>
+        <img id="profilePictureImage" matCardImageMedium
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBBbg59ufqwGDd2621kTDgGFWw_TNaWGH1FA&usqp=CAU" />
+
+        <div fxLayout="column" fxLayoutGap="space-between start">
+          <mat-label class="header-label" fxFlexOffset="5px">Dr. {{doctor.getDoctor().getFirstName() +'
+            '+doctor.getDoctor().getLastName()}}</mat-label>
+          <mat-label fxFlexOffset="10px">{{doctor.getDoctor().getDegree()}}</mat-label>
+          <mat-label fxFlexOffset="10px">{{doctor.getDoctor().getExperience()}} years of experience</mat-label>
+          <span fxFlex="1 1 auto"></span>
+          <div fxLayout="row" fxFlexOffset="15px" fxLayoutGap="10px" fxLayoutAlign=" center">
+            <mat-icon>location_city</mat-icon>
+            <mat-label class="d-details-value">{{doctor.getDoctor().getFullClinicAddress()}}</mat-label>
+          </div>
+          <div fxLayout="row" fxFlexOffset="15px" fxLayoutGap="10px" fxLayoutAlign=" center">
+            <mat-icon>medical_services</mat-icon>
+            <mat-label class="d-details-value">www.doctormeetup.com/@{{doctor.getDoctor().getProfileId()}}</mat-label>
+          </div>
+
+          <div fxLayout="row" fxFlexOffset="15px" fxLayoutGap="10px" fxLayoutAlign=" center">
+            <mat-icon
+              [ngClass]="{'varified-icon':doctor.getDoctor().isVarified(), 'not-varified-icon':!doctor.getDoctor().isVarified()}">
+              verified_user</mat-icon>
+            <mat-label class="d-details-value">{{doctor.getDoctor().isVarified()?'Verified doctor':'Not yet varified'}}
+            </mat-label>
+          </div>
+          <span fxFlex="1 1 auto"></span>
+        </div>
+
+
+        <agm-map class="facility-map" [latitude]="doctor.getDoctor().getCoordinates().latitude"
+          [longitude]="doctor.getDoctor().getCoordinates().longitude" fxFlex="1 1 auto">
+          <agm-map-type-control></agm-map-type-control>
+          <agm-marker [latitude]="doctor.getDoctor().getCoordinates().latitude"
+            [longitude]="doctor.getDoctor().getCoordinates().longitude"></agm-marker>
+        </agm-map>
+      </div>
+
+      <mat-accordion fxFlexOffset="25px">
+        <mat-expansion-panel (afterExpand)="bookingPannelExpended(doctor)">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Booking Queues
+            </mat-panel-title>
+            <mat-panel-description>
+              <span fxFlex="1 1 auto"></span>
+              <mat-icon>book_online</mat-icon>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <ng-container *ngIf="!doctor.isQueueInitialized()">
+            <div class="queue-loading-container" fxLayout="row" fxLayoutAlign="center center">
+
+              <div fxLayout="column" fxLayoutAlign="center center">
+                <mat-spinner diameter="30"></mat-spinner>
+
+                <mat-label fxFlexOffset="10px" class="loading-indicator-label">Loading booking information...
+                </mat-label>
+              </div>
+
             </div>
+          </ng-container>
+          <ng-container *ngIf="doctor.isQueueInitialized() && doctor.getQueues().length<=0">
+            <div class="queue-loading-container" fxLayout="row" fxLayoutAlign="center center">
+
+              <div fxLayout="column" fxLayoutAlign="center center">
+
+                <!-- <mat-icon class="no-queue">nature_people</mat-icon> -->
+                <img class="no-doctor-queue" src="/assets/imgs/no_queue_p.svg" alt="No queues">
+
+                <mat-label fxFlexOffset="10px" class="header-label">WAIT! Till the doctor stes the Queue</mat-label>
+              </div>
+
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="doctor.isQueueInitialized() && doctor.getQueues().length >0">
+            <div class="queues-container" fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutGap="20px">
 
 
-            <agm-map class="facility-map" [latitude]="doctor.getDoctor().getCoordinates().latitude" [longitude]="doctor.getDoctor().getCoordinates().longitude" fxFlex="1 1 auto"
-              
-            >
-               <agm-map-type-control></agm-map-type-control>
-                <agm-marker [latitude]="doctor.getDoctor().getCoordinates().latitude" [longitude]="doctor.getDoctor().getCoordinates().longitude"></agm-marker>
-            </agm-map>
-        </div>                                                  
-        
-        <mat-accordion fxFlexOffset="25px">
-            <mat-expansion-panel (afterExpand)="bookingPannelExpended(doctor)">
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                  Booking Queues
-                </mat-panel-title>
-                <mat-panel-description>
-                  <span fxFlex="1 1 auto"></span><mat-icon>book_online</mat-icon>
-                </mat-panel-description>
-              </mat-expansion-panel-header>
+              <mat-card class="queue-card" *ngFor="let queue of doctor.getQueues()">
 
-              <ng-container *ngIf="!doctor.isQueueInitialized()">
-                <div class="queue-loading-container" fxLayout="row" fxLayoutAlign="center center">
-                  
-                  <div fxLayout="column" fxLayoutAlign="center center">
-                    <mat-spinner diameter="30"></mat-spinner>
+                <mat-card-content fxLayout="column" fxLayoutGap="15px">
 
-                    <mat-label fxFlexOffset="10px" class="loading-indicator-label">Loading booking information...</mat-label>
-                  </div>
-                  
-                </div>
-              </ng-container>
-              <ng-container *ngIf="doctor.isQueueInitialized() && doctor.getQueues().length<=0">
-                <div class="queue-loading-container" fxLayout="row" fxLayoutAlign="center center">
-
-                  <div fxLayout="column" fxLayoutAlign="center center">
-
-                    <!-- <mat-icon class="no-queue">nature_people</mat-icon> -->
-                    <img class="no-doctor-queue"  src="/assets/imgs/no_queue_p.svg" alt="No queues">
-
-                    <mat-label fxFlexOffset="10px" class="header-label">WAIT! Till the doctor stes the Queue</mat-label>
-                  </div>
-                  
-                </div>
-              </ng-container>
-              
-              <ng-container *ngIf="doctor.isQueueInitialized() && doctor.getQueues().length >0">
-              <div class="queues-container" fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutGap="20px">
-
-
-                <mat-card class="queue-card" *ngFor="let queue of doctor.getQueues()" >
-                  
-                    <mat-card-content fxLayout="column" fxLayoutGap="15px">
-                        
-                        <div fxLayout="row">
-                            <mat-label>Status</mat-label>
-                            <span fxFlex="1 1 auto"></span>
-                            <ng-container *ngIf="queue.isActive()">                            
-                              <mat-card  [ngClass]="{'status-card': true, 'status-card-live': (queue.getStatus()==='live'), 'status-card-booking': (queue.getStatus()==='booking'),
+                  <div fxLayout="row">
+                    <mat-label>Status</mat-label>
+                    <span fxFlex="1 1 auto"></span>
+                    <ng-container *ngIf="queue.isActive()">
+                      <mat-card [ngClass]="{'status-card': true, 'status-card-live': (queue.getStatus()==='live'), 'status-card-booking': (queue.getStatus()==='booking'),
                               'status-card-scheduled': (queue.getStatus()==='scheduled')}">
-                                <mat-card-content>
-                                  <mat-label [ngClass]="{'live-label': (queue.getStatus() !=='scheduled')}">{{queue.getStatus()==='live'?utils.capitalize(queue.getStatus()):utils.initCap(queue.getStatus())}}</mat-label>
-                                </mat-card-content>                      
-                              </mat-card>
-                          </ng-container>
-                          <ng-container *ngIf="!queue.isActive()">                            
-                            <mat-card  [ngClass]="{'status-card': true, 'deactivated-card':true}">
-                              <mat-card-content fxLayout="row" fxLayoutAlign="center center" matTooltip="This queue has been de-activated for today by the doctor">
-                                <mat-icon class="deactivated-lock-icon">lock</mat-icon>
-                                <mat-label [ngClass]="{'deactivated-lebel':true}" fxFlexOffset="5px">de-activated</mat-label>
-                              </mat-card-content>                      
-                            </mat-card>
-                        </ng-container>
-                           
+                        <mat-card-content>
+                          <mat-label [ngClass]="{'live-label': (queue.getStatus() !=='scheduled')}">
+                            {{queue.getStatus()==='live'?utils.capitalize(queue.getStatus()):utils.initCap(queue.getStatus())}}
+                          </mat-label>
+                        </mat-card-content>
+                      </mat-card>
+                    </ng-container>
+                    <ng-container *ngIf="!queue.isActive()">
+                      <mat-card [ngClass]="{'status-card': true, 'deactivated-card':true}">
+                        <mat-card-content fxLayout="row" fxLayoutAlign="center center"
+                          matTooltip="This queue has been de-activated for today by the doctor">
+                          <mat-icon class="deactivated-lock-icon">lock</mat-icon>
+                          <mat-label [ngClass]="{'deactivated-lebel':true}" fxFlexOffset="5px">de-activated</mat-label>
+                        </mat-card-content>
+                      </mat-card>
+                    </ng-container>
+
+                  </div>
+                  <div fxLayout="row" fxLayoutGap="30px">
+                    <mat-label>Fees</mat-label>
+                    <span fxFlex="1 1 auto"></span>
+                    <mat-label>{{queue.getFees()}}</mat-label>
+                  </div>
+                  <div fxLayout="row" fxLayoutGap="30px">
+                    <mat-label>Limit</mat-label>
+                    <span fxFlex="1 1 auto"></span>
+                    <mat-label>{{queue.getPatientLimit()}}</mat-label>
+                  </div>
+                  <div fxLayout="row" fxLayoutGap="30px">
+                    <mat-label>Type</mat-label>
+                    <span fxFlex="1 1 auto"></span>
+                    <mat-label>{{utils.initCap(queue.getType()||'Unavailable')}}</mat-label>
+                  </div>
+                  <div fxLayout="row" fxLayoutGap="30px">
+                    <mat-label>Payment Option</mat-label>
+                    <span fxFlex="1 1 auto"></span>
+                    <mat-label>{{utils.initCap(queue.getPaymentOption() || 'Unavailable')}}</mat-label>
+                  </div>
+
+                  <mat-accordion>
+                    <mat-expansion-panel>
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          Timings
+                        </mat-panel-title>
+                        <mat-panel-description>
+                          <span fxFlex="1 1 auto"></span>
+                          <mat-icon>access_time</mat-icon>
+                        </mat-panel-description>
+                      </mat-expansion-panel-header>
+                      <div fxLayout="column" fxLayoutGap="10px">
+                        <div fxLayout="row" fxLayoutGap="30px">
+                          <mat-label>Booking Start</mat-label>
+                          <span fxFlex="1 1 auto"></span>
+                          <mat-label>{{calculation.millisToTimeString(queue.getBookingStarting())}}</mat-label>
                         </div>
                         <div fxLayout="row" fxLayoutGap="30px">
-                          <mat-label>Fees</mat-label>
+                          <mat-label>Booking End</mat-label>
                           <span fxFlex="1 1 auto"></span>
-                          <mat-label >{{queue.getFees()}}</mat-label>
-                      </div>
-                      <div fxLayout="row" fxLayoutGap="30px">
-                          <mat-label>Limit</mat-label>
+                          <mat-label>{{calculation.millisToTimeString(queue.getBookingEnding())}}</mat-label>
+                        </div>
+                        <div fxLayout="row" fxLayoutGap="30px">
+                          <mat-label>Consulting Start</mat-label>
                           <span fxFlex="1 1 auto"></span>
-                          <mat-label>{{queue.getPatientLimit()}}</mat-label>
+                          <mat-label>{{calculation.millisToTimeString(queue.getConsultingStarting())}}</mat-label>
+                        </div>
+                        <div fxLayout="row" fxLayoutGap="30px">
+                          <mat-label>Consulting End</mat-label>
+                          <span fxFlex="1 1 auto"></span>
+                          <mat-label>{{calculation.millisToTimeString(queue.getConsultingEnding())}}</mat-label>
+                        </div>
                       </div>
-                      <div fxLayout="row" fxLayoutGap="30px">
-                        <mat-label>Type</mat-label>
-                        <span fxFlex="1 1 auto"></span>
-                        <mat-label>{{utils.initCap(queue.getType()||'Unavailable')}}</mat-label>
+                    </mat-expansion-panel>
+                  </mat-accordion>
+                  <mat-accordion>
+                    <mat-expansion-panel>
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          Off Days
+                        </mat-panel-title>
+                        <mat-panel-description>
+                          <span fxFlex="1 1 auto"></span>
+                          <mat-icon>event_busy</mat-icon>
+                        </mat-panel-description>
+                      </mat-expansion-panel-header>
+                      <div fxLayout="column">
+                        <mat-chip-list class="holiday-chips" aria-label="holidays">
+                          <mat-chip *ngFor="let day of queue.getHolidayList()">
+                            {{day}}
+                          </mat-chip>
+                        </mat-chip-list>
                       </div>
-                      <div fxLayout="row" fxLayoutGap="30px">
-                        <mat-label>Payment Option</mat-label>
-                        <span fxFlex="1 1 auto"></span>
-                        <mat-label>{{utils.initCap(queue.getPaymentOption() || 'Unavailable')}}</mat-label>
-                      </div>
-                        
-                        <mat-accordion>
-                          <mat-expansion-panel >
-                            <mat-expansion-panel-header>
-                              <mat-panel-title>
-                                Timings
-                              </mat-panel-title>
-                              <mat-panel-description>
-                                <span fxFlex="1 1 auto"></span><mat-icon>access_time</mat-icon>
-                              </mat-panel-description>
-                            </mat-expansion-panel-header>
-                           <div fxLayout="column" fxLayoutGap="10px">
-                            <div fxLayout="row" fxLayoutGap="30px">
-                              <mat-label>Booking Start</mat-label>
-                              <span fxFlex="1 1 auto"></span>
-                              <mat-label>{{utils.millisToTimeString(queue.getBookingStarting())}}</mat-label>
-                          </div>
-                          <div fxLayout="row" fxLayoutGap="30px">
-                              <mat-label>Booking End</mat-label>
-                              <span fxFlex="1 1 auto"></span>
-                              <mat-label>{{utils.millisToTimeString(queue.getBookingEnding())}}</mat-label>
-                          </div>
-                          <div fxLayout="row" fxLayoutGap="30px">
-                              <mat-label>Consulting Start</mat-label>
-                              <span fxFlex="1 1 auto"></span>
-                              <mat-label>{{utils.millisToTimeString(queue.getConsultingStarting())}}</mat-label>
-                          </div>
-                          <div fxLayout="row" fxLayoutGap="30px">
-                              <mat-label>Consulting End</mat-label>
-                              <span fxFlex="1 1 auto"></span>
-                              <mat-label>{{utils.millisToTimeString(queue.getConsultingEnding())}}</mat-label>
-                          </div>
-                           </div>
-                          </mat-expansion-panel>
-                        </mat-accordion>
-                        <mat-accordion>
-                            <mat-expansion-panel >
-                              <mat-expansion-panel-header>
-                                <mat-panel-title>
-                                  Off Days
-                                </mat-panel-title>
-                                <mat-panel-description>
-                                  <span fxFlex="1 1 auto"></span><mat-icon>event_busy</mat-icon>
-                                </mat-panel-description>
-                              </mat-expansion-panel-header>
-                             <div fxLayout="column">
-                                <mat-chip-list class="holiday-chips"  aria-label="holidays">
-                                  <mat-chip *ngFor="let day of queue.getHolidayList()">
-                                    {{day}}
-                                    </mat-chip>
-                                  </mat-chip-list>
-                             </div>
-                            </mat-expansion-panel>
-                          </mat-accordion>
-                          <ng-container >
-                            <button mat-raised-button class="medium-button" fxFlexOffset="5px" (click)="viewLobby(queue, doctor.getDoctor())" disabled={{!queue.isActive()}}>
-                              <mat-icon *ngIf="queue.isActive()">room_preferences</mat-icon>
-                              Visit Queue</button>  
-                          </ng-container>
-                         
-                          <!-- <button mat-raised-button  >
+                    </mat-expansion-panel>
+                  </mat-accordion>
+                  <ng-container>
+                    <button mat-raised-button class="medium-button" fxFlexOffset="5px"
+                      (click)="viewLobby(queue, doctor.getDoctor())" disabled={{!queue.isActive()}}>
+                      <mat-icon *ngIf="queue.isActive()">room_preferences</mat-icon>
+                      Visit Queue
+                    </button>
+                  </ng-container>
+
+                  <!-- <button mat-raised-button  >
                             <mat-icon class="book-image-icon">queue</mat-icon>
                             Book Now</button> -->
-                           
-                    </mat-card-content>
-                </mat-card>
-            </div>     
+
+                </mat-card-content>
+              </mat-card>
+            </div>
           </ng-container>
-            </mat-expansion-panel>
-          </mat-accordion> 
-       </mat-card-content>
-   </mat-card>
-   
+        </mat-expansion-panel>
+      </mat-accordion>
+    </mat-card-content>
+  </mat-card>
+
 </div>

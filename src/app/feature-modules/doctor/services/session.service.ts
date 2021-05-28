@@ -9,40 +9,40 @@ import { HttpService } from 'src/app/services/http.service';
 import { BookedPatient } from 'src/app/models/booked-patient';
 
 @Injectable()
-  
+
 export class SessionService {
 
   private userData: DoctorUserData;
-  private sharedData:any;
+  private sharedData: any;
 
-  
-  private queues:QueueModel[];
+
+  private queues: QueueModel[];
 
   constructor(private utils: UtilsService, private firestore: FirestoreService, private http: HttpService, private authService: AuthService) {
-  
+
     this.queues = [];
 
     this.initSession();
-  
-   }
 
-   public initSession() {
+  }
+
+  public initSession() {
     this.authService.getUser()
       .then(userData => {
-        this.loadDoctorData( userData.uid);
+        this.loadDoctorData(userData.uid);
       })
       .catch(error => {
         //error
         console.log("no auth >> ");
-        
+
       });
-}
-   public getUserData(): DoctorUserData {
+  }
+  public getUserData(): DoctorUserData {
     return this.userData;
   }
 
   public setUserData(userData: DoctorUserData): void {
-      this.userData = userData;
+    this.userData = userData;
   }
 
   public getQueues(): QueueModel[] {
@@ -61,144 +61,144 @@ export class SessionService {
   }
 
   public setSharedData(sharedData: any): void {
-      this.sharedData = sharedData;
+    this.sharedData = sharedData;
   }
 
 
-  private loadDoctorData(userId:string):void{
+  private loadDoctorData(userId: string): void {
 
     let currentRef = this;
 
     this.firestore.getValueChanges('user-data', userId)
-    .subscribe(
-      
-      {
-        next(userData){
-          let user:DoctorUserData = new DoctorUserData();
-          Object.assign(user, userData); 
-          if (currentRef.getUserData() === null || currentRef.getUserData() === undefined) {
-            currentRef.setUserData(user);
-            
-            console.log("got user data >> new ");
-          } else {
-            currentRef.updateUserData(user);
-            console.log("got user data updated ");
-          }
-         
-       },
-       error(msg){
-        console.log("Obs error >> : "+msg);
-       },
-       complete: () => console.log('completed')
-     });
+      .subscribe(
+
+        {
+          next(userData) {
+            let user: DoctorUserData = new DoctorUserData();
+            Object.assign(user, userData);
+            if (currentRef.getUserData() === null || currentRef.getUserData() === undefined) {
+              currentRef.setUserData(user);
+
+              console.log("got user data >> new ");
+            } else {
+              currentRef.updateUserData(user);
+              console.log("got user data updated ");
+            }
+
+          },
+          error(msg) {
+            console.log("Obs error >> : " + msg);
+          },
+          complete: () => console.log('completed')
+        });
 
     this.firestore.getQueuesCollection('user-data/' + userId + '/queues')
       .subscribe(docChangeList => {
 
         docChangeList.forEach(queue => {
-        
-          let queueObj: QueueModel = new QueueModel();
-          
-          Object.assign(queueObj, queue.payload.doc.data());
 
-          
+          let queueObj: QueueModel = new QueueModel();
+
+          Object.assign(queueObj, queue.payload.doc.data());
+          queueObj.setDocRef(queue.payload.doc.ref);
+
           // console.log("patient >>> 123 >> "+JSON.stringify(patient));
-          
+
           switch (queue.payload.type) {
-            
+
             case "added":
               currentRef.getUserData().getQueues().push(queueObj);
               currentRef.changeQueueStatus(queueObj);
-              currentRef.loadBookings(queueObj);              
+              currentRef.loadBookings(queueObj);
               break;
 
             case "modified":
               // currentRef.changeQueueStatus(queueObj);
-              currentRef.updateQueueOfUser(queueObj);             
+              currentRef.updateQueueOfUser(queueObj);
               break;
             case "removed":
               currentRef.deleteQueue(queueObj);
               break;
-            
+
           }
 
         });
 
       })
   }
-  private deleteQueue(queueUpdate: QueueModel): void{
-    
+  private deleteQueue(queueUpdate: QueueModel): void {
+
     let queues = this.userData.getQueues();
 
-    for (let i = 0; i < queues.length; ++i){
-  
+    for (let i = 0; i < queues.length; ++i) {
+
       let queue = queues[i];
-  
+
       if (queue.getQueueId() === queueUpdate.getQueueId()) {
-  
+
         this.userData.getQueues().splice(i, 1);
-  
+
         return;
       }
-  
+
     }
   }
-  private changeQueueStatus(queue:QueueModel):void{
+  private changeQueueStatus(queue: QueueModel): void {
 
 
 
-        if(this.utils.isWithinTimeFrame(queue.getBookingStarting(), queue.getBookingEnding(), 'ist')){
-          queue.setStatus('booking');
-        }
-    
-        if(this.utils.isWithinTimeFrame(queue.getConsultingStarting(), queue.getConsultingEnding(), 'ist')){
-          queue.setStatus('live');
-        }
-  
-    
-        if(this.utils.getTriggerTime(queue.getBookingStarting(), 'ist')){
-          setTimeout(() => {
-            this.updateQueue(queue);
-          }, this.utils.getTriggerTime(queue.getBookingStarting(), 'ist'));
-        }
-    
+    if (this.utils.isWithinTimeFrame(queue.getBookingStarting(), queue.getBookingEnding(), 'ist')) {
+      queue.setStatus('booking');
+    }
 
-        if(this.utils.getTriggerTime(queue.getBookingEnding(), 'ist')){
-          setTimeout(() => {
-            this.updateQueue(queue);
-          }, this.utils.getTriggerTime(queue.getBookingEnding(), 'ist'));
-        }
-    
-    
-        if(this.utils.getTriggerTime(queue.getConsultingStarting(), 'ist')){
-          setTimeout(() => {
-            this.updateQueue(queue);
-          }, this.utils.getTriggerTime(queue.getConsultingStarting(), 'ist'));
-        }
-    
-    
-        if(this.utils.getTriggerTime(queue.getConsultingEnding(), 'ist')){
-          setTimeout(() => {
-             this.updateQueue(queue, true);
-          }, this.utils.getTriggerTime(queue.getConsultingEnding(), 'ist'));
-        }
+    if (this.utils.isWithinTimeFrame(queue.getConsultingStarting(), queue.getConsultingEnding(), 'ist')) {
+      queue.setStatus('live');
+    }
+
+
+    if (this.utils.getTriggerTime(queue.getBookingStarting(), 'ist')) {
+      setTimeout(() => {
+        this.updateQueue(queue);
+      }, this.utils.getTriggerTime(queue.getBookingStarting(), 'ist'));
+    }
+
+
+    if (this.utils.getTriggerTime(queue.getBookingEnding(), 'ist')) {
+      setTimeout(() => {
+        this.updateQueue(queue);
+      }, this.utils.getTriggerTime(queue.getBookingEnding(), 'ist'));
+    }
+
+
+    if (this.utils.getTriggerTime(queue.getConsultingStarting(), 'ist')) {
+      setTimeout(() => {
+        this.updateQueue(queue);
+      }, this.utils.getTriggerTime(queue.getConsultingStarting(), 'ist'));
+    }
+
+
+    if (this.utils.getTriggerTime(queue.getConsultingEnding(), 'ist')) {
+      setTimeout(() => {
+        this.updateQueue(queue, true);
+      }, this.utils.getTriggerTime(queue.getConsultingEnding(), 'ist'));
+    }
   }
 
-  private updateQueue(queue:QueueModel, end?:boolean){
+  private updateQueue(queue: QueueModel, end?: boolean) {
 
     console.log('updateQueue >> ');
 
-    if(end){
+    if (end) {
       queue.setStatus('scheduled');
       return;
     }
-    if(this.utils.isWithinTimeFrame(queue.getBookingStarting(), queue.getBookingEnding(), 'ist')){
+    if (this.utils.isWithinTimeFrame(queue.getBookingStarting(), queue.getBookingEnding(), 'ist')) {
       queue.setStatus('booking');
       console.log("status changed to booking.");
     } else {
       queue.setStatus('scheduled');
     }
-    if(this.utils.isWithinTimeFrame(queue.getConsultingStarting(), queue.getConsultingEnding(), 'ist')){
+    if (this.utils.isWithinTimeFrame(queue.getConsultingStarting(), queue.getConsultingEnding(), 'ist')) {
       queue.setStatus('live');
       console.log("status changed to live.");
     }
@@ -211,34 +211,34 @@ export class SessionService {
     let currentRef = this;
 
 
-    this.http.getServerDate("serverDate")
-      
+    this.http.getServerDate()
+
       .then(dateObj => {
 
         const millies: number = this.utils.getUtCMillies(dateObj.timestapmIST);
         const date: Date = new Date(millies);
         const dateStr: string = date.getDate() + '' + date.getMonth() + '' + date.getFullYear();
 
-        console.log("dateStr : "+dateStr);
-      
+        console.log("dateStr : " + dateStr);
+
 
         this.firestore.getBookingChanges("queue-bookings", "doctorId", queue.getOwnerId(), "dateString", dateStr, "queueId", queue.getQueueId(), "bookingTimeServer")
           .subscribe(docChangeList => {
 
             docChangeList.forEach(updatedPatient => {
-              
-              console.log(updatedPatient.payload.doc.data());
-              console.log(updatedPatient.payload.type);
+
+              // console.log(updatedPatient.payload.doc.data());
+              // console.log(updatedPatient.payload.type);
 
               let patient: BookedPatient = new BookedPatient();
-              
-              Object.assign(patient, updatedPatient.payload.doc.data());
 
-              
+              Object.assign(patient, updatedPatient.payload.doc.data());
+              patient.setDocReference(updatedPatient.payload.doc.ref);
+
               // console.log("patient >>> 123 >> "+JSON.stringify(patient));
-              
+
               switch (updatedPatient.payload.type) {
-                
+
                 case "added":
                   patient.setQueuePlace(queue.getBookings().length + 1);
                   if (patient.isCurrentPatient()) {
@@ -254,7 +254,7 @@ export class SessionService {
                   break;
                 case "removed":
                   break;
-                
+
               }
 
             });
@@ -264,9 +264,9 @@ export class SessionService {
   }
 
   private checkQueueCompleteNess(queue: QueueModel) {
-  
 
-    for (let i = 0; i < queue.getBookings().length; ++i){
+
+    for (let i = 0; i < queue.getBookings().length; ++i) {
 
       let patient = queue.getBookings()[i];
 
@@ -279,9 +279,9 @@ export class SessionService {
     queue.setQueueEnded(true);
   }
 
-  private setCurrentNext(queue:QueueModel) {
-    
-    for (let i = 0; i < queue.getBookings().length; ++i){
+  private setCurrentNext(queue: QueueModel) {
+
+    for (let i = 0; i < queue.getBookings().length; ++i) {
 
       let patient = queue.getBookings()[i];
 
@@ -295,10 +295,10 @@ export class SessionService {
     queue.setNextNumber("");
   }
 
-  private updatePatient(patientUpdate: BookedPatient, queue:QueueModel) {
-    
+  private updatePatient(patientUpdate: BookedPatient, queue: QueueModel) {
 
-    for (let i = 0; i < queue.getBookings().length; ++i){
+
+    for (let i = 0; i < queue.getBookings().length; ++i) {
 
       let patient = queue.getBookings()[i];
 
@@ -319,33 +319,33 @@ export class SessionService {
       }
 
     }
-   
-}
-  
-private updateQueueOfUser(queueUpdate:QueueModel) {
-    
-  let queues = this.userData.getQueues();
 
-  for (let i = 0; i < queues.length; ++i){
+  }
 
-    let queue = queues[i];
+  private updateQueueOfUser(queueUpdate: QueueModel) {
 
-    if (queue.getQueueId() === queueUpdate.getQueueId()) {
+    let queues = this.userData.getQueues();
 
-      this.updateQueueModel(queue, queueUpdate);
+    for (let i = 0; i < queues.length; ++i) {
 
-      this.changeQueueStatus(queue);
+      let queue = queues[i];
 
-      return;
+      if (queue.getQueueId() === queueUpdate.getQueueId()) {
+
+        this.updateQueueModel(queue, queueUpdate);
+
+        this.changeQueueStatus(queue);
+
+        return;
+      }
+
     }
 
   }
- 
-}
 
 
   private updateUserData(userDataUpdate: DoctorUserData): void {
-    
+
     this.userData.setEmail(userDataUpdate.getEmail());
     this.userData.setFirstName(userDataUpdate.getFirstName());
     this.userData.setLastName(userDataUpdate.getLastName());
@@ -371,14 +371,14 @@ private updateQueueOfUser(queueUpdate:QueueModel) {
     this.userData.setDiseaseSpecialist(userDataUpdate.getDiseaseSpecialist());
     this.userData.setCoordinates(userDataUpdate.getCoordinates());
     this.userData.setStatus(userDataUpdate.getStatus());
-    
 
-    console.log("new user user id : "+this.getUserData().getUserId());
-    
+
+    console.log("new user user id : " + this.getUserData().getUserId());
+
   }
 
-  private updateQueueModel(queueOriginal:QueueModel,  queue: QueueModel): void {
-    
+  private updateQueueModel(queueOriginal: QueueModel, queue: QueueModel): void {
+
     queueOriginal.setCurrency(queue.getCurrency());
     queueOriginal.setFees(queue.getFees());
     queueOriginal.setStatus(queue.getStatus());
@@ -407,7 +407,7 @@ private updateQueueOfUser(queueUpdate:QueueModel) {
     queueOriginal.setCurrency(queue.getCurrency());
     queueOriginal.setCurrency(queue.getCurrency());
 
-    
+
 
   }
 

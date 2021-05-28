@@ -36,7 +36,7 @@
             <mat-card-title>
               <mat-label class="header-label name-header">Dr. {{booking.getDoctorName()}}</mat-label>
             </mat-card-title>
-            <mat-card-subtitle>@{{booking.getQueuePlace()}} (1h:2m:10s)</mat-card-subtitle>
+            <mat-card-subtitle>@{{booking.getQueuePlace()}} ({{booking.getSelfWaitingTimeString()}})</mat-card-subtitle>
           </mat-card-header>
           <mat-card-content class="scheduled-meetings-card-content" fxLayout="column" fxLayoutGap="20px">
 

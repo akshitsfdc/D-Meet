@@ -1,3 +1,4 @@
+import { PatientFirestoreService } from './../service/patient-firestore.service';
 import { SearchService } from './../service/search.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { PaymentInfo } from '../../../models/payment-info';
@@ -104,7 +105,7 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
   constructor(private matDialog: MatDialog,
     public util: UtilsService, private httpService: HttpService, private session: SessionService, public utils: UtilsService,
-    private checkoutService: CheckoutService, private firestore: FirestoreService, private searchService: SearchService) {
+    private checkoutService: CheckoutService, private firestore: PatientFirestoreService, private searchService: SearchService) {
 
 
   }
@@ -152,14 +153,7 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
     //   }  
     // }
 
-    this.httpService.getServerDate('serverDate')
-      .then(response => {
-        console.log(JSON.stringify(response));
-      })
-      .catch(error => {
-        //error
-        console.log(error);
-      });
+
 
     this.startTimerCounter();
   }
@@ -404,59 +398,76 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
   private processPaymentSuccess(phoneNumber, from, response) {
 
-    // let paymentInfo: PaymentInfo = new PaymentInfo();
-    // paymentInfo.setPaymentId(response.razorpay_payment_id || "");
-    // paymentInfo.setOrderId(response.razorpay_order_id || "");
-    // paymentInfo.setSignature(response.razorpay_signature || "");
-
-    let bookedPaitient: BookedPatient = new BookedPatient();
-
-    const name: string = this.userData.getFirstName() + ' ' + this.userData.getLastName();
-
-    bookedPaitient.setName(name);
-    bookedPaitient.setPicUrl(this.userData.getPicUrl());
-    bookedPaitient.setAge(this.userData.getAge());
-    bookedPaitient.setFrom(from);
-    bookedPaitient.setPhone(phoneNumber);
-    bookedPaitient.setStatus("online");
-    bookedPaitient.setQueuePlace(this.currentQueue.getBookings().length + 1);
-    bookedPaitient.setBookingTime(+Date.now());
-    bookedPaitient.setBookingId((+Date.now()).toString());
-    bookedPaitient.setQueueId(this.currentQueue.getQueueId());
-    bookedPaitient.setDoctorId(this.currentDoctor.getUserId());
-    bookedPaitient.setDoctorName(this.currentDoctor.getFirstName() + " " + this.currentDoctor.getLastName());
-    // bookedPaitient.setPaymentInfo(paymentInfo);
-    bookedPaitient.setPaymentId(response.razorpay_payment_id || "");
-    bookedPaitient.setOrderId(response.razorpay_order_id || "");
-    bookedPaitient.setSignature(response.razorpay_signature || "");
-    bookedPaitient.setPatientId(this.userData.getUserId());
-    bookedPaitient.setCurrentPatient(false);
-    bookedPaitient.setPending(false);
-    bookedPaitient.setProcessed(false);
-    bookedPaitient.setCancelled(false);
-    bookedPaitient.setCancelledBy("");
-    bookedPaitient.setPostpond(null);
-    bookedPaitient.setDoctorRef(this.currentDoctor.getRef());
-    bookedPaitient.setQueueRef(this.currentQueue.getDocRef());
-
-
-    let date: Date = new Date();
-    let dateStr = date.getDay() + '' + date.getMonth() + '' + date.getFullYear();
-    bookedPaitient.setDateString(dateStr);
-
-    const docId = this.userData.getUserId() + "_" + bookedPaitient.getBookingId();
-
-
     this.showLoading();
-    this.firestore.save("queue-bookings", docId, Object.assign({}, bookedPaitient))
-      .then(() => {
-        this.showDialog('success', "Your appointment has been registered successfully. You can now track your booking on this lobby.", "Ok")
+
+    this.httpService.getServerDate()
+
+      .then(serverDate => {
+
+        let bookedPaitient: BookedPatient = new BookedPatient();
+
+        const name: string = this.userData.getFirstName() + ' ' + this.userData.getLastName();
+
+
+        bookedPaitient.setName(name);
+        bookedPaitient.setPicUrl(this.userData.getPicUrl());
+        bookedPaitient.setAge(this.userData.getAge());
+        bookedPaitient.setFrom(from);
+        bookedPaitient.setPhone(phoneNumber);
+        bookedPaitient.setStatus("online");
+        bookedPaitient.setQueuePlace(this.currentQueue.getBookings().length + 1);
+        bookedPaitient.setBookingTime(+Date.now());
+        bookedPaitient.setBookingId((+Date.now()).toString());
+        bookedPaitient.setQueueId(this.currentQueue.getQueueId());
+        bookedPaitient.setDoctorId(this.currentDoctor.getUserId());
+        bookedPaitient.setDoctorName(this.currentDoctor.getFirstName() + " " + this.currentDoctor.getLastName());
+        // bookedPaitient.setPaymentInfo(paymentInfo);
+        bookedPaitient.setPaymentId(response.razorpay_payment_id || "");
+        bookedPaitient.setOrderId(response.razorpay_order_id || "");
+        bookedPaitient.setSignature(response.razorpay_signature || "");
+        bookedPaitient.setPatientId(this.userData.getUserId());
+        bookedPaitient.setCurrentPatient(false);
+        bookedPaitient.setPending(false);
+        bookedPaitient.setProcessed(false);
+        bookedPaitient.setCancelled(false);
+        bookedPaitient.setCancelledBy("");
+        bookedPaitient.setPostpond(null);
+        bookedPaitient.setDoctorRef(this.currentDoctor.getRef());
+        bookedPaitient.setQueueRef(this.currentQueue.getDocRef());
+
+        let date: Date = new Date(+serverDate.timestapmUTC);
+
+        let dateStr = date.getDate() + '' + date.getMonth() + '' + date.getFullYear();
+
+        bookedPaitient.setDateString(dateStr);
+
+
+
+        bookedPaitient.setBookingTimeServer(+serverDate.timestapmUTC);
+
+
+
+        this.firestore.saveBooking(dateStr, Object.assign({}, bookedPaitient))
+          .then(() => {
+            this.showDialog('success', "Your appointment has been registered successfully. You can now track your booking on this lobby.", "Ok")
+            this.hideLoading();
+          })
+          .catch(error => {
+            console.log("Error in transaction!");
+            this.showDialog('fail', "Something went wrong. We could not book your appointment at this time. Please contact support, if you have any query", "Ok");
+            this.hideLoading();
+          });
+
+        console.log("Success...! ");
         this.hideLoading();
+
       })
       .catch(error => {
+
+        console.log("Error in getting date! " + JSON.stringify(error));
         this.showDialog('fail', "Something went wrong. We could not book your appointment at this time. Please contact support, if you have any query", "Ok");
-        console.log("failed : " + error);
         this.hideLoading();
+
       });
 
   }
@@ -544,11 +555,8 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
 
   changeSelfWaitingTime() {
-    console.log("Outside >> ");
+
     if (this.currentQueue.getBookings().length > 0 && this.currentQueue.getMyBooking()) {
-
-      console.log("Inside >> ");
-
       this.currentQueue.getMyBooking().setSelfWaitingTime(+new Date());
     }
   }
