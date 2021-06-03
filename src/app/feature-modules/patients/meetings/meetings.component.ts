@@ -1,30 +1,28 @@
 import { CalculationService } from './../service/calculation.service';
-import { queue } from 'rxjs/internal/scheduler/queue';
 import { SearchedDoctor } from './../models/searched-doctor';
-import { BookingRefund } from './../../../models/booking-refund';
 import { RequestRefundComponent } from './../request-refund/request-refund.component';
 import { CancelMeetingAlertComponent } from './../cancel-meeting-alert/cancel-meeting-alert.component';
 import { BookingRescheduleSelectorComponent } from './../booking-reschedule-selector/booking-reschedule-selector.component';
-import { BookingPostpond } from './../../../models/booking-postpond';
-import { PNBookingReschedule } from './../../../models/p-n-booking-reschedule';
 import { UtilsService } from './../../../services/utils.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BookedPatient } from 'src/app/models/booked-patient';
 import { SessionService } from '../service/session.service';
 import { HttpService } from 'src/app/services/http.service';
 import { Subscription } from 'rxjs';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { PatientFirestoreService } from '../service/patient-firestore.service';
-import { AngularFirestoreDocument, DocumentData } from '@angular/fire/firestore';
+import { DocumentData } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
-import { BookingCancledNotification } from 'src/app/models/n-booking-canceled';
-import { RefundRequestNotification } from 'src/app/models/n-refund-request';
-import { MeetupRefundRequest } from '../models/meetup-refund-requst';
 import { DoctorUserData } from 'src/app/models/doctor-user-data';
 import { SearchService } from '../service/search.service';
 import { Router } from '@angular/router';
-import { QueueModel } from 'src/app/models/queue-model';
+import { BookedPatient } from '../../common-features/models/booked-patient';
+import { QueueModel } from '../../common-features/models/queue-model';
+import { BookingPostpond } from '../../common-features/models/booking-postpond';
+import { BookingRefund } from '../../common-features/models/booking-refund';
+import { RefundRequestNotification } from '../../common-features/models/n-refund-request';
+import { MeetupRefundRequest } from '../models/meetup-refund-requst';
+import { BookingCancledNotification } from '../../common-features/models/n-booking-canceled';
+import { PNBookingReschedule } from '../../common-features/models/p-n-booking-reschedule';
 
 
 
@@ -218,7 +216,12 @@ export class MeetingsComponent implements OnInit, OnDestroy {
         Object.assign(queue, snapshot.data());
         booking.setSelfWaitingTime(thisRef.calculation.getRemainingTimeBeforeMeeting(queue, booking));
         //console.log("Time : " + thisRef.calculation.getRemainingTimeBeforeMeeting(queue, booking));
-        thisRef.startTimer(booking);
+        if (!booking.isPending()) {
+          thisRef.startTimer(booking);
+        } else {
+          booking.setSelfWaitingTimeString("in pending list");
+        }
+
       },
       error(msg) {
         console.log("Obs error subscribeToQueue >> : " + msg);

@@ -1,11 +1,16 @@
+import { DocumentReference } from '@angular/fire/firestore';
+import { QueueModel } from "./queue-model";
 
 
 export class DoctorUserData {
 
     private email:string;
-    private name:string;
+    private firstName:string;
+    private lastName:string;
+    private gender:string;
     private picUrl:string;
-    private userId:string;
+    private userId: string;
+    private phoneNumber: string;
     private profileId:string;
     private registrationNumber:string;
     private experience:number;
@@ -18,28 +23,77 @@ export class DoctorUserData {
     private city:string;
     private varified:boolean;
     private about:string;
-    private doctor:boolean;
     private registrationLocalTimeStapm:number;
     private kycSubmitted:boolean;
-    private latitude:number;
-    private longitude:number;
-    private geoPoints:firebase.firestore.GeoPoint;
-    private diseaseSpecialist:string[]=[];
+    // private latitude:number;
+    // private longitude:number;
+    private nearbyAddress:string;
+    private diseaseSpecialist: string[];
+    private coordinates: firebase.firestore.GeoPoint;
+    private status: string;
+    private queues: QueueModel[];
+    private ref: DocumentReference;
 
 
+   
 
-    constructor(){}
 
-
-    public getGeoPoints(): firebase.firestore.GeoPoint {
-        return this.geoPoints;
+    constructor() {
+        this.diseaseSpecialist = [];
+        this.queues = [];
     }
 
-    public setGeoPoints(geoPoints: firebase.firestore.GeoPoint): void {
-        this.geoPoints = geoPoints;
+    public getRef(): DocumentReference {
+        return this.ref;
+    }
+
+    public setRef(ref: DocumentReference): void {
+        this.ref = ref;
+    }
+
+
+    public getPhoneNumber(): string {
+        return this.phoneNumber;
+    }
+
+    public setPhoneNumber(phoneNumber: string): void {
+        this.phoneNumber = phoneNumber;
+    }
+    
+    public getQueues(): QueueModel[] {
+        return this.queues;
+    }
+
+    public setQueues(queues: QueueModel[]): void {
+        this.queues = queues;
     }
 
     
+    public getStatus(): string {
+        return this.status;
+    }
+
+    public setStatus(status: string): void {
+        this.status = status;
+    }
+    
+    public getCoordinates(): firebase.firestore.GeoPoint {
+        return this.coordinates;
+    }
+
+    public setCoordinates(coordinates: firebase.firestore.GeoPoint): void {
+        this.coordinates = coordinates;
+    }
+    
+    
+    public getNearbyAddress(): string {
+        return this.nearbyAddress;
+    }
+
+    public setNearbyAddress(nearbyAddress: string): void {
+        this.nearbyAddress = nearbyAddress;
+    }
+
     public getDiseaseSpecialist(): string[] {
         return this.diseaseSpecialist;
     }
@@ -48,21 +102,21 @@ export class DoctorUserData {
         this.diseaseSpecialist = diseaseSpecialist;
     }
 
-    public getLatitude(): number {
-        return this.latitude;
-    }
+    // public getLatitude(): number {
+    //     return this.latitude;
+    // }
 
-    public setLatitude(latitude: number): void {
-        this.latitude = latitude;
-    }
+    // public setLatitude(latitude: number): void {
+    //     this.latitude = latitude;
+    // }
 
-    public getLongitude(): number {
-        return this.longitude;
-    }
+    // public getLongitude(): number {
+    //     return this.longitude;
+    // }
 
-    public setLongitude(longitude: number): void {
-        this.longitude = longitude;
-    }
+    // public setLongitude(longitude: number): void {
+    //     this.longitude = longitude;
+    // }
 
     
     public isKycSubmitted(): boolean {
@@ -81,12 +135,27 @@ export class DoctorUserData {
         this.email = email;
     }
 
-    public getName(): string {
-        return this.name;
+    public getFirstName(): string {
+        return this.firstName;
     }
 
-    public setName(name: string): void {
-        this.name = name;
+    public setFirstName(firstName: string): void {
+        this.firstName = firstName;
+    }
+
+    public getLastName(): string {
+        return this.lastName;
+    }
+
+    public setLastName(lastName: string): void {
+        this.lastName = lastName;
+    }
+    public getGender(): string {
+        return this.gender;
+    }
+
+    public setGender(gender: string): void {
+        this.gender = gender;
     }
 
     public getPicUrl(): string {
@@ -200,14 +269,6 @@ export class DoctorUserData {
 
     public setAbout(about: string): void {
         this.about = about;
-    }
-
-    public isDoctor(): boolean {
-        return this.doctor;
-    }
-
-    public setDoctor(doctor: boolean): void {
-        this.doctor = doctor;
     }
 
     public getRegistrationLocalTimeStapm(): number {

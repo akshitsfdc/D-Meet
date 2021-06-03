@@ -1,10 +1,9 @@
 import { HttpService } from './http.service';
 import { Injectable } from '@angular/core';
-import { start } from 'repl';
-import { QueueModel } from '../models/queue-model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { LoadingDialogComponent } from '../loading-dialog/loading-dialog.component';
+import { QueueModel } from '../feature-modules/common-features/models/queue-model';
 
 @Injectable({
   providedIn: 'root'
@@ -33,8 +32,8 @@ export class UtilsService {
   }
   public get24Time(milliseconds: number) {
     let date: Date = new Date(milliseconds);
-    const hr = date.getUTCHours();
-    const mi = date.getUTCMinutes();
+    const hr = date.getHours();
+    const mi = date.getMinutes();
     return hr + ':' + mi;
   }
   public getISTMilliseconds(milliseconds: number): number {

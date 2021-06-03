@@ -44,9 +44,23 @@ export class BookedPatient {
     private docReference: DocumentReference;
     private meetingTrials: number[] = [];
     private selfWaitingTimeString: string = "calculating time...";
+    //this property is changed at server side when doctor choose this patient as current patient
+    private selectionTime: number;
+
+
+
 
 
     constructor() { }
+
+
+    public getSelectionTime(): number {
+        return this.selectionTime;
+    }
+
+    public setSelectionTime(selectionTime: number): void {
+        this.selectionTime = selectionTime;
+    }
 
     public getSelfWaitingTimeString(): string {
         return this.selfWaitingTimeString;

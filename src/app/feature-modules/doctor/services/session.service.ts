@@ -1,12 +1,12 @@
-import { queue } from 'rxjs/internal/scheduler/queue';
+
 import { AuthService } from './../../../services/auth.service';
 import { UtilsService } from './../../../services/utils.service';
 import { Injectable } from '@angular/core';
-import { QueueModel } from 'src/app/models/queue-model';
 import { DoctorUserData } from 'src/app/models/doctor-user-data';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { HttpService } from 'src/app/services/http.service';
-import { BookedPatient } from 'src/app/models/booked-patient';
+import { QueueModel } from '../../common-features/models/queue-model';
+import { BookedPatient } from '../../common-features/models/booked-patient';
 
 @Injectable()
 
@@ -379,6 +379,7 @@ export class SessionService {
 
   private updateQueueModel(queueOriginal: QueueModel, queue: QueueModel): void {
 
+
     queueOriginal.setCurrency(queue.getCurrency());
     queueOriginal.setFees(queue.getFees());
     queueOriginal.setStatus(queue.getStatus());
@@ -395,17 +396,11 @@ export class SessionService {
     queueOriginal.setHolidayList(queue.getHolidayList());
     queueOriginal.setType(queue.getType());
     queueOriginal.setPaymentOption(queue.getPaymentOption());
-
-    queueOriginal.setCurrency(queue.getCurrency());
-    queueOriginal.setCurrency(queue.getCurrency());
-    queueOriginal.setCurrency(queue.getCurrency());
-    queueOriginal.setCurrency(queue.getCurrency());
-    queueOriginal.setCurrency(queue.getCurrency());
-    queueOriginal.setCurrency(queue.getCurrency());
-    queueOriginal.setCurrency(queue.getCurrency());
-    queueOriginal.setCurrency(queue.getCurrency());
-    queueOriginal.setCurrency(queue.getCurrency());
-    queueOriginal.setCurrency(queue.getCurrency());
+    queueOriginal.setStatus(queue.getStatus());
+    queueOriginal.setTodayDateString(queue.getTodayDateString());
+    queueOriginal.setCurrentBookingsCount(queue.getCurrentBookingsCount());
+    queueOriginal.setNextNumber(queue.getNextNumber());
+    queueOriginal.setCurrentNumber(queue.getCurrentNumber());
 
 
 

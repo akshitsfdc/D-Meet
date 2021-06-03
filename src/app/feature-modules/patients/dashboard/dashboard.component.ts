@@ -2,12 +2,12 @@ import { CalculationService } from './../service/calculation.service';
 import { DoctorUserData } from './../../../models/doctor-user-data';
 import { SessionService } from './../service/session.service';
 import { Router } from '@angular/router';
-import { QueueModel } from './../../../models/queue-model';
 import { UtilsService } from './../../../services/utils.service';
 import { SearchedDoctor } from './../models/searched-doctor';
 import { SearchService } from './../service/search.service';
 import { FirestoreService } from './../../../services/firestore.service';
 import { Component, OnInit } from '@angular/core';
+import { QueueModel } from '../../common-features/models/queue-model';
 
 @Component({
   selector: 'app-dashboard',

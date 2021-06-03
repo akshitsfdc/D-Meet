@@ -1,27 +1,24 @@
 import { DoctorUserData } from 'src/app/models/doctor-user-data';
-import { QueueModel } from 'src/app/models/queue-model';
-
-
-
+import { QueueModel } from '../../common-features/models/queue-model';
 export class SearchedDoctor {
 
-    private doctor:DoctorUserData;
-    private queues:QueueModel[];
-    private queueInitialized:boolean;
+    private doctor: DoctorUserData;
+    private queues: QueueModel[];
+    private queueInitialized: boolean;
     private queueLoading: boolean;
-    
+
     private currentDoctor: DoctorUserData;
 
-    
 
 
-    constructor(){
+
+    constructor() {
         this.queues = [];
         this.queueInitialized = false;
         this.queueLoading = false;
         this.currentDoctor = null;
     }
-   
+
     public getCurrentDoctor(): DoctorUserData {
         return this.currentDoctor;
     }
@@ -63,7 +60,7 @@ export class SearchedDoctor {
     }
 
     public changeCurrentDoctor(doctor: DoctorUserData) {
-        
+
         if (doctor !== null && this.currentDoctor !== null) {
 
 
@@ -94,5 +91,5 @@ export class SearchedDoctor {
 
         }
     }
-    
+
 }

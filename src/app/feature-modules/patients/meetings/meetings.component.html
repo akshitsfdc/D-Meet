@@ -860,6 +860,7 @@
 
                 </mat-expansion-panel>
               </mat-accordion>
+
             </ng-container>
 
             <mat-accordion>
@@ -923,7 +924,7 @@
                     [disabled]="booking.getPostpond().isRequested() ||  booking.getRefund().isRequested()">Request
                     Reschedule</button>
                   <button mat-raised-button fxFlexOffset="10px" (click)="showRequestRefundPopup(booking)"
-                    [disabled]="(booking.getMeetingTrials().length !== 0) || booking.getRefund().isRequested()">Request
+                    [disabled]="(booking.getMeetingTrials().length !== 0) || booking.getRefund().isRequested() || (serverDateString === booking.getDateString())">Request
                     Refund</button>
                   <!-- <button  mat-flat-button class="alert-button setting-buttons" fxFlexOffset="10px">Cancel meeting</button>-->
                 </div>

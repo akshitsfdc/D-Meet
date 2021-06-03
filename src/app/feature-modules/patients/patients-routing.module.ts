@@ -12,10 +12,11 @@ const routes: Routes = [
 
   {
     path: '', component: BaseComponent,
+
     children: [
       {
         path: '', component: MainNavigationComponent,
-    
+
         children: [
           {
             path: 'home', component: DashboardComponent
@@ -39,7 +40,7 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class PatientsRoutingModule { 
+export class PatientsRoutingModule {
 
 
 }

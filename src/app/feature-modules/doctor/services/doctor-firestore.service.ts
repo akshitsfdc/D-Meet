@@ -2,7 +2,6 @@ import { FirestoreService } from 'src/app/services/firestore.service';
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentChangeAction, DocumentData, DocumentReference } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
-import { QueueModel } from 'src/app/models/queue-model';
 
 @Injectable()
 

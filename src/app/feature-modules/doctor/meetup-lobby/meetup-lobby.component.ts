@@ -1,5 +1,4 @@
 import { DoctorFirestoreService } from './../services/doctor-firestore.service';
-import { FirestoreService } from 'src/app/services/firestore.service';
 import { PatientUserData } from './../../../models/patient-user-data'
 import { DoctorUserData } from './../../../models/doctor-user-data';
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
@@ -7,12 +6,12 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { UtilsService } from 'src/app/services/utils.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MovePatientComponent } from '../../doctor/move-patient/move-patient.component';
-import { QueueModel } from 'src/app/models/queue-model';
 import { LoadingDialogComponent } from 'src/app/loading-dialog/loading-dialog.component';
-import { BookedPatient } from '../../../models/booked-patient';
 import { MessageDialogComponent } from 'src/app/message-dialog/message-dialog.component';
 import { SessionService } from '../services/session.service';
 import { Router } from '@angular/router';
+import { BookedPatient } from '../../common-features/models/booked-patient';
+import { QueueModel } from '../../common-features/models/queue-model';
 
 declare var Razorpay: any;
 

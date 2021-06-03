@@ -1,98 +1,101 @@
 <div id="parent" fxLayout="column">
 
     <div class="profile-row1-wrapper" fxLayout="row wrap">
-        <div fxLayout="column" id="pofileCardWrapper" fxFlex="1 1 auto" >
-            <mat-card class="profile-personal-card"> 
+        <div fxLayout="column" id="pofileCardWrapper" fxFlex="1 1 auto">
+            <mat-card class="profile-personal-card">
                 <mat-card-header fxLayout="row">
-                    
+
                     <span fxFlex="1 1 auto">
 
                     </span>
                     <span fxFlex="1 1 auto">
 
                     </span>
-            
-                    <button mat-button class="edit-button" (click)="openPPUpdate()">Edit</button>                
-                </mat-card-header>           
+
+                    <button mat-button class="edit-button" (click)="openPPUpdate()">Edit</button>
+                </mat-card-header>
                 <mat-card-content fxLayout="column">
-    
+
                     <mat-icon class="verified-icon-class"
                         [ngClass]="{'verified':currentUserData.isVarified(), 'not-verified':!currentUserData.isVarified()}"
                         [matTooltip]="currentUserData.isVarified()?'Verified':'Verification pending'"
-                        matTooltipPosition ="above"
-                        matTooltipHideDelay="2000"              
-                    >verified_user</mat-icon>
+                        matTooltipPosition="above" matTooltipHideDelay="2000">verified_user</mat-icon>
 
-                    <div fxLayout="row" fxLayoutGap="25px" >
-                        <div class="profilepic-wraper" >
-                            <img id="profilePictureImage" matCardImageMedium [src]= "currentUserData.getPicUrl() || 'assets/imgs/doctor_f_placeholder.png'" />
-                            <mat-icon  id="editImgIcon" (click)="openProfilePicChange()">add_a_photo</mat-icon>                           
+                    <div fxLayout="row" fxLayoutGap="25px">
+                        <div class="profilepic-wraper">
+                            <img id="profilePictureImage" matCardImageMedium
+                                [src]="currentUserData.getPicUrl() || 'assets/imgs/doctor_f_placeholder.png'" />
+                            <mat-icon id="editImgIcon" (click)="openProfilePicChange()">add_a_photo</mat-icon>
                         </div>
-                        
-                        <div id="nameDegreeWrapper" fxLayout="column" fxLayoutAlign="start start" > 
-                            <mat-label id="nameLabel" fxFlexOffset="10px">Dr. {{currentUserData.getName()}}</mat-label>
-                            <mat-label  fxFlexOffset="15px" id="degreeLabel">{{currentUserData.getSpeciality()}}</mat-label>
-                            <mat-label  fxFlexOffset="20px" id="degreeLabel">{{currentUserData.getDegree()}}</mat-label>
+
+                        <div id="nameDegreeWrapper" fxLayout="column" fxLayoutAlign="start start">
+                            <!-- <mat-label id="nameLabel" fxFlexOffset="10px">Dr. {{currentUserData.getName()}}</mat-label> -->
+                            <mat-label fxFlexOffset="15px" id="degreeLabel">{{currentUserData.getSpeciality()}}
+                            </mat-label>
+                            <mat-label fxFlexOffset="20px" id="degreeLabel">{{currentUserData.getDegree()}}</mat-label>
 
 
-                            <div  fxLayout="row" fxFlexOffset="10px" fxLayoutGap="40px">
+                            <div fxLayout="row" fxFlexOffset="10px" fxLayoutGap="40px">
                                 <div fxLayout="column" fxLayoutGap="10px">
                                     <mat-label class="d-details-label">Experience</mat-label>
                                     <mat-label class="d-details-label">Profile ID</mat-label>
                                     <mat-label class="d-details-label">Registration No.</mat-label>
                                 </div>
                                 <div fxLayout="column" fxLayoutGap="10px">
-                                    <mat-label class="d-details-value">{{currentUserData.getExperience()}} years</mat-label>
+                                    <mat-label class="d-details-value">{{currentUserData.getExperience()}} years
+                                    </mat-label>
                                     <mat-label class="d-details-value">@{{currentUserData.getProfileId()}}</mat-label>
-                                    <div fxLayout="row" fxLayoutGap="5px" >
-                                        <mat-label class="d-details-value">{{currentUserData.getRegistrationNumber()}}</mat-label>                                    
-                                    </div>                                    
+                                    <div fxLayout="row" fxLayoutGap="5px">
+                                        <mat-label class="d-details-value">{{currentUserData.getRegistrationNumber()}}
+                                        </mat-label>
+                                    </div>
                                 </div>
 
-                                
+
                             </div>
-    
+
                             <div fxLayout="row" fxFlexOffset="50px" fxLayoutGap="15px" fxLayoutAlign=" center">
                                 <mat-icon>alternate_email</mat-icon>
                                 <mat-label class="d-details-value">{{currentUserData.getEmail()}}</mat-label>
                             </div>
                             <div fxLayout="row" fxFlexOffset="15px" fxLayoutGap="15px" fxLayoutAlign=" center">
                                 <mat-icon>medical_services</mat-icon>
-                                <mat-label class="d-details-value">www.doctormeetup.com/@{{currentUserData.getProfileId()}}</mat-label>
-                            </div>                           
-    
+                                <mat-label class="d-details-value">
+                                    www.doctormeetup.com/@{{currentUserData.getProfileId()}}</mat-label>
+                            </div>
+
                         </div>
                     </div>
                     <!-- <mat-label id="nameLabel">About</mat-label> -->
-                    
+
                 </mat-card-content>
 
             </mat-card>
-    
-            
+
+
         </div>
-        
+
     </div>
-    
+
     <mat-card id="aboutMeCard" fxFlexOffset="40px">
         <mat-card-header fxLayout="row">
             <mat-label matCardTitle fxFlex="1 1 auto" class="info-header">About</mat-label>
             <span fxFlex="1 1 auto"></span>
             <button mat-button fxFlex="1 1 50px" class="edit-button" (click)="openAboutUpdate()">Edit</button>
         </mat-card-header>
-        <mat-card-content fxLayout="column">                  
+        <mat-card-content fxLayout="column">
             <mat-label class="about-value" fxFlexOffset="15px">{{currentUserData.getAbout()}}</mat-label>
         </mat-card-content>
-        
+
     </mat-card>
-       
+
     <mat-card id="clinicAddressWrapper" fxFlex="1 1 auto" fxFlexOffset="40px">
         <mat-card-header>
             <mat-label matCardTitle class="info-header">Facility</mat-label>
             <span fxFlex="1 1 auto"></span>
             <button mat-button fxFlex="1 1 50px" class="edit-button" (click)="openFacilityUpdate()">Edit</button>
         </mat-card-header>
-        <mat-card-content fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="start center" >            
+        <mat-card-content fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="start center">
             <div fxLayout="column" fxFlex="1 1 auto">
                 <div fxLayout="row" fxFlexOffset="25px" fxLayoutGap="15px" fxLayoutAlign=" center">
                     <mat-icon>local_hospital</mat-icon>
@@ -105,16 +108,21 @@
                 <div fxLayout="row" fxFlexOffset="25px" fxLayoutGap="15px" fxLayoutAlign=" center">
                     <mat-icon>location_on</mat-icon>
                     <div fxLayout="row wrap">
-                        <mat-label class="d-details-value">{{currentUserData.getCity()}} &nbsp;&nbsp;|&nbsp;&nbsp;</mat-label>
-                        <mat-label class="d-details-value">{{currentUserData.getState()}}&nbsp;&nbsp;|&nbsp;&nbsp;</mat-label>
+                        <mat-label class="d-details-value">{{currentUserData.getCity()}} &nbsp;&nbsp;|&nbsp;&nbsp;
+                        </mat-label>
+                        <mat-label class="d-details-value">{{currentUserData.getState()}}&nbsp;&nbsp;|&nbsp;&nbsp;
+                        </mat-label>
                         <mat-label class="d-details-value">{{currentUserData.getCountry()}}</mat-label>
-                    </div>                    
+                    </div>
                 </div>
             </div>
-            
-            <agm-map class="facility-map" [latitude]="currentUserData.getLatitude()" [longitude]="currentUserData.getLongitude()" fxFlexOffset="25px" fxFlex="1 1 auto" >
-                <agm-marker [latitude]="currentUserData.getLatitude()" [longitude]="currentUserData.getLongitude()"></agm-marker>
-            </agm-map>
+
+
+            <!-- <agm-map class="facility-map" [latitude]="currentUserData.getLatitude()"
+                            [longitude]="currentUserData.getLongitude()" fxFlexOffset="25px" fxFlex="1 1 auto">
+                            <agm-marker [latitude]="currentUserData.getLatitude()" [longitude]="currentUserData.getLongitude()">
+                            </agm-marker>
+                        </agm-map> -->
         </mat-card-content>
 
     </mat-card>
@@ -125,11 +133,12 @@
             <button mat-button fxFlex="1 1 50px" class="edit-button" (click)="openDiseasesUpdate()">Edit</button>
         </mat-card-header>
         <mat-card-content fxLayout="column">
-            <mat-chip-list class="chip-list" aria-label="Specialities" fxFlexOffset="20px" >
-                <mat-chip class="chips-spe" *ngFor="let spe of currentUserData.getDiseaseSpecialist()">{{spe}}</mat-chip>
+            <mat-chip-list class="chip-list" aria-label="Specialities" fxFlexOffset="20px">
+                <mat-chip class="chips-spe" *ngFor="let spe of currentUserData.getDiseaseSpecialist()">{{spe}}
+                </mat-chip>
             </mat-chip-list>
         </mat-card-content>
-        
+
     </mat-card>
     <mat-card class="infoCards last" fxFlexOffset="40px">
         <mat-card-header>
@@ -138,13 +147,14 @@
             <button mat-button fxFlex="1 1 50px" class="edit-button" (click)="openBankUpdate()">Edit</button>
         </mat-card-header>
 
-        <mat-card-content fxLayout="column" >
-            <div class="payment-wrapper-div" fxLayout="row wrap" fxFlexOffset="30px" fxLayoutAlign="space-evenly center">
+        <mat-card-content fxLayout="column">
+            <div class="payment-wrapper-div" fxLayout="row wrap" fxFlexOffset="30px"
+                fxLayoutAlign="space-evenly center">
                 <div fxFlex="1 1 auto" fxLayout="row" fxLayoutGap="12px">
                     <mat-label class="bank-details-label">Beneficiary:</mat-label>
                     <mat-label class="bank-details-value">{{paymentData.getBeneficiary()}}</mat-label>
                 </div>
-                <div fxFlex="1 1 auto" fxLayout="row" fxLayoutGap="12px">  
+                <div fxFlex="1 1 auto" fxLayout="row" fxLayoutGap="12px">
                     <mat-label class="bank-details-label">Account Number:</mat-label>
                     <mat-label class="bank-details-value">{{paymentData.getAccountNumber()}}</mat-label>
                 </div>
@@ -158,7 +168,7 @@
                 </div>
             </div>
         </mat-card-content>
-        
+
     </mat-card>
-    
+
 </div>

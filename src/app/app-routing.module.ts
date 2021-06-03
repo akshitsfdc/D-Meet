@@ -18,7 +18,7 @@ const routes: Routes = [
   { path: 'action', component: AuthActionComponent },
   { path: 'registration', component: DoctorRegistrationComponent },
   { path: 'registration-patient', component: PatientRegistrationComponent },
-  { path: 'doctorregistration', component: DoctorRegistrationComponent }, 
+  { path: 'doctorregistration', component: DoctorRegistrationComponent },
   {
     path: 'patient',
     loadChildren: () => PatientsModule
@@ -33,7 +33,7 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { 
+export class AppRoutingModule {
 
 
 }

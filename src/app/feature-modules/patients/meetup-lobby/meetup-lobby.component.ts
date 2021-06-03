@@ -1,7 +1,6 @@
+import { CalculationService } from './../service/calculation.service';
 import { PatientFirestoreService } from './../service/patient-firestore.service';
 import { SearchService } from './../service/search.service';
-import { FirestoreService } from 'src/app/services/firestore.service';
-import { PaymentInfo } from '../../../models/payment-info';
 import { PatientUserData } from './../../../models/patient-user-data';
 import { BookingDialogComponent } from './../booking-dialog/booking-dialog.component';
 import { CheckoutService } from './../service/checkout.service';
@@ -11,14 +10,13 @@ import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } fro
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { UtilsService } from 'src/app/services/utils.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-
 import { MovePatientComponent } from '../../doctor/move-patient/move-patient.component';
-import { QueueModel } from 'src/app/models/queue-model';
 import { SessionService } from '../service/session.service';
 import { LoadingDialogComponent } from 'src/app/loading-dialog/loading-dialog.component';
-import { BookedPatient } from '../../../models/booked-patient';
 import { MessageDialogComponent } from 'src/app/message-dialog/message-dialog.component';
-import { TimeInterval } from 'rxjs';
+import { QueueModel } from '../../common-features/models/queue-model';
+import { BookedPatient } from '../../common-features/models/booked-patient';
+
 
 declare var Razorpay: any;
 
@@ -31,9 +29,17 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
   @ViewChild('bookingList') bookingListElement: ElementRef;
 
-  rippleColor = "#4294f4";
-  selectedStatus = "live";
-  selectStatusDisplay = "Live";
+  private currentMeetingTime: number = 0;
+
+  private bstartingInterval: NodeJS.Timeout;
+  private bEndInterval: NodeJS.Timeout;
+  private cstartingInterval: NodeJS.Timeout;
+
+  private queueQuardInterval: NodeJS.Timeout;
+  private selfWaitingInterval: NodeJS.Timeout;
+  private currentBookingInterval: NodeJS.Timeout;
+  private processingPatientId: string;
+
 
   bookingavailable: boolean = false;
 
@@ -104,7 +110,7 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
   userData: PatientUserData;
 
   constructor(private matDialog: MatDialog,
-    public util: UtilsService, private httpService: HttpService, private session: SessionService, public utils: UtilsService,
+    public util: UtilsService, public calculation: CalculationService, private httpService: HttpService, private session: SessionService, public utils: UtilsService,
     private checkoutService: CheckoutService, private firestore: PatientFirestoreService, private searchService: SearchService) {
 
 
@@ -119,33 +125,33 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
     this.currentDoctor = this.session.getSharedData().doctor;
     this.userData = this.session.getUserData();
 
-    this.bookingAvailability();
-    this.consultingStarted();
+    // this.bookingAvailability();
+    // this.consultingStarted();
 
-    this.setTimerForAvailability();
+    // this.setTimerForAvailability();
 
-    if (!this.currentQueue.isConsultingStarted()) {
+    // if (!this.currentQueue.isConsultingStarted()) {
 
-      this.consultingStartWaitingTime = this.util.getTimeDifference(this.currentQueue.getConsultingStarting());
+    //   this.consultingStartWaitingTime = this.util.getTimeDifference(this.currentQueue.getConsultingStarting());
 
-      this.consultingStartWaitingTimeLabel = this.util.getDateDigits(this.consultingStartWaitingTime);
+    //   this.consultingStartWaitingTimeLabel = this.util.getDateDigits(this.consultingStartWaitingTime);
 
-      this.initConsultingWaitingTime();
-
-
-    }
-
-    if (!this.currentQueue.isBookingAvailable()) {
-
-      this.bookingStartingWaitingTime = this.util.getTimeDifference(this.currentQueue.getBookingStarting());
-
-      this.bookingStartingWaitingTimeLabel = this.util.getDateDigits(this.bookingStartingWaitingTime);
-
-      this.initBookingWaitingTime();
-    }
+    //   this.initConsultingWaitingTime();
 
 
-    this.setTestPatients();
+    // }
+
+    // if (!this.currentQueue.isBookingAvailable()) {
+
+    //   this.bookingStartingWaitingTime = this.util.getTimeDifference(this.currentQueue.getBookingStarting());
+
+    //   this.bookingStartingWaitingTimeLabel = this.util.getDateDigits(this.bookingStartingWaitingTime);
+
+    //   this.initBookingWaitingTime();
+    // }
+
+
+    // this.setTestPatients();
 
     // if(this.consultStarted){
     //   if(this.tempPatients.length > 0){
@@ -155,7 +161,140 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
 
 
-    this.startTimerCounter();
+    //this.startTimerCounter();
+
+    this.startLobbyTimers();
+
+  }//End of ngOnInit
+
+  private startLobbyTimers(): void {
+
+    this.currentQueue.setBookingStartRemaingTime(this.calculation.timeDiffrenceFromNow(this.currentQueue.getBookingStarting()) * 1000);
+
+    this.bstartingInterval = setInterval(() => {
+
+      if (this.currentQueue.getBookingStartRemaingTime() <= 0) {
+        this.currentQueue.setBookingStartRemaingTime(0);
+        clearInterval(this.bstartingInterval);
+      } else {
+        this.currentQueue.setBookingStartRemaingTime(this.currentQueue.getBookingStartRemaingTime() - 1000);
+      }
+
+    }, 1000);
+
+    this.currentQueue.setConsultingStartingRemaingTime(this.calculation.timeDiffrenceFromNow(this.currentQueue.getConsultingStarting()) * 1000);
+
+    this.cstartingInterval = setInterval(() => {
+
+
+      if (this.currentQueue.getConsultingStartingRemaingTime() <= 0) {
+        this.currentQueue.setConsultingStartingRemaingTime(0);
+        clearInterval(this.cstartingInterval);
+      } else {
+        this.currentQueue.setConsultingStartingRemaingTime(this.currentQueue.getConsultingStartingRemaingTime() - 1000);
+      }
+
+    }, 1000);
+
+    this.currentQueue.setBookingEndingRemaingTime(this.calculation.timeDiffrenceFromNow(this.currentQueue.getBookingEnding()) * 1000);
+
+    this.bEndInterval = setInterval(() => {
+
+
+      if (this.currentQueue.getBookingEndingRemaingTime() <= 0) {
+        this.currentQueue.setBookingEndingRemaingTime(0);
+        clearInterval(this.bEndInterval);
+      } else {
+        this.currentQueue.setBookingEndingRemaingTime(this.currentQueue.getBookingEndingRemaingTime() - 1000);
+      }
+
+    }, 1000);
+
+
+    //this is generic timer which take care of queue state every 1 second
+    this.queueQuardInterval = setInterval(() => {
+
+      let mybooking: BookedPatient = this.currentQueue.getMyBooking();
+      let currentBooking: BookedPatient = this.currentQueue.getCurrentPatient();
+
+      if (mybooking && !this.selfWaitingInterval) {
+        this.setSelfWaitingTime(mybooking);
+      }
+
+      if (currentBooking && currentBooking.getBookingId() !== this.processingPatientId && currentBooking.getSelectionTime() > 0) {
+        this.processingPatientId = currentBooking.getBookingId();
+
+        if (this.currentBookingInterval) {
+          clearInterval(this.currentBookingInterval);
+        }
+        this.setCurrentMeetingTime(currentBooking);
+      }
+
+    }, 1000);
+
+  }
+
+
+  private setCurrentMeetingTime(booking: BookedPatient) {
+
+
+
+    this.currentMeetingTime = this.calculation.getTimePassed(booking.getSelectionTime()) * 1000;
+
+    this.currentBookingInterval = setInterval(() => {
+      this.currentMeetingTime += 1000;
+    }, 1000);
+
+  }
+
+  private setSelfWaitingTime(booking: BookedPatient) {
+
+    console.log("My booking timer set");
+
+    booking.setSelfWaitingTime(this.calculation.getRemainingTimeBeforeMeeting(this.currentQueue, booking));
+
+    this.selfWaitingInterval = setInterval(() => {
+
+      let timeLeft = booking.getSelfWaitingTime() - 1000;
+
+      if (timeLeft <= 0) {
+        booking.setSelfWaitingTime(0);
+        booking.setSelfWaitingTimeString("about to start...");
+        clearInterval(this.selfWaitingInterval);
+        // this.selfWaitingInterval = undefined;
+      } else {
+        booking.setSelfWaitingTime(timeLeft);
+        booking.setSelfWaitingTimeString(this.calculation.getRemainingTimeString(timeLeft));
+      }
+
+
+    }, 1000);
+
+  }
+
+  private setCurrentMeetingTimeSpent(booking: BookedPatient) {
+
+    console.log("My booking timer set");
+
+    booking.setSelfWaitingTime(this.calculation.getRemainingTimeBeforeMeeting(this.currentQueue, booking));
+
+    this.selfWaitingInterval = setInterval(() => {
+
+      let timeLeft = booking.getSelfWaitingTime() - 1000;
+
+      if (timeLeft <= 0) {
+        booking.setSelfWaitingTime(0);
+        booking.setSelfWaitingTimeString("about to start...");
+        clearInterval(this.selfWaitingInterval);
+        // this.selfWaitingInterval = undefined;
+      } else {
+        booking.setSelfWaitingTime(timeLeft);
+        booking.setSelfWaitingTimeString(this.calculation.getRemainingTimeString(timeLeft));
+      }
+
+
+    }, 1000);
+
   }
 
   private setTimerForAvailability() {
@@ -282,22 +421,22 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
 
   }
-  statusChanged() {
-    switch (this.selectedStatus) {
-      case "live": {
-        this.selectStatusDisplay = "Live";
-        break;
-      }
-      case "offline": {
-        this.selectStatusDisplay = "Offline";
-        break;
-      }
-      default: {
-        this.selectStatusDisplay = "Away";
-        break;
-      }
-    }
-  }
+  // statusChanged() {
+  //   switch (this.selectedStatus) {
+  //     case "live": {
+  //       this.selectStatusDisplay = "Live";
+  //       break;
+  //     }
+  //     case "offline": {
+  //       this.selectStatusDisplay = "Offline";
+  //       break;
+  //     }
+  //     default: {
+  //       this.selectStatusDisplay = "Away";
+  //       break;
+  //     }
+  //   }
+  // }
 
   private saveData() {
     // const roomRef = this.firestore.collection('doctor-meta').doc((+ new Date()).toString());
@@ -538,10 +677,10 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
   }
 
   bookingAvailability() {
-    this.currentQueue.setBookingAvailable(this.util.isWithinTimeFrame(this.currentQueue.getBookingStarting(), this.currentQueue.getBookingEnding()));
+    this.currentQueue.setBookingAvailable(this.calculation.isWithinRange(this.currentQueue.getBookingStarting(), this.currentQueue.getBookingEnding()));
   }
   consultingStarted() {
-    this.currentQueue.setConsultingStarted(this.util.isWithinTimeFrame(this.currentQueue.getConsultingStarting(), this.currentQueue.getConsultingEnding()));
+    this.currentQueue.setConsultingStarted(this.calculation.isWithinRange(this.currentQueue.getConsultingStarting(), this.currentQueue.getConsultingEnding()));
   }
 
   startTimerCounter() {
@@ -564,6 +703,16 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.myWaitingTimeTimer) {
       clearInterval(this.myWaitingTimeTimer);
+    }
+
+    if (this.bstartingInterval) {
+      clearInterval(this.bstartingInterval);
+    }
+    if (this.cstartingInterval) {
+      clearInterval(this.cstartingInterval);
+    }
+    if (this.bEndInterval) {
+      clearInterval(this.bEndInterval);
     }
   }
 }

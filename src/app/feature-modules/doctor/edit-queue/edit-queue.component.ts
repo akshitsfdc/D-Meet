@@ -5,11 +5,11 @@ import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
-import { QueueModel } from '../models/queue-model';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
 import { MessageDialogComponent } from 'src/app/message-dialog/message-dialog.component';
 import { SessionService } from '../services/session.service';
+import { QueueModel } from '../../common-features/models/queue-model';
 
 @Component({
   selector: 'app-edit-queue',

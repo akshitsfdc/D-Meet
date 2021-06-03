@@ -1,4 +1,4 @@
-import { QueueModel } from './../models/queue-model';
+
 import { SessionService } from './../services/session.service';
 import { UtilsService } from 'src/app/services/utils.service';
 
@@ -7,8 +7,10 @@ import { Component, OnInit, Input, ViewChild, ElementRef, HostListener } from '@
 import { AngularFirestore } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { Router, ActivatedRoute } from '@angular/router';
-import { BookedPatient } from '../models/booked-patient';
+
 import { MovePatientComponent } from '../move-patient/move-patient.component';
+import { BookedPatient } from '../../common-features/models/booked-patient';
+import { QueueModel } from '../../common-features/models/queue-model';
 
 @Component({
   selector: 'app-live-queue-details',
@@ -19,14 +21,14 @@ import { MovePatientComponent } from '../move-patient/move-patient.component';
 export class LiveQueueDetailsComponent implements OnInit {
 
   @ViewChild('bookingList') bookingListElement: ElementRef;
-  
+
   rippleColor = "#4294f4";
   selectedStatus = "live";
   selectStatusDisplay = "Live";
 
   disableNext = false;
 
-  tempPatients = []; 
+  tempPatients = [];
   processedPatients = [];
 
   consultStarted = true;
@@ -34,10 +36,10 @@ export class LiveQueueDetailsComponent implements OnInit {
   currentPaient: BookedPatient;
 
   totalPatientSize: Number;
-  currentQueue:QueueModel;
+  currentQueue: QueueModel;
 
-  extraheight:number = 75+15+60;
-  totalTimePassed:string = "0h:00m"
+  extraheight: number = 75 + 15 + 60;
+  totalTimePassed: string = "0h:00m"
   movies = [
     'Episode I - The Phantom Menace',
     'Episode II - Attack of the Clones',
@@ -73,7 +75,7 @@ export class LiveQueueDetailsComponent implements OnInit {
     'Episode VII - The Force Awakens',
     'Episode VIII - The Last Jedi',
     'Episode IV - A New Hope',
-        
+
   ];
   upcomingPatient = [
     'Episode I - The Phantom Menace',
@@ -82,11 +84,11 @@ export class LiveQueueDetailsComponent implements OnInit {
     'Episode IV - A New Hope',
   ];
   constructor(private firestore: AngularFirestore, private router: Router, private route: ActivatedRoute, private matDialog: MatDialog,
-     public util:UtilsService, private session:SessionService) {
-        this.currentQueue = session.getSharedData() as QueueModel;
-      }
+    public util: UtilsService, private session: SessionService) {
+    this.currentQueue = session.getSharedData() as QueueModel;
+  }
 
-  
+
   ngOnInit(): void {
 
     this.totalTimePassed = this.util.getDateDigits(this.util.getTimeDifference(this.currentQueue.getConsultingStarting()));
@@ -94,26 +96,26 @@ export class LiveQueueDetailsComponent implements OnInit {
 
     this.setTestPatients();
 
-    if(this.consultStarted){
-      if(this.tempPatients.length > 0){
+    if (this.consultStarted) {
+      if (this.tempPatients.length > 0) {
         this.currentPaient = this.tempPatients.splice(0, 1)[0];
-      }  
+      }
     }
   }
 
   ngAfterViewInit() {
-  
+
     let windowHeight = window.innerHeight;
     // this.bookingListElement.nativeElement.style.height = 50 +'px';    // set height
-    this.bookingListElement.nativeElement.style.height = (windowHeight-this.extraheight)+'px'; 
+    this.bookingListElement.nativeElement.style.height = (windowHeight - this.extraheight) + 'px';
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize(event){
+  onResize(event) {
     let windowHeight = window.innerHeight;
-    this.bookingListElement.nativeElement.style.height = (windowHeight-this.extraheight)+'px'; 
+    this.bookingListElement.nativeElement.style.height = (windowHeight - this.extraheight) + 'px';
   }
-  initTimePassed(){
+  initTimePassed() {
     setInterval(() => {
       this.totalTimePassed = this.util.getDateDigits(this.util.getTimeDifference(this.currentQueue.getConsultingStarting()));
       console.log(this.totalTimePassed);
@@ -128,20 +130,20 @@ export class LiveQueueDetailsComponent implements OnInit {
     this.saveData();
   }
 
-  private setTestPatients(){
-    for(let i = 0; i < 10; ++i){
+  private setTestPatients() {
+    for (let i = 0; i < 10; ++i) {
 
-       let bookedPatient: BookedPatient = new BookedPatient();
+      let bookedPatient: BookedPatient = new BookedPatient();
 
-       bookedPatient.setName("Akshit"+i+1) ;
-       bookedPatient.setPicUrl("Akshit");
-       bookedPatient.setFrom("Delhi") ;
-       bookedPatient.setCondition("Normal");
-       bookedPatient.setQueuePlace(i + 1);
-       bookedPatient.setStatus(i%2===0?"Online":"Offline");
-       bookedPatient.setBookingId("189457733"+i);
-       bookedPatient.setPhone("+918888985133");
-       bookedPatient.setBookingTime(998883267);
+      bookedPatient.setName("Akshit" + i + 1);
+      bookedPatient.setPicUrl("Akshit");
+      bookedPatient.setFrom("Delhi");
+      // bookedPatient.setCondition("Normal");
+      bookedPatient.setQueuePlace(i + 1);
+      bookedPatient.setStatus(i % 2 === 0 ? "Online" : "Offline");
+      bookedPatient.setBookingId("189457733" + i);
+      bookedPatient.setPhone("+918888985133");
+      bookedPatient.setBookingTime(998883267);
 
       this.tempPatients.push(bookedPatient);
 
@@ -150,82 +152,82 @@ export class LiveQueueDetailsComponent implements OnInit {
     this.totalPatientSize = this.tempPatients.length;
   }
 
-  nextPatient(){
+  nextPatient() {
 
     this.processedPatients.push(this.currentPaient);
 
-    if(this.tempPatients.length > 0){
+    if (this.tempPatients.length > 0) {
       this.currentPaient = this.tempPatients.splice(0, 1)[0];
     }
-    
-    if(this.processedPatients.length === this.totalPatientSize){
+
+    if (this.processedPatients.length === this.totalPatientSize) {
       // this.processedPatients.push(this.currentPaient);
       // this.currentPaient = this.tempPatients.splice(0, 1)[0];
       this.disableNext = true;
     }
-    
+
   }
-  movePatient(){
+  movePatient() {
 
     let dialogData = {
-      maxPosition : this.tempPatients.length,
-      minPosition : this.tempPatients.length > 2 ? 2 : this.tempPatients.length
+      maxPosition: this.tempPatients.length,
+      minPosition: this.tempPatients.length > 2 ? 2 : this.tempPatients.length
     }
-    
 
-    let dialog = this.matDialog.open(MovePatientComponent, {data: dialogData});
-    
+
+    let dialog = this.matDialog.open(MovePatientComponent, { data: dialogData });
+
     dialog.afterClosed().subscribe(result => {
 
-      if(result && !result.canceled){
-          if(result.defined){
-            this.shiftPatientToPosition(result.position);
-          }else{
-            this.shiftPatientToLast();
-          }
+      if (result && !result.canceled) {
+        if (result.defined) {
+          this.shiftPatientToPosition(result.position);
+        } else {
+          this.shiftPatientToLast();
+        }
       }
 
-      
-      
+
+
     });
   }
 
-  private shiftPatientToPosition(position: number){
+  private shiftPatientToPosition(position: number) {
 
-    if(this.tempPatients.length > 0){
+    if (this.tempPatients.length > 0) {
       this.tempPatients.splice(position, 0, this.currentPaient);
       this.currentPaient = this.tempPatients.splice(0, 1)[0];
     }
-  
+
   }
 
-  private shiftPatientToLast(){
+  private shiftPatientToLast() {
 
-    if(this.tempPatients.length > 0){
-      this.tempPatients.splice( this.tempPatients.length, 0, this.currentPaient);
+    if (this.tempPatients.length > 0) {
+      this.tempPatients.splice(this.tempPatients.length, 0, this.currentPaient);
       this.currentPaient = this.tempPatients.splice(0, 1)[0];
     }
-  
-    
+
+
   }
-  statusChanged(){
-    switch(this.selectedStatus){
-      case "live":{
+  statusChanged() {
+    switch (this.selectedStatus) {
+      case "live": {
         this.selectStatusDisplay = "Live";
         break;
       }
-      case "offline":{
+      case "offline": {
         this.selectStatusDisplay = "Offline";
         break;
       }
-     default:{
-      this.selectStatusDisplay = "Away";
-       break;
-     }
+      default: {
+        this.selectStatusDisplay = "Away";
+        break;
+      }
     }
   }
 
-  private saveData(){
+  private saveData() {
     // const roomRef = this.firestore.collection('doctor-meta').doc((+ new Date()).toString());
     // roomRef.set(this.getCitydata());
 
@@ -239,55 +241,55 @@ export class LiveQueueDetailsComponent implements OnInit {
     // });
   }
 
-  private getCitydata():any{
+  private getCitydata(): any {
 
     return {
 
-      "type":"degree",
+      "type": "degree",
 
-      "degrees" :[
+      "degrees": [
         "MBBS – Bachelor of Medicine, Bachelor of Surgery",
-        
+
         "BDS – Bachelor of Dental Surgery",
-        
+
         "BAMS – Bachelor of Ayurvedic Medicine and Surgery",
-        
+
         "BUMS – Bachelor of Unani Medicine and Surgery",
-        
+
         "BHMS – Bachelor of Homeopathy Medicine and Surgery",
-        
+
         "BYNS- Bachelor of Yoga and Naturopathy Sciences",
-        
+
         "B.V.Sc & AH- Bachelor of Veterinary Sciences and Animal Husbandry",
-        
+
         "Bachelor of Occupational Therapy",
-        
+
         "Bachelor of Science in Biotechnology",
-        
+
         "Bachelor of Technology in Biomedical Engineering",
-        
+
         "Bachelor of Science in Microbiology (Non-Clinical)",
-        
+
         "Bachelor of Science in Cardiac or Cardiovascular Technology",
-        
+
         "Bachelor of Perfusion Technology or Bachelor of Science in Cardio-Pulmonary Perfusion Technology",
-        
+
         "Bachelor of Respiratory Therapy",
-        
+
         "Bachelor of Science in Nutrition and Dietetics",
-        
+
         "Bachelor of Science in Genetics",
-        
+
         "Doctor of Medicine (MD)",
-        
+
         "Masters of Surgery (MS)",
-        
+
         "Diplomate of National Board (DNB)",
-        
+
         "Other"
-        
-        ]
-   }
-}
+
+      ]
+    }
+  }
 
 }

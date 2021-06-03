@@ -2,8 +2,7 @@ import { FirestoreService } from 'src/app/services/firestore.service';
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentChangeAction, DocumentData, DocumentReference } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
-import { PatientsModule } from '../patients.module';
-import { QueueModel } from 'src/app/models/queue-model';
+import { QueueModel } from '../../common-features/models/queue-model';
 
 @Injectable()
 

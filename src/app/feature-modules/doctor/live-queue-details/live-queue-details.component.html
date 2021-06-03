@@ -1,199 +1,206 @@
 <div class="parent" fxLayout="row wrap" fxLayoutGap="15px">
-    
-    <div fxLayout="column" fxFlex="1 1 auto" fxLayoutGap="25px">
-        
-     
-        <div fxLayout="column" >
-           
-              <mat-card class="processing-card" [class.mat-elevation-z8]="true">
-                  <mat-card-content  fxLayout="column" class="processing-card-content" >
-                    <mat-toolbar class="header-toolbar" >
-                        <mat-label>Processing Box</mat-label>
-                        <span fxFlex="1 1 auto"></span>
-                        <button  mat-stroked-button  class="next-button">Next</button>
-                      
-                      </mat-toolbar> 
-                     <div fxLayout="column" class="processing-card-content-div" fxLayoutAlign="center center">
-                        
 
-                         <div class="process-container" fxLayout="row" fxLayoutGap="10px" >
-                            <div class="timing-container" fxLayout="column"  fxLayoutAlign="space-between center">
-                                <div  class="timer-box" fxLayout="column" fxLayoutAlign="center center">
-                                    <mat-label class="small-label">Time Passed</mat-label>
-                                    <mat-label class="header-label big-label" fxFlexOffset="2px">{{totalTimePassed}}</mat-label>
-                                  </div>
-                                  <div  class="timer-box" fxLayout="column" fxLayoutAlign="center center">
-                                    <mat-label class="small-label">Current</mat-label>
-                                    <mat-label class="header-label big-label" fxFlexOffset="2px">286476</mat-label>
-                                  </div>
-                                  <div class="timer-box" fxLayout="column" fxLayoutAlign="center center">
-                                    <mat-label class="small-label">Next</mat-label>
-                                    <mat-label class="header-label big-label" fxFlexOffset="2px">286476</mat-label>
-                                  </div>
-                            </div>
+  <div fxLayout="column" fxFlex="1 1 auto" fxLayoutGap="25px">
 
-                            <mat-card class="processing-patient-card"  [class.mat-elevation-z2]="true">
-                                <mat-card-header *ngIf="consultStarted" >
-                                    <img mat-card-avatar src="https://material.angular.io/assets/img/examples/shiba1.jpg">
-                                    <mat-card-title> <mat-label class="header-label">{{currentPaient.name}}</mat-label></mat-card-title>
-                                    <!-- <mat-card-title> {{currentPaient.name}}></mat-card-title> -->       
-                                                             
-                                    <mat-card-subtitle >{{currentPaient.getStatus()}}</mat-card-subtitle>                                
-                                </mat-card-header>
-    
-                                  <mat-card-content fxLayout="column" fxLayoutGap="15px">
-                                    
-                                   
-                                    <mat-accordion>
-                                        <mat-expansion-panel >
-                                          <mat-expansion-panel-header>
-                                            <mat-panel-title>
-                                              About
-                                            </mat-panel-title>
-                                            <mat-panel-description>
-                                              <span fxFlex="1 1 auto"></span><mat-icon>info</mat-icon>
-                                            </mat-panel-description>
-                                          </mat-expansion-panel-header>
-                                          <div fxLayout="column" fxLayoutGap="10px">
 
-                                            
-                                            <div fxLayout="row" fxLayoutGap="30px">
-                                              <mat-label>Booking Id</mat-label>
-                                              <span fxFlex="1 1 auto"></span>
-                                              <mat-label>{{currentPaient.getBookingId()}}</mat-label>
-                                            </div>
-                                            <div fxLayout="row" fxLayoutGap="30px">
-                                                <mat-label>Booking Time</mat-label>
-                                                <span fxFlex="1 1 auto"></span>
-                                                <mat-label>{{currentPaient.getBookingTime()}}</mat-label>
-                                              </div>
-                                            <div fxLayout="row" fxLayoutGap="30px">
-                                                <mat-label>Condition</mat-label>
-                                                <span fxFlex="1 1 auto"></span>
-                                                <mat-label>{{currentPaient.getCondition()}}</mat-label>
-                                            </div>
-                                            <div fxLayout="row" fxLayoutGap="30px">
-                                                <mat-label>From</mat-label>
-                                                <span fxFlex="1 1 auto"></span>
-                                                <mat-label >{{currentPaient.getFrom()}}</mat-label>
-                                            </div>
-                                            
-                                            <div fxLayout="row" fxLayoutGap="30px">
-                                              <mat-label>Phone</mat-label>
-                                              <span fxFlex="1 1 auto"></span>
-                                              <mat-icon class="small-icon" matTooltip={{currentPaient.getPhone()}}>phone</mat-icon>
-                                              <!-- <mat-label>{{currentPaient.getPhone()}}</mat-label> -->
-                                            </div>
-                                            
-                                          </div>         
-                                        </mat-expansion-panel>
-                                      </mat-accordion>
-    
-                                      <mat-accordion>
-                                        <mat-expansion-panel >
-                                          <mat-expansion-panel-header>
-                                            <mat-panel-title>
-                                              More Option
-                                            </mat-panel-title>
-                                            <mat-panel-description>
-                                              <span fxFlex="1 1 auto"></span><mat-icon>settings</mat-icon>
-                                            </mat-panel-description>
-                                          </mat-expansion-panel-header>
-                                          <div fxLayout="column">
-                                            <button  mat-raised-button class="lighter-button" >Meet later</button>                       
-                                            <button  mat-flat-button class="alert-button setting-buttons" fxFlexOffset="10px">Cancel meeting</button>
-                                                             
-                                          </div>     
-                                              
-                                        </mat-expansion-panel>
-                                      </mat-accordion>   
-                                      
-                                      <button mat-raised-button class="green-button">Start Meeting</button>
-                                  </mat-card-content>
-                              </mat-card>
+    <div fxLayout="column">
 
-                         </div>
+      <mat-card class="processing-card" [class.mat-elevation-z8]="true">
+        <mat-card-content fxLayout="column" class="processing-card-content">
+          <mat-toolbar class="header-toolbar">
+            <mat-label>Processing Box</mat-label>
+            <span fxFlex="1 1 auto"></span>
+            <button mat-stroked-button class="next-button">Next</button>
 
-                         
-                          
-                           
-                          
-                          
-                     </div> 
-                    
+          </mat-toolbar>
+          <div fxLayout="column" class="processing-card-content-div" fxLayoutAlign="center center">
 
-                  </mat-card-content>
-                
+
+            <div class="process-container" fxLayout="row" fxLayoutGap="10px">
+              <div class="timing-container" fxLayout="column" fxLayoutAlign="space-between center">
+                <div class="timer-box" fxLayout="column" fxLayoutAlign="center center">
+                  <mat-label class="small-label">Time Passed</mat-label>
+                  <mat-label class="header-label big-label" fxFlexOffset="2px">{{totalTimePassed}}</mat-label>
+                </div>
+                <div class="timer-box" fxLayout="column" fxLayoutAlign="center center">
+                  <mat-label class="small-label">Current</mat-label>
+                  <mat-label class="header-label big-label" fxFlexOffset="2px">286476</mat-label>
+                </div>
+                <div class="timer-box" fxLayout="column" fxLayoutAlign="center center">
+                  <mat-label class="small-label">Next</mat-label>
+                  <mat-label class="header-label big-label" fxFlexOffset="2px">286476</mat-label>
+                </div>
+              </div>
+
+              <mat-card class="processing-patient-card" [class.mat-elevation-z2]="true">
+                <mat-card-header *ngIf="consultStarted">
+                  <img mat-card-avatar src="https://material.angular.io/assets/img/examples/shiba1.jpg">
+                  <mat-card-title>
+                    <mat-label class="header-label">{{currentPaient.name}}</mat-label>
+                  </mat-card-title>
+                  <!-- <mat-card-title> {{currentPaient.name}}></mat-card-title> -->
+
+                  <mat-card-subtitle>{{currentPaient.getStatus()}}</mat-card-subtitle>
+                </mat-card-header>
+
+                <mat-card-content fxLayout="column" fxLayoutGap="15px">
+
+
+                  <mat-accordion>
+                    <mat-expansion-panel>
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          About
+                        </mat-panel-title>
+                        <mat-panel-description>
+                          <span fxFlex="1 1 auto"></span>
+                          <mat-icon>info</mat-icon>
+                        </mat-panel-description>
+                      </mat-expansion-panel-header>
+                      <div fxLayout="column" fxLayoutGap="10px">
+
+
+                        <div fxLayout="row" fxLayoutGap="30px">
+                          <mat-label>Booking Id</mat-label>
+                          <span fxFlex="1 1 auto"></span>
+                          <mat-label>{{currentPaient.getBookingId()}}</mat-label>
+                        </div>
+                        <div fxLayout="row" fxLayoutGap="30px">
+                          <mat-label>Booking Time</mat-label>
+                          <span fxFlex="1 1 auto"></span>
+                          <mat-label>{{currentPaient.getBookingTime()}}</mat-label>
+                        </div>
+                        <div fxLayout="row" fxLayoutGap="30px">
+                          <mat-label>Condition</mat-label>
+                          <span fxFlex="1 1 auto"></span>
+                          <!-- <mat-label>{{currentPaient.getCondition()}}</mat-label> -->
+                        </div>
+                        <div fxLayout="row" fxLayoutGap="30px">
+                          <mat-label>From</mat-label>
+                          <span fxFlex="1 1 auto"></span>
+                          <mat-label>{{currentPaient.getFrom()}}</mat-label>
+                        </div>
+
+                        <div fxLayout="row" fxLayoutGap="30px">
+                          <mat-label>Phone</mat-label>
+                          <span fxFlex="1 1 auto"></span>
+                          <mat-icon class="small-icon" matTooltip={{currentPaient.getPhone()}}>phone</mat-icon>
+                          <!-- <mat-label>{{currentPaient.getPhone()}}</mat-label> -->
+                        </div>
+
+                      </div>
+                    </mat-expansion-panel>
+                  </mat-accordion>
+
+                  <mat-accordion>
+                    <mat-expansion-panel>
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          More Option
+                        </mat-panel-title>
+                        <mat-panel-description>
+                          <span fxFlex="1 1 auto"></span>
+                          <mat-icon>settings</mat-icon>
+                        </mat-panel-description>
+                      </mat-expansion-panel-header>
+                      <div fxLayout="column">
+                        <button mat-raised-button class="lighter-button">Meet later</button>
+                        <button mat-flat-button class="alert-button setting-buttons" fxFlexOffset="10px">Cancel
+                          meeting</button>
+
+                      </div>
+
+                    </mat-expansion-panel>
+                  </mat-accordion>
+
+                  <button mat-raised-button class="green-button">Start Meeting</button>
+                </mat-card-content>
               </mat-card>
-        </div>
-       
-        <div fxLayout="column" fxFlexOffset="20px" class="upcoming-list">
-            <!-- <mat-toolbar class="header-toolbar">
+
+            </div>
+
+
+
+
+
+
+          </div>
+
+
+        </mat-card-content>
+
+      </mat-card>
+    </div>
+
+    <div fxLayout="column" fxFlexOffset="20px" class="upcoming-list">
+      <!-- <mat-toolbar class="header-toolbar">
                 <mat-label>Processed</mat-label>
             </mat-toolbar>
             <div cdkDropList class="patient-list" (cdkDropListDropped)="drop($event)">
                 <div class="patient-list-box" *ngFor="let patient of upcomingPatient" cdkDrag>{{patient}}</div>
             </div> -->
-            <mat-accordion>
-                <mat-expansion-panel >
-                  <mat-expansion-panel-header >
-                    <mat-panel-title fxLayoutAlign=" center">
-                       
-                      <mat-label fxFlexOffset="5px">Pending meetings : #56</mat-label>  
-                    </mat-panel-title>
-                    <mat-panel-description >
-                      <span fxFlex="1 1 auto"></span> <mat-icon  >add_task</mat-icon>
-                    </mat-panel-description>
-                  </mat-expansion-panel-header>
-                  <div fxLayout="column">
-                    <div cdkDropList class="patient-list" (cdkDropListDropped)="drop($event)">
-                        <div class="patient-list-box" *ngFor="let patient of upcomingPatient" cdkDrag>{{patient}}</div>
-                    </div>
-                                     
-                  </div>     
-                      
-                </mat-expansion-panel>
-              </mat-accordion>
-        </div>
-        <div fxLayout="column" class="upcoming-list">
-            <mat-accordion>
-                <mat-expansion-panel >
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <mat-label>Meetings completed : #58</mat-label>  
-                    
-                    </mat-panel-title>
-                    <mat-panel-description>
-                      <span fxFlex="1 1 auto"></span><mat-icon class="green-icon">done_all</mat-icon>
-                    </mat-panel-description>
-                  </mat-expansion-panel-header>
-                  <div fxLayout="column">
-                    <div cdkDropList class="patient-list" (cdkDropListDropped)="drop($event)">
-                        <div class="patient-list-box" *ngFor="let patient of upcomingPatient" cdkDrag>{{patient}}</div>
-                    </div>
-                                     
-                  </div>     
-                      
-                </mat-expansion-panel>
-              </mat-accordion>
-        </div>
-        <span fxFlex="1 1 15px"></span>
-    </div>
-    <div fxLayout="column" fxFlex="1 1 auto" >
-        <mat-toolbar class="header-toolbar">
-            <mat-label>Bookings</mat-label>
-            <span fxFlex="1 1 auto"></span>
-            
-            <mat-label>#50</mat-label>
-          </mat-toolbar>
-          
-          <div #bookingList class="booking-list-wrapper">
-            <div  cdkDropList  class="patient-list fancy-scrollbar" (cdkDropListDropped)="drop($event)">
-                <div class="patient-list-box" *ngFor="let movie of movies" cdkDrag>{{movie}}</div>
-              </div>
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title fxLayoutAlign=" center">
+
+              <mat-label fxFlexOffset="5px">Pending meetings : #56</mat-label>
+            </mat-panel-title>
+            <mat-panel-description>
+              <span fxFlex="1 1 auto"></span>
+              <mat-icon>add_task</mat-icon>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div fxLayout="column">
+            <div cdkDropList class="patient-list" (cdkDropListDropped)="drop($event)">
+              <div class="patient-list-box" *ngFor="let patient of upcomingPatient" cdkDrag>{{patient}}</div>
+            </div>
+
           </div>
-          
+
+        </mat-expansion-panel>
+      </mat-accordion>
     </div>
-   
-     
+    <div fxLayout="column" class="upcoming-list">
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <mat-label>Meetings completed : #58</mat-label>
+
+            </mat-panel-title>
+            <mat-panel-description>
+              <span fxFlex="1 1 auto"></span>
+              <mat-icon class="green-icon">done_all</mat-icon>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div fxLayout="column">
+            <div cdkDropList class="patient-list" (cdkDropListDropped)="drop($event)">
+              <div class="patient-list-box" *ngFor="let patient of upcomingPatient" cdkDrag>{{patient}}</div>
+            </div>
+
+          </div>
+
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+    <span fxFlex="1 1 15px"></span>
+  </div>
+  <div fxLayout="column" fxFlex="1 1 auto">
+    <mat-toolbar class="header-toolbar">
+      <mat-label>Bookings</mat-label>
+      <span fxFlex="1 1 auto"></span>
+
+      <mat-label>#50</mat-label>
+    </mat-toolbar>
+
+    <div #bookingList class="booking-list-wrapper">
+      <div cdkDropList class="patient-list fancy-scrollbar" (cdkDropListDropped)="drop($event)">
+        <div class="patient-list-box" *ngFor="let movie of movies" cdkDrag>{{movie}}</div>
+      </div>
+    </div>
+
+  </div>
+
+
 </div>

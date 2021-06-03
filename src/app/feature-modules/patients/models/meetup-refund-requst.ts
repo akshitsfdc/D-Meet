@@ -1,5 +1,5 @@
 import { DocumentReference } from '@angular/fire/firestore';
-export class MeetupRefundRequest{
+export class MeetupRefundRequest {
 
     private amount: number;
     private patientName: string;
@@ -10,7 +10,7 @@ export class MeetupRefundRequest{
 
 
     constructor() { }
-    
+
     public getAmount(): number {
         return this.amount;
     }
@@ -58,9 +58,5 @@ export class MeetupRefundRequest{
     public setReason(reason: string): void {
         this.reason = reason;
     }
-
-
-
-
 
 }
