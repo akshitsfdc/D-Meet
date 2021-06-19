@@ -1,5 +1,5 @@
 import { DocumentReference } from '@angular/fire/firestore';
-import { BookedPatient } from "./booked-patient";
+import { BookedPatient } from './booked-patient';
 import { QueueTimers } from './queue-timers';
 
 
@@ -28,6 +28,7 @@ export class QueueModel {
     private consultingStarted: boolean;
     private bookings: BookedPatient[];
     private currentPatient: BookedPatient;
+    private nextPatient: BookedPatient;
     private nextNumber: string;
     private nextId: string;
     private myBooking: BookedPatient;
@@ -44,6 +45,16 @@ export class QueueModel {
     constructor() {
         this.bookings = [];
     }
+
+
+    public getNextPatient(): BookedPatient {
+        return this.nextPatient;
+    }
+
+    public setNextPatient(nextPatient: BookedPatient): void {
+        this.nextPatient = nextPatient;
+    }
+
 
     public getBookingEndingRemaingTime(): number {
         return this.bookingEndingRemaingTime;

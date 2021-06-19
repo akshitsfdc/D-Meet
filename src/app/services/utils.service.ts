@@ -19,7 +19,7 @@ export class UtilsService {
 
   public millisToTimeString(milliseconds: number): string {
 
-    milliseconds -= 5.5 * 3600000; //for IST
+    milliseconds -= 5.5 * 3600000; // for IST
 
     return new Date(milliseconds).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -31,7 +31,7 @@ export class UtilsService {
     return new Date(milliseconds).toLocaleString();
   }
   public get24Time(milliseconds: number) {
-    let date: Date = new Date(milliseconds);
+    const date: Date = new Date(milliseconds);
     const hr = date.getHours();
     const mi = date.getMinutes();
     return hr + ':' + mi;
@@ -46,9 +46,9 @@ export class UtilsService {
   }
   public getDay(milliseconds: number): string {
 
-    milliseconds -= 5.5 * 3600000; //for IST
+    milliseconds -= 5.5 * 3600000; // for IST
 
-    let week: string[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const week: string[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     return week[new Date(milliseconds).getDay()];
   }
@@ -61,7 +61,7 @@ export class UtilsService {
   }
   public getWorkingDays(holidays: string[]): string[] {
 
-    let week: string[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const week: string[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     holidays.forEach(element => {
       const index = week.indexOf(element, 0);
@@ -74,7 +74,7 @@ export class UtilsService {
   }
   public isWithinTimeFrame(startMs: number | 0, endMs: number | 0, type?: string): boolean {
 
-    let currentTime: number = this.getMillisFromDate(new Date());
+    const currentTime: number = this.getMillisFromDate(new Date());
 
     if (currentTime < endMs && currentTime >= startMs) {
       return true;
@@ -93,8 +93,8 @@ export class UtilsService {
     let difference;
     milliseconds = this.getISTMilliseconds(milliseconds);
 
-    let targetDate: Date = new Date(milliseconds);
-    let currentDate: Date = new Date();
+    const targetDate: Date = new Date(milliseconds);
+    const currentDate: Date = new Date();
 
     difference = this.getDifferenceBetweenHrMi(currentDate, targetDate);
 
@@ -103,11 +103,11 @@ export class UtilsService {
 
   getDifferenceBetweenHrMi(currentDate: Date, targetDate: Date): number {
 
-    let currentHr: number = currentDate.getHours();
-    let currentMi: number = currentDate.getMinutes();
+    const currentHr: number = currentDate.getHours();
+    const currentMi: number = currentDate.getMinutes();
 
-    let targetHr: number = targetDate.getHours();
-    let targetMi: number = targetDate.getMinutes();
+    const targetHr: number = targetDate.getHours();
+    const targetMi: number = targetDate.getMinutes();
 
     let hrDifference: number, miDifference: number, totalMilliseconds: number;
 
@@ -134,7 +134,7 @@ export class UtilsService {
 
   getTimeDifference(from: number): number {
 
-    let nowMills: number = this.getMillisFromDate(new Date());
+    const nowMills: number = this.getMillisFromDate(new Date());
 
     let difference: number;
 
@@ -167,7 +167,7 @@ export class UtilsService {
 
   private async getIstTimeServer(): Promise<number> {
 
-    let currentTime: number;// = this.getMillisFromDate(new Date());;
+    let currentTime: number; // = this.getMillisFromDate(new Date());;
 
     await this.http.getServerDate()
       .then(dateObjs => {
@@ -175,8 +175,8 @@ export class UtilsService {
       })
       .catch(error => {
 
-        //error
-      })
+        // error
+      });
 
     return currentTime;
   }
@@ -238,13 +238,12 @@ export class UtilsService {
     await this.http.getServerDate()
       .then(dateObjs => {
 
-        let utcMillies: number = this.getUtCMillies(dateObjs.timestapmIST);
+        const utcMillies: number = this.getUtCMillies(dateObjs.timestapmUTC);
 
-        currentTime = this.getMillisFromDate(new Date(utcMillies));;
+        currentTime = this.getMillisFromDate(new Date(utcMillies));
       })
       .catch(error => {
-
-        //error
+        // error
       });
 
     if (+currentTime <= endMs && +currentTime >= startMs) {
@@ -260,7 +259,7 @@ export class UtilsService {
 
   public shouldShowTimingDisplay(millies: number): boolean {
 
-    let difference = this.getTriggerTime(millies);
+    const difference = this.getTriggerTime(millies);
 
     if (difference <= 7200000) {
       return true;
@@ -276,7 +275,7 @@ export class UtilsService {
   }
 
   public showLoading(message: string): void {
-    this.loadingIndicator = this.matDialog.open(LoadingDialogComponent, { disableClose: true, data: { message: message } });
+    this.loadingIndicator = this.matDialog.open(LoadingDialogComponent, { disableClose: true, data: { message } });
   }
   public hideLoading(): void {
     if (this.loadingIndicator) {

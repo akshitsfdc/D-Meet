@@ -22,9 +22,9 @@ export class DoctorFirestoreService {
         return docRef.update(data);
     }
 
-    public startQueue(bookingCurrentRef: DocumentReference, queueRef: DocumentReference, currentData: any, queueData: any) {
+    public startQueue(bookingCurrentRef: DocumentReference, queueRef: DocumentReference, currentData: any, queueData: any): Promise<void> {
 
-        let batch = this.firestore.firestore.batch();
+        const batch = this.firestore.firestore.batch();
 
         batch.update(bookingCurrentRef, currentData);
 
@@ -34,9 +34,10 @@ export class DoctorFirestoreService {
     }
 
     public finalizeCurrentPatient(bookingCurrentRef: DocumentReference, bookingNextRef: DocumentReference,
-        queueRef: DocumentReference, currentData: any, nextData: any, queueData: any, queueEnded: boolean) {
+                                  queueRef: DocumentReference, currentData: any,
+                                  nextData: any, queueData: any, queueEnded: boolean): Promise<void> {
 
-        let batch = this.firestore.firestore.batch();
+        const batch = this.firestore.firestore.batch();
 
         batch.update(bookingCurrentRef, currentData);
 

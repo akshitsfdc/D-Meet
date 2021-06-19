@@ -8,35 +8,35 @@ import { GeoCollectionReference, GeoDocumentReference, GeoFirestore, GeoQuery } 
 
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 
 export class GeoService {
 
   geofirestore: GeoFirestore;
-  geocollection:GeoCollectionReference;  
+  geocollection: GeoCollectionReference;
 
-  constructor() { 
-    this.geofirestore = new GeoFirestore(firebase.firestore());    
+  constructor() {
+    this.geofirestore = new GeoFirestore(firebase.firestore());
   }
 
-  public setGeoCollection(collectionName:string){
-    this.geocollection = this.geofirestore.collection(collectionName);    
+  public setGeoCollection(collectionName: string): void {
+    this.geocollection = this.geofirestore.collection(collectionName);
   }
 
-  getGeopoints(lat:number, long:number):firebase.firestore.GeoPoint{
+  getGeopoints(lat: number, long: number): firebase.firestore.GeoPoint {
 
-    return new firebase.firestore.GeoPoint(lat,long)
+    return new firebase.firestore.GeoPoint(lat, long);
   }
-  
-  saveInGeoCollection(documentId:string,data:any):Promise<void>{
+
+  saveInGeoCollection(documentId: string, data: any): Promise<void> {
     return this.geocollection.doc(documentId).set(data);
   }
 
-  getnearbyDoctors(lat:number, long:number, rad:number, limit:number):Promise<any>{
+  getnearbyDoctors(lat: number, long: number, rad: number, limit: number): Promise<any> {
 
-    const query:GeoQuery = this.geocollection.near({ center: new firebase.firestore.GeoPoint(lat, long), radius: rad });
-    
+    const query: GeoQuery = this.geocollection.near({ center: new firebase.firestore.GeoPoint(lat, long), radius: rad });
+
     return query.limit(limit).get();
   }
 

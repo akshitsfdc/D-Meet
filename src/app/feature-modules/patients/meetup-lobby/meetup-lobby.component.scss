@@ -1,241 +1,246 @@
-
-
 @import "src/scss/vars";
 
-
-.parent{
-    padding: 15px 15px 0px 15px;
-    overflow: auto;
+.parent {
+  padding: 15px 15px 0px 15px;
+  overflow: auto;
 }
 
 //drag and drop start
 
 .patient-list {
-    width: auto;
-    max-width: 100%;
-    border: solid 1px #ccc;
-    min-height: 60px;
-    display: block;
-    background: white;
-    border-radius: 4px;
-    overflow: hidden;
-    overflow-x: hidden;
-    margin-bottom: 15px;
-  }
-  
-  .patient-list-box {
-    padding: 20px 10px 0px 10px;
-    border-bottom: solid 1px #ccc;
-    color: rgba(0, 0, 0, 0.87);
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    box-sizing: border-box;
-    cursor: move;
-    background: white;
-    font-size: 14px;
-  }
-  
-  .cdk-drag-preview {
-    box-sizing: border-box;
-    border-radius: 4px;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-                0 8px 10px 1px rgba(0, 0, 0, 0.14),
-                0 3px 14px 2px rgba(0, 0, 0, 0.12);
-  }
-  
-  .cdk-drag-placeholder {
-    opacity: 0;
-  }
-  
-  .cdk-drag-animating {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-  }
-  
-  .example-box:last-child {
-    border: none;
-  }
-  
-  .example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-  }
-
-  mat-toolbar{
-    border: solid 1px #ccc;
-  }
-
-  .upcoming-list{
-    height: fit-content;
-  }
-  .processing-toolbar{
-    height:60px;
-    background-color: $grey-darker;
-}
-  .header-toolbar{
-      height:60px;
-      background-color: $grey-lighter;
-  }
-  .booking-list-wrapper{
-    overflow-x: hidden;
-    overflow-y: auto;;
-}
-  .processing-card{
-    height: fit-content;
-    width: auto;
-    padding: 0px;
-  }
-  .info-box{
-    width: 100%;
-    background-color: white;
-    padding: 15px 0px 15px 0px;
-  }
-  .info-boxes{
-    height: fit-content;
-
-  }
-  .processing-card-content{
-    height: 100%;
-    width: 100%;
-  }
-  .processing-card-content-div{
-    height: 100%;
-    width: 100%;
-    padding-top: 30px;
-    padding-bottom: 30px;
-  }
-  .button-container{
-    width: 100%;
-    margin-bottom: 10px;
-  }
-  .processing-patient-card{
-    width: fit-content;
-    max-width: 300px;
-    height: fit-content;
-    align-self: center;
-    z-index: 1;
-  }
-  .doctor-card{
-    // background-color: $grey-lighter;
-  }
-  .next-button{
-    color: $primary;
-    width: fit-content;
-  }
-  .process-container{
-    height: fit-content;
-    width: fit-content;
-  }
-  .timing-container{
-    
-    width: auto;
-
-  }
-  .status-label{
-    color: $accent;
-    font-size: 10px;
-    width: fit-content;
-    height: fit-content;
-  }
-  .small-icon{
-    font-size: 20px;
-  }
-  .map-type-control{
-    height: 10px;
-  }
-.patient-info-header{
+  width: auto;
+  max-width: 100%;
+  border: solid 1px #ccc;
+  min-height: 60px;
+  display: block;
+  background: white;
+  border-radius: 4px;
+  overflow: hidden;
+  overflow-x: hidden;
+  margin-bottom: 15px;
 }
 
-.patient-info-status-div{
+.patient-list-box {
+  padding: 20px 10px 0px 10px;
+  border-bottom: solid 1px #ccc;
+  color: rgba(0, 0, 0, 0.87);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  cursor: move;
+  background: white;
+  font-size: 14px;
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.example-box:last-child {
+  border: none;
+}
+
+.example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+mat-toolbar {
+  border: solid 1px #ccc;
+}
+
+.upcoming-list {
+  height: fit-content;
+}
+.processing-toolbar {
+  height: 60px;
+  background-color: $grey-darker;
+}
+.header-toolbar {
+  height: 60px;
+  background-color: $grey-lighter;
+}
+.booking-list-wrapper {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.processing-card {
+  height: fit-content;
+  width: auto;
+  padding: 0px;
+}
+.info-box {
+  width: 100%;
+  background-color: white;
+  padding: 15px 0px 15px 0px;
+}
+.info-boxes {
+  height: fit-content;
+}
+.processing-card-content {
+  height: 100%;
+  width: 100%;
+}
+.processing-card-content-div {
+  height: 100%;
+  width: 100%;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+.button-container {
+  width: 100%;
+  margin-bottom: 10px;
+}
+.processing-patient-card {
+  width: fit-content;
+  max-width: 300px;
+  height: fit-content;
+  align-self: center;
+  z-index: 1;
+}
+.doctor-card {
+  // background-color: $grey-lighter;
+}
+.next-button {
+  color: $primary;
+  width: fit-content;
+}
+.process-container {
+  height: fit-content;
+  width: fit-content;
+}
+.timing-container {
+  width: auto;
+}
+.status-label {
+  color: $accent;
+  font-size: 10px;
+  width: fit-content;
+  height: fit-content;
+}
+.small-icon {
+  font-size: 20px;
+}
+.map-type-control {
+  height: 10px;
+}
+.patient-info-header {
+}
+
+.patient-info-status-div {
   height: 100%;
   width: 100px;
 }
 
-.first-label{
+.first-label {
   color: #ffffff;
 }
-  
-  .position-card{
-    padding: 5px 10px 5px 10px;
 
-  }
-  .position-card-1{
-  
+.position-card {
+  padding: 5px 10px 5px 10px;
+}
+.position-card-1 {
   background-color: $accent;
-  }
-  .position-card-2{
+}
+.position-card-2 {
   background-color: $alert;
-  }
-  .position-card-3{
-     background-color: $primary;
-  }
-  .processing-indicator-wrapper{
-    width: fit-content;
-    height: fit-content;
-  }
-  mat-progress-bar{
-    // width: 500px;
-    position: absolute;
-    top: 50%;
-  }
-  .buffet-wrapper{
-    width: fit-content;
-    height: fit-content;
-    position: relative;
-  }
- .bottom-card-div{
-   width: 100%;
- }
- mat-card-footer{
-   width: 100%;
- }
- .footer-div{
-   width: 100%;
-
- }
-.blu-lable{
+}
+.position-card-3 {
+  background-color: $primary;
+}
+.processing-indicator-wrapper {
+  width: fit-content;
+  height: fit-content;
+}
+mat-progress-bar {
+  // width: 500px;
+  position: absolute;
+  top: 50%;
+}
+.buffet-wrapper {
+  width: fit-content;
+  height: fit-content;
+  position: relative;
+}
+.bottom-card-div {
+  width: 100%;
+}
+mat-card-footer {
+  width: 100%;
+}
+.footer-div {
+  width: 100%;
+}
+.blu-lable {
   cursor: pointer;
   color: $primary;
   align-self: center;
   text-decoration: underline;
 }
-.blu-lable:hover{
+.blu-lable:hover {
   z-index: 10px;
 }
 
-.live-label{
+.live-label {
   color: #ffffff;
-  }
-  
-  .status-card{
-  padding: 5px 10px 5px 10px;
-  }
-  .status-card-live{
-  
-  background-color: $warn;
-  }
-  .status-card-booking{
-  background-color: $alert;
-  }
-  .status-card-scheduled{
-  background-color: $grey-lighter;
-  }
-  .queue-card{
-      height: fit-content;
-  }
- 
-  .current-patient-bg{
-    background-color: $light-green;
-  }
-  .processed-icon{
-    font-size: 16px;
+}
 
-  }
-  .pending-icon {
-    font-size: 16px;
-    color: $warn;
-  }
-  
+.status-card {
+  padding: 5px 10px 5px 10px;
+}
+.status-card-live {
+  background-color: $warn;
+}
+.status-card-booking {
+  background-color: $alert;
+}
+.status-card-scheduled {
+  background-color: $grey-lighter;
+}
+.queue-card {
+  height: fit-content;
+}
+
+.current-patient-bg {
+  background-color: $light-green;
+}
+.processed-icon {
+  font-size: 16px;
+}
+.pending-icon {
+  font-size: 16px;
+  color: $warn;
+}
+
+.header-status-icon {
+  font-size: 24px;
+  height: fit-content;
+  width: fit-content;
+}
+.header-status-lable {
+  font-size: 16px;
+}
+.icon-live {
+  color: $warn;
+}
+.icon-booking {
+  color: $alert;
+}
+.icon-scheduled {
+  color: $primary;
+}
 
 // .temp{
 //     width: 0;

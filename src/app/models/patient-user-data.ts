@@ -1,16 +1,25 @@
 export class PatientUserData {
 
-    private email:string;
-    private firstName:string;
-    private lastName:string;
-    private gender:string;
-    private age:number;
-    private picUrl:string;
-    private userId:string;
-    private registrationLocalTimeStapm:number;
+    private email: string;
+    private firstName: string;
+    private lastName: string;
+    private gender: string;
+    private age: number;
+    private picUrl: string;
+    private userId: string;
+    private registrationLocalTimeStapm: number;
+    private doctor: boolean;
 
-    constructor(){}
-    
+    constructor() { }
+
+    public isDoctor(): boolean {
+        return this.doctor;
+    }
+
+    public setDoctor(doctor: boolean): void {
+        this.doctor = doctor;
+    }
+
     public getEmail(): string {
         return this.email;
     }

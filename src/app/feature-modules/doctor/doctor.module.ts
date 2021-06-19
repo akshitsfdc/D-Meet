@@ -1,3 +1,4 @@
+
 import { CommonFeaturesModule } from './../common-features/common-features.module';
 import { DoctorFirestoreService } from './services/doctor-firestore.service';
 import { QueuesComponent } from './queues/queues.component';
@@ -5,7 +6,6 @@ import { ProfileEditComponent } from './profile-edit/profile-edit.component';
 import { MovePatientComponent } from './move-patient/move-patient.component';
 import { MainNavigationComponent } from './main-navigation/main-navigation.component';
 import { LiveQueueDetailsComponent } from './live-queue-details/live-queue-details.component';
-import { LiveQueueComponent } from './live-queue/live-queue.component';
 import { DoctorProfileComponent } from './doctor-profile/doctor-profile.component';
 import { CreateQueueComponent } from './create-queue/create-queue.component';
 import { BankKycFormComponent } from './bank-kyc-form/bank-kyc-form.component';
@@ -16,13 +16,15 @@ import { MeetupLobbyComponent } from './meetup-lobby/meetup-lobby.component';
 import { ConferenceComponent } from './conference/conference.component';
 import { BaseComponent } from './base/base.component';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+import { SessionService } from './services/session.service';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
     BankKycFormComponent,
     CreateQueueComponent,
     DoctorProfileComponent,
-    LiveQueueComponent,
+    DashboardComponent,
     LiveQueueDetailsComponent,
     MainNavigationComponent,
     MovePatientComponent,
@@ -33,12 +35,13 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
     ConferenceComponent,
     BaseComponent
   ],
+
   imports: [
     DoctorRoutingModule,
     CommonFeaturesModule,
     NgxMaterialTimepickerModule.setLocale('en-US')
   ],
-  providers: [DoctorFirestoreService],
+  providers: [DoctorFirestoreService, SessionService],
   bootstrap: [BaseComponent]
 })
 export class DoctorModule { }

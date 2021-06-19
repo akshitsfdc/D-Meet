@@ -1,3 +1,4 @@
+
 import { NgModule } from '@angular/core';
 import { PatientsRoutingModule } from './patients-routing.module';
 import { ProfileComponent } from './profile/profile.component';
@@ -13,8 +14,10 @@ import { PatientFirestoreService } from './service/patient-firestore.service';
 import { BookingRescheduleSelectorComponent } from './booking-reschedule-selector/booking-reschedule-selector.component';
 import { CancelMeetingAlertComponent } from './cancel-meeting-alert/cancel-meeting-alert.component';
 import { RequestRefundComponent } from './request-refund/request-refund.component';
-import { CalculationService } from './service/calculation.service';
 import { CommonFeaturesModule } from '../common-features/common-features.module';
+import { CalculationService } from '../common-features/services/calculation.service';
+import { SessionService } from './service/session.service';
+import { SearchService } from './service/search.service';
 
 @NgModule({
   declarations: [
@@ -35,7 +38,7 @@ import { CommonFeaturesModule } from '../common-features/common-features.module'
     PatientsRoutingModule,
     CommonFeaturesModule
   ],
-  providers: [PatientFirestoreService, CalculationService],
+  providers: [PatientFirestoreService, CalculationService, SessionService, SearchService],
   bootstrap: [BaseComponent]
 
 })

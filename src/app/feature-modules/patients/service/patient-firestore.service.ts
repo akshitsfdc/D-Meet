@@ -1,6 +1,6 @@
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentChangeAction, DocumentData, DocumentReference } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentChangeAction, DocumentData, DocumentReference, QuerySnapshot } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { QueueModel } from '../../common-features/models/queue-model';
 
@@ -19,41 +19,42 @@ export class PatientFirestoreService {
   }
   public getScheduledMeetings(patientId: string, dateStr: string, limit: number): Observable<DocumentChangeAction<unknown>[]> {
 
-    let collectionPath: string = "queue-bookings";
+    const collectionPath = 'queue-bookings';
 
 
     return this.firestore.collection(collectionPath, ref =>
-      ref.where("patientId", "==", patientId)
-        .where("processed", "==", false)
-        .where("dateString", "==", dateStr)
-        .where("cancelled", "==", false)
+      ref.where('patientId', '==', patientId)
+        .where('processed', '==', false)
+        .where('dateString', '==', dateStr)
+        .where('cancelled', '==', false)
         .limit(limit)
-        .orderBy("bookingTimeServer", 'desc')
+        .orderBy('bookingTimeServer', 'desc')
     )
       .stateChanges();
 
   }
 
-  public getMyBookings(patientId: string, limit: number, firstRequest: boolean, document?: DocumentData): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
+  public getMyBookings(patientId: string, limit: number,
+    firstRequest: boolean, document?: DocumentData): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
 
-    let collectionPath: string = "queue-bookings";
+    const collectionPath = 'queue-bookings';
 
     if (firstRequest) {
       return this.firestore.collection(collectionPath, ref =>
-        ref.where("patientId", "==", patientId)
-          .where("processed", "==", true)
+        ref.where('patientId', '==', patientId)
+          .where('processed', '==', true)
           .limit(limit)
-          .orderBy("processedTimeServer")
+          .orderBy('processedTimeServer')
 
       ).get()
         .toPromise();
     } else {
 
       return this.firestore.collection(collectionPath, ref =>
-        ref.where("patientId", "==", patientId)
-          .where("processed", "==", true)
+        ref.where('patientId', '==', patientId)
+          .where('processed', '==', true)
           .limit(limit)
-          .orderBy("processedTimeServer")
+          .orderBy('processedTimeServer')
           .startAfter(document)
       ).get()
         .toPromise();
@@ -61,89 +62,33 @@ export class PatientFirestoreService {
 
 
   }
-  public getMyFilteredBookings(patientId: string, limit: number, firstRequest: boolean, fromTime?: number, toTime?: number, document?: DocumentData): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
+  public getMyFilteredBookings(patientId: string, limit: number,
+    firstRequest: boolean,
+    fromTime?: number, toTime?: number,
+    document?: DocumentData): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
 
-    let collectionPath: string = "queue-bookings";
+    const collectionPath = 'queue-bookings';
 
     if (firstRequest) {
       return this.firestore.collection(collectionPath, ref =>
-        ref.where("patientId", "==", patientId)
-          .where("processed", "==", true)
-          .where("processedTimeServer", ">=", fromTime)
-          .where("processedTimeServer", "<=", toTime)
+        ref.where('patientId', '==', patientId)
+          .where('processed', '==', true)
+          .where('processedTimeServer', '>=', fromTime)
+          .where('processedTimeServer', '<=', toTime)
           .limit(limit)
-          .orderBy("processedTimeServer")
+          .orderBy('processedTimeServer')
 
       ).get()
         .toPromise();
     } else {
 
       return this.firestore.collection(collectionPath, ref =>
-        ref.where("patientId", "==", patientId)
-          .where("processed", "==", true)
-          .where("processedTimeServer", ">=", fromTime)
-          .where("processedTimeServer", "<=", toTime)
+        ref.where('patientId', '==', patientId)
+          .where('processed', '==', true)
+          .where('processedTimeServer', '>=', fromTime)
+          .where('processedTimeServer', '<=', toTime)
           .limit(limit)
-          .orderBy("processedTimeServer")
-          .startAfter(document)
-      ).get()
-        .toPromise();
-    }
-
-
-  }
-
-  public getCancelledBookings(patientId: string, limit: number, firstRequest: boolean, document?: DocumentData): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
-
-    let collectionPath: string = "queue-bookings";
-
-    if (firstRequest) {
-      return this.firestore.collection(collectionPath, ref =>
-        ref.where("patientId", "==", patientId)
-          .where("cancelled", "==", true)
-          .limit(limit)
-          .orderBy("processedTimeServer")
-
-      ).get()
-        .toPromise();
-    } else {
-
-      return this.firestore.collection(collectionPath, ref =>
-        ref.where("patientId", "==", patientId)
-          .where("cancelled", "==", true)
-          .limit(limit)
-          .orderBy("processedTimeServer")
-          .startAfter(document)
-      ).get()
-        .toPromise();
-    }
-
-
-  }
-  public getCancelledFilteredBookings(patientId: string, limit: number, firstRequest: boolean, fromTime?: number, toTime?: number, document?: DocumentData): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
-
-    let collectionPath: string = "queue-bookings";
-
-    if (firstRequest) {
-      return this.firestore.collection(collectionPath, ref =>
-        ref.where("patientId", "==", patientId)
-          .where("cancelled", "==", true)
-          .where("processedTimeServer", ">=", fromTime)
-          .where("processedTimeServer", "<=", toTime)
-          .limit(limit)
-          .orderBy("processedTimeServer")
-
-      ).get()
-        .toPromise();
-    } else {
-
-      return this.firestore.collection(collectionPath, ref =>
-        ref.where("patientId", "==", patientId)
-          .where("cancelled", "==", true)
-          .where("processedTimeServer", ">=", fromTime)
-          .where("processedTimeServer", "<=", toTime)
-          .limit(limit)
-          .orderBy("processedTimeServer")
+          .orderBy('processedTimeServer')
           .startAfter(document)
       ).get()
         .toPromise();
@@ -152,28 +97,29 @@ export class PatientFirestoreService {
 
   }
 
-  public getUnhandledBookings(patientId: string, limit: number, firstRequest: boolean, document?: DocumentData): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
+  public getCancelledBookings(patientId: string,
+    limit: number,
+    firstRequest: boolean,
+    document?: DocumentData): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
 
-    let collectionPath: string = "queue-bookings";
+    const collectionPath = 'queue-bookings';
 
     if (firstRequest) {
       return this.firestore.collection(collectionPath, ref =>
-        ref.where("patientId", "==", patientId)
-          .where("cancelled", "==", false)
-          .where("processed", "==", false)
+        ref.where('patientId', '==', patientId)
+          .where('cancelled', '==', true)
           .limit(limit)
-          .orderBy("bookingTimeServer")
+          .orderBy('processedTimeServer')
 
       ).get()
         .toPromise();
     } else {
 
       return this.firestore.collection(collectionPath, ref =>
-        ref.where("patientId", "==", patientId)
-          .where("cancelled", "==", false)
-          .where("processed", "==", false)
+        ref.where('patientId', '==', patientId)
+          .where('cancelled', '==', true)
           .limit(limit)
-          .orderBy("bookingTimeServer")
+          .orderBy('processedTimeServer')
           .startAfter(document)
       ).get()
         .toPromise();
@@ -181,32 +127,106 @@ export class PatientFirestoreService {
 
 
   }
-  public getUnhandledFilteredBookings(patientId: string, limit: number, firstRequest: boolean, fromTime?: number, toTime?: number, document?: DocumentData): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
+  public getCancelledFilteredBookings(patientId: string,
+    limit: number,
+    firstRequest: boolean,
+    fromTime?: number,
+    toTime?: number,
+    document?: DocumentData): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
 
-    const collectionPath: string = "queue-bookings";
+    const collectionPath = 'queue-bookings';
 
     if (firstRequest) {
       return this.firestore.collection(collectionPath, ref =>
-        ref.where("patientId", "==", patientId)
-          .where("cancelled", "==", false)
-          .where("processed", "==", false)
-          .where("bookingTimeServer", ">=", fromTime)
-          .where("bookingTimeServer", "<=", toTime)
+        ref.where('patientId', '==', patientId)
+          .where('cancelled', '==', true)
+          .where('processedTimeServer', '>=', fromTime)
+          .where('processedTimeServer', '<=', toTime)
           .limit(limit)
-          .orderBy("bookingTimeServer")
+          .orderBy('processedTimeServer')
 
       ).get()
         .toPromise();
     } else {
 
       return this.firestore.collection(collectionPath, ref =>
-        ref.where("patientId", "==", patientId)
-          .where("cancelled", "==", false)
-          .where("processed", "==", false)
-          .where("bookingTimeServer", ">=", fromTime)
-          .where("bookingTimeServer", "<=", toTime)
+        ref.where('patientId', '==', patientId)
+          .where('cancelled', '==', true)
+          .where('processedTimeServer', '>=', fromTime)
+          .where('processedTimeServer', '<=', toTime)
           .limit(limit)
-          .orderBy("bookingTimeServer")
+          .orderBy('processedTimeServer')
+          .startAfter(document)
+      ).get()
+        .toPromise();
+    }
+
+
+  }
+
+  public getUnhandledBookings(patientId: string,
+    limit: number,
+    firstRequest: boolean,
+    document?: DocumentData): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
+
+    const collectionPath = 'queue-bookings';
+
+    if (firstRequest) {
+      return this.firestore.collection(collectionPath, ref =>
+        ref.where('patientId', '==', patientId)
+          .where('cancelled', '==', false)
+          .where('processed', '==', false)
+          .limit(limit)
+          .orderBy('bookingTimeServer')
+
+      ).get()
+        .toPromise();
+    } else {
+
+      return this.firestore.collection(collectionPath, ref =>
+        ref.where('patientId', '==', patientId)
+          .where('cancelled', '==', false)
+          .where('processed', '==', false)
+          .limit(limit)
+          .orderBy('bookingTimeServer')
+          .startAfter(document)
+      ).get()
+        .toPromise();
+    }
+
+
+  }
+  public getUnhandledFilteredBookings(patientId: string,
+    limit: number,
+    firstRequest: boolean,
+    fromTime?: number,
+    toTime?: number,
+    document?: DocumentData): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
+
+    const collectionPath = 'queue-bookings';
+
+    if (firstRequest) {
+      return this.firestore.collection(collectionPath, ref =>
+        ref.where('patientId', '==', patientId)
+          .where('cancelled', '==', false)
+          .where('processed', '==', false)
+          .where('bookingTimeServer', '>=', fromTime)
+          .where('bookingTimeServer', '<=', toTime)
+          .limit(limit)
+          .orderBy('bookingTimeServer')
+
+      ).get()
+        .toPromise();
+    } else {
+
+      return this.firestore.collection(collectionPath, ref =>
+        ref.where('patientId', '==', patientId)
+          .where('cancelled', '==', false)
+          .where('processed', '==', false)
+          .where('bookingTimeServer', '>=', fromTime)
+          .where('bookingTimeServer', '<=', toTime)
+          .limit(limit)
+          .orderBy('bookingTimeServer')
           .startAfter(document)
       ).get()
         .toPromise();
@@ -220,11 +240,11 @@ export class PatientFirestoreService {
 
   public sendPostpondRequest(doctorId: string, request: any, pDocRef: DocumentReference, pData: any): Promise<void> {
 
-    let collectionPath: string = "user-data/" + doctorId + "/notifications";
+    const collectionPath: string = 'user-data/' + doctorId + '/notifications';
 
-    let dNotiRef: DocumentReference = this.firestore.collection(collectionPath).doc(request.notificationId).ref;
+    const dNotiRef: DocumentReference = this.firestore.collection(collectionPath).doc(request.notificationId).ref;
 
-    let batch = this.firestore.firestore.batch();
+    const batch = this.firestore.firestore.batch();
 
 
     batch.set(dNotiRef, request, { merge: true });
@@ -238,14 +258,14 @@ export class PatientFirestoreService {
 
   public sendRefundRequest(doctorId: string, notification: any, pDocRef: DocumentReference, pData: any, request: any): Promise<void> {
 
-    let notificationPath: string = "user-data/" + doctorId + "/notifications";
-    let requestPath: string = "refund-requests";
+    const notificationPath: string = 'user-data/' + doctorId + '/notifications';
+    const requestPath = 'refund-requests';
 
 
-    let dNotiRef: DocumentReference = this.firestore.collection(notificationPath).doc(notification.notificationId).ref;
-    let requestRef: DocumentReference = this.firestore.collection(requestPath).doc(notification.notificationId).ref;
+    const dNotiRef: DocumentReference = this.firestore.collection(notificationPath).doc(notification.notificationId).ref;
+    const requestRef: DocumentReference = this.firestore.collection(requestPath).doc(notification.notificationId).ref;
 
-    let batch = this.firestore.firestore.batch();
+    const batch = this.firestore.firestore.batch();
 
     batch.set(dNotiRef, notification, { merge: true });
 
@@ -263,11 +283,11 @@ export class PatientFirestoreService {
 
     // this.firestore.firestore.runTransaction()
 
-    let collectionPath: string = "user-data/" + doctorId + "/notifications";
+    const collectionPath: string = 'user-data/' + doctorId + '/notifications';
 
-    let dNotiRef: DocumentReference = this.firestore.collection(collectionPath).doc(request.notificationId).ref;
+    const dNotiRef: DocumentReference = this.firestore.collection(collectionPath).doc(request.notificationId).ref;
 
-    let batch = this.firestore.firestore.batch();
+    const batch = this.firestore.firestore.batch();
 
 
     batch.set(dNotiRef, request, { merge: true });
@@ -281,26 +301,26 @@ export class PatientFirestoreService {
 
   public saveBooking(dateString: string, booking: any): Promise<void> {
 
-    console.log("patientFirestoreService >> saveBooking : " + booking.doctorId);
+    console.log('patientFirestoreService >> saveBooking : ' + booking.doctorId);
 
-    let collectionPathQ: string = "user-data/" + booking.doctorId + "/queues";
+    const collectionPathQ: string = 'users/' + booking.doctorId + '/queues';
 
-    let queueRef: DocumentReference = this.firestore.collection(collectionPathQ).doc(booking.queueId).ref;
+    const queueRef: DocumentReference = this.firestore.collection(collectionPathQ).doc(booking.queueId).ref;
 
-    const bookingDocId = booking.patientId + "_" + booking.bookingId;
+    const bookingDocId = booking.patientId + '_' + booking.bookingId;
 
-    let bookingRef: DocumentReference = this.firestore.collection('queue-bookings').doc(bookingDocId).ref;
+    const bookingRef: DocumentReference = this.firestore.collection('queue-bookings').doc(bookingDocId).ref;
 
     return this.firestore.firestore.runTransaction(transaction =>
       // This code may get re-run multiple times if there are conflicts.
       transaction.get(queueRef)
         .then(queue => {
 
-          console.log("Transaction >> get completed !");
+          console.log('Transaction >> get completed !');
 
-          let queueModel: QueueModel = new QueueModel();
+          const queueModel: QueueModel = new QueueModel();
           Object.assign(queueModel, queue.data());
-          let newcount = (queueModel.getCurrentBookingsCount() || 0) + 1;
+          const newcount = (queueModel.getCurrentBookingsCount() || 0) + 1;
 
           if (dateString === queueModel.getTodayDateString()) {
             transaction.update(queueRef, { currentBookingsCount: newcount });
@@ -314,7 +334,7 @@ export class PatientFirestoreService {
 
         })
         .catch(error => {
-          console.log("Error getting queue info : " + error);
+          console.log('Error getting queue info : ' + error);
 
         })
     );
@@ -322,5 +342,24 @@ export class PatientFirestoreService {
     // .catch(error => console.log("Transaction failed: ", error));
   }
 
+  public getGlobalDoctorsStartAfter(collection: string, limit: number, document: DocumentData): Promise<QuerySnapshot<DocumentData>> {
+
+    return this.firestore.collection(collection, ref =>
+      ref
+        .where('doctor', '==', true)
+        .startAfter(document)
+        .limit(limit))
+      .get().toPromise();
+
+  }
+  public getGlobalDoctorsAll(collection: string, limit: number): Promise<QuerySnapshot<DocumentData>> {
+
+    return this.firestore.collection(collection, ref =>
+      ref
+        .where('doctor', '==', true)
+        .limit(limit))
+      .get().toPromise();
+
+  }
 
 }

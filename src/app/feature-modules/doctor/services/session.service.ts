@@ -1,12 +1,14 @@
+import { ManagementService } from './../../common-features/services/management.service';
 
 import { AuthService } from './../../../services/auth.service';
 import { UtilsService } from './../../../services/utils.service';
 import { Injectable } from '@angular/core';
-import { DoctorUserData } from 'src/app/models/doctor-user-data';
+
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { HttpService } from 'src/app/services/http.service';
 import { QueueModel } from '../../common-features/models/queue-model';
 import { BookedPatient } from '../../common-features/models/booked-patient';
+import { DoctorUserData } from '../../common-features/models/doctor-user-data';
 
 @Injectable()
 
@@ -18,7 +20,12 @@ export class SessionService {
 
   private queues: QueueModel[];
 
-  constructor(private utils: UtilsService, private firestore: FirestoreService, private http: HttpService, private authService: AuthService) {
+  public profilePlaceholder = '/assets/imgs/profile_placeholder.svg';
+
+  constructor(private utils: UtilsService,
+    private firestore: FirestoreService, private http: HttpService,
+    private authService: AuthService,
+    private managerService: ManagementService) {
 
     this.queues = [];
 
@@ -26,14 +33,14 @@ export class SessionService {
 
   }
 
-  public initSession() {
+  public initSession(): void {
     this.authService.getUser()
       .then(userData => {
         this.loadDoctorData(userData.uid);
       })
       .catch(error => {
-        //error
-        console.log("no auth >> ");
+        // error
+        console.log('no auth >> ');
 
       });
   }
@@ -67,37 +74,37 @@ export class SessionService {
 
   private loadDoctorData(userId: string): void {
 
-    let currentRef = this;
+    const currentRef = this;
 
-    this.firestore.getValueChanges('user-data', userId)
+    this.firestore.getValueChanges('users', userId)
       .subscribe(
 
         {
-          next(userData) {
-            let user: DoctorUserData = new DoctorUserData();
+          next(userData): void {
+            const user: DoctorUserData = new DoctorUserData();
             Object.assign(user, userData);
             if (currentRef.getUserData() === null || currentRef.getUserData() === undefined) {
               currentRef.setUserData(user);
-
-              console.log("got user data >> new ");
+              currentRef.managerService.presenseManagement(user.getUserId(), user.isDoctor());
+              console.log('got user data >> new ');
             } else {
               currentRef.updateUserData(user);
-              console.log("got user data updated ");
+              console.log('got user data updated ');
             }
 
           },
-          error(msg) {
-            console.log("Obs error >> : " + msg);
+          error(msg): void {
+            console.log('Obs error >> : ' + msg);
           },
           complete: () => console.log('completed')
         });
 
-    this.firestore.getQueuesCollection('user-data/' + userId + '/queues')
+    this.firestore.getQueuesCollection('users/' + userId + '/queues')
       .subscribe(docChangeList => {
 
         docChangeList.forEach(queue => {
 
-          let queueObj: QueueModel = new QueueModel();
+          const queueObj: QueueModel = new QueueModel();
 
           Object.assign(queueObj, queue.payload.doc.data());
           queueObj.setDocRef(queue.payload.doc.ref);
@@ -106,17 +113,18 @@ export class SessionService {
 
           switch (queue.payload.type) {
 
-            case "added":
+            case 'added':
               currentRef.getUserData().getQueues().push(queueObj);
-              currentRef.changeQueueStatus(queueObj);
               currentRef.loadBookings(queueObj);
+              currentRef.setNext(queueObj);
               break;
 
-            case "modified":
+            case 'modified':
               // currentRef.changeQueueStatus(queueObj);
-              currentRef.updateQueueOfUser(queueObj);
+              // currentRef.updateQueueOfUser(queueObj);
+              currentRef.setNext(queueObj);
               break;
-            case "removed":
+            case 'removed':
               currentRef.deleteQueue(queueObj);
               break;
 
@@ -124,15 +132,15 @@ export class SessionService {
 
         });
 
-      })
+      });
   }
   private deleteQueue(queueUpdate: QueueModel): void {
 
-    let queues = this.userData.getQueues();
+    const queues = this.userData.getQueues();
 
     for (let i = 0; i < queues.length; ++i) {
 
-      let queue = queues[i];
+      const queue = queues[i];
 
       if (queue.getQueueId() === queueUpdate.getQueueId()) {
 
@@ -184,7 +192,7 @@ export class SessionService {
     }
   }
 
-  private updateQueue(queue: QueueModel, end?: boolean) {
+  private updateQueue(queue: QueueModel, end?: boolean): void {
 
     console.log('updateQueue >> ');
 
@@ -194,21 +202,21 @@ export class SessionService {
     }
     if (this.utils.isWithinTimeFrame(queue.getBookingStarting(), queue.getBookingEnding(), 'ist')) {
       queue.setStatus('booking');
-      console.log("status changed to booking.");
+      console.log('status changed to booking.');
     } else {
       queue.setStatus('scheduled');
     }
     if (this.utils.isWithinTimeFrame(queue.getConsultingStarting(), queue.getConsultingEnding(), 'ist')) {
       queue.setStatus('live');
-      console.log("status changed to live.");
+      console.log('status changed to live.');
     }
 
   }
 
 
-  public loadBookings(queue: QueueModel) {
+  public loadBookings(queue: QueueModel): void {
 
-    let currentRef = this;
+    const currentRef = this;
 
 
     this.http.getServerDate()
@@ -219,10 +227,13 @@ export class SessionService {
         const date: Date = new Date(millies);
         const dateStr: string = date.getDate() + '' + date.getMonth() + '' + date.getFullYear();
 
-        console.log("dateStr : " + dateStr);
+        console.log('dateStr : ' + dateStr);
 
 
-        this.firestore.getBookingChanges("queue-bookings", "doctorId", queue.getOwnerId(), "dateString", dateStr, "queueId", queue.getQueueId(), "bookingTimeServer")
+        this.firestore.getBookingChanges('queue-bookings',
+          'doctorId', queue.getOwnerId(), 'dateString', dateStr,
+          'queueId', queue.getQueueId(), 'bookingTimeServer')
+
           .subscribe(docChangeList => {
 
             docChangeList.forEach(updatedPatient => {
@@ -230,7 +241,7 @@ export class SessionService {
               // console.log(updatedPatient.payload.doc.data());
               // console.log(updatedPatient.payload.type);
 
-              let patient: BookedPatient = new BookedPatient();
+              const patient: BookedPatient = new BookedPatient();
 
               Object.assign(patient, updatedPatient.payload.doc.data());
               patient.setDocReference(updatedPatient.payload.doc.ref);
@@ -239,77 +250,101 @@ export class SessionService {
 
               switch (updatedPatient.payload.type) {
 
-                case "added":
+                case 'added':
                   patient.setQueuePlace(queue.getBookings().length + 1);
                   if (patient.isCurrentPatient()) {
                     queue.setCurrentPatient(patient);
                   }
                   queue.getBookings().push(patient);
-                  currentRef.checkQueueCompleteNess(queue);
                   break;
 
-                case "modified":
+                case 'modified':
                   currentRef.updatePatient(patient, queue);
-                  currentRef.checkQueueCompleteNess(queue);
                   break;
-                case "removed":
+                case 'removed':
                   break;
 
               }
 
             });
-            currentRef.setCurrentNext(queue);
-          })
+            currentRef.setNext(queue);
+            currentRef.setCurrentPatient(queue);
+          });
       });
   }
 
-  private checkQueueCompleteNess(queue: QueueModel) {
+  private setNext(queue: QueueModel): void {
 
+    queue.setNextPatient(this.findNextPatient(queue));
 
-    for (let i = 0; i < queue.getBookings().length; ++i) {
-
-      let patient = queue.getBookings()[i];
-
-      if (!patient.isProcessed()) {
-        queue.setQueueEnded(false);
-        return;
-      }
-    }
-    queue.setNextNumber("")
-    queue.setQueueEnded(true);
   }
 
-  private setCurrentNext(queue: QueueModel) {
+  private setCurrentPatient(queue: QueueModel): void {
 
+    // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < queue.getBookings().length; ++i) {
-
-      let patient = queue.getBookings()[i];
-
-      if ((!patient.isCurrentPatient() && !patient.isProcessed())) {
-        queue.setNextId(patient.getBookingId());
-        queue.setNextNumber("" + patient.getQueuePlace());
+      const patient = queue.getBookings()[i];
+      if (patient.isCurrentPatient()) {
+        queue.setCurrentPatient(patient);
         return;
       }
 
     }
-    queue.setNextNumber("");
+    queue.setCurrentPatient(null);
   }
 
-  private updatePatient(patientUpdate: BookedPatient, queue: QueueModel) {
+
+  private findNextPatient(queue: QueueModel): BookedPatient {
+
+    const pId: string = queue.getCurrentPatient()?.getBookingId() || '';
+
+    // tslint:disable-next-line:prefer-for-of
+    for (let i = 0; i < queue.getBookings().length; ++i) {
+      const patient = queue.getBookings()[i];
+      if (!patient.isPending() && !patient.isProcessed() && pId !== patient.getBookingId()) {
+        return patient;
+      }
+
+    }
+
+    return this.findNextPendingPatient(queue);
+
+  }
+
+  private findNextPendingPatient(queue: QueueModel): BookedPatient {
+
+    // tslint:disable-next-line:prefer-for-of
+    for (let i = 0; i < queue.getBookings().length; ++i) {
+      const patient = queue.getBookings()[i];
+
+      console.log('Searching for pending patients');
+
+      if (patient.isPending() && !patient.isProcessed()) {
+        console.log('Found pending patient');
+        return patient;
+      }
+
+    }
+    return null;
+  }
+
+  private updatePatient(patientUpdate: BookedPatient, queue: QueueModel): void {
 
 
+    // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < queue.getBookings().length; ++i) {
 
-      let patient = queue.getBookings()[i];
+      const patient = queue.getBookings()[i];
 
       if (patientUpdate.getBookingId() === patient.getBookingId()) {
 
-        patient.setName(patientUpdate.getName())
+        patient.setName(patientUpdate.getName());
         patient.setPhone(patientUpdate.getPhone());
         patient.setCurrentPatient(patientUpdate.isCurrentPatient());
         patient.setPending(patientUpdate.isPending());
         patient.setProcessed(patientUpdate.isProcessed());
         patient.setPicUrl(patientUpdate.getPicUrl());
+        patient.setStatus(patientUpdate.getStatus());
 
         if (patient.isCurrentPatient()) {
           queue.setCurrentPatient(patient);
@@ -322,13 +357,14 @@ export class SessionService {
 
   }
 
-  private updateQueueOfUser(queueUpdate: QueueModel) {
+  private updateQueueOfUser(queueUpdate: QueueModel): void {
 
-    let queues = this.userData.getQueues();
+    const queues = this.userData.getQueues();
 
+    // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < queues.length; ++i) {
 
-      let queue = queues[i];
+      const queue = queues[i];
 
       if (queue.getQueueId() === queueUpdate.getQueueId()) {
 
@@ -371,9 +407,6 @@ export class SessionService {
     this.userData.setDiseaseSpecialist(userDataUpdate.getDiseaseSpecialist());
     this.userData.setCoordinates(userDataUpdate.getCoordinates());
     this.userData.setStatus(userDataUpdate.getStatus());
-
-
-    console.log("new user user id : " + this.getUserData().getUserId());
 
   }
 

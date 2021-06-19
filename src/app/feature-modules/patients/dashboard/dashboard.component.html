@@ -95,11 +95,10 @@
                     <mat-label>Status</mat-label>
                     <span fxFlex="1 1 auto"></span>
                     <ng-container *ngIf="queue.isActive()">
-                      <mat-card [ngClass]="{'status-card': true, 'status-card-live': (queue.getStatus()==='live'), 'status-card-booking': (queue.getStatus()==='booking'),
-                              'status-card-scheduled': (queue.getStatus()==='scheduled')}">
+                      <mat-card [ngClass]="helper.getStatusCardClass(queue)">
                         <mat-card-content>
-                          <mat-label [ngClass]="{'live-label': (queue.getStatus() !=='scheduled')}">
-                            {{queue.getStatus()==='live'?utils.capitalize(queue.getStatus()):utils.initCap(queue.getStatus())}}
+                          <mat-label [ngClass]="helper.getStatusLabelClass(queue)">
+                            {{helper.getStatusText(queue)}}
                           </mat-label>
                         </mat-card-content>
                       </mat-card>

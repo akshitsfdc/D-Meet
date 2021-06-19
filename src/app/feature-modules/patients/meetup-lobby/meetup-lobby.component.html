@@ -7,35 +7,44 @@
 
       <mat-card class="processing-card" [class.mat-elevation-z8]="true">
         <mat-card-content fxLayout="column" class="processing-card-content">
-          <mat-toolbar class="header-toolbar">
-            <mat-label>Meeting Room</mat-label>
 
+          <!-- Processing card header -->
+          <mat-toolbar class="header-toolbar">
+
+
+            <mat-icon class="header-status-icon" [ngClass]="helper.getStatusClass(currentQueue)">lens</mat-icon>
+
+
+            <mat-label class="header-status-lable" fxFlexOffset="5px">Meeting Room -
+              {{helper.getStatusText(currentQueue)}}
+            </mat-label>
             <span fxFlex="1 1 auto"></span>
 
-            <mat-icon>meeting_room</mat-icon>
-
           </mat-toolbar>
-          <div fxLayout="column" class="processing-card-content-div" fxLayoutAlign="center center">
 
+          <!-- End of Processing card header -->
+
+
+          <div fxLayout="column" class="processing-card-content-div" fxLayoutAlign="center center">
 
             <div class="buffet-wrapper">
 
-
-              <ng-container *ngIf="!bookingavailable">
+              <!-- 
+              <ng-container *ngIf="!helper.isBookingAvailable(currentQueue)">
                 <mat-progress-bar mode="buffer"></mat-progress-bar>
-              </ng-container>
+              </ng-container> -->
 
               <div class="process-container" fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="center center">
 
 
 
+                <!-- Doctor information card -->
                 <mat-card class="processing-patient-card doctor-card" [class.mat-elevation-z2]="true">
-                  <mat-card-header *ngIf="consultStarted">
-                    <img mat-card-avatar
-                      src="https://images.theconversation.com/files/304957/original/file-20191203-66986-im7o5.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=1200.0&fit=crop">
+                  <mat-card-header>
+                    <img mat-card-avatar [src]="currentDoctor.getPicUrl()"
+                      src-fallback="{{session.profilePlaceholder}}">
                     <mat-card-title>
-                      <mat-label class="header-label">Dr. {{currentDoctor.getFirstName()+' '+currentDoctor.getLastName()
-                        }}</mat-label>
+                      <mat-label class="header-label">{{helper.printDoctorName(currentDoctor)}}</mat-label>
                     </mat-card-title>
                     <mat-card-subtitle>{{currentDoctor.getStatus() || "offline"}}</mat-card-subtitle>
                     <span fxFlex="1 1 auto"></span>
@@ -91,27 +100,38 @@
 
 
                 </mat-card>
+                <!-- End of Doctor information card -->
 
 
-                <ng-container *ngIf="currentQueue.getCurrentPatient() && currentQueue.getBookings().length > 0">
+
+                <ng-container *ngIf="helper.showThisPatient(currentQueue.getCurrentPatient())">
+
+                  <!-- Meeting timer box -->
 
                   <div class="processing-indicator-wrapper" *ngIf="currentQueue.getCurrentPatient()">
 
+                    <!-- block for showing current meeting time -->
                     <div class="timer-box" fxLayout="column" fxLayoutAlign="center center">
 
                       <mat-label class="small-label">Current meeting</mat-label>
-                      <mat-label class="header-label" fxFlexOffset="5px">
+                      <mat-label fxFlexOffset="5px"
+                        [ngClass]="{'header-label':true, 'red-label':currentMeetingTime > calculation.getMinutesToMillis(currentQueue.getTimePerPatient())}">
                         {{calculation.getRemainingTimeString(currentMeetingTime)}}</mat-label>
                     </div>
+
+
                     <!-- <mat-icon>settings</mat-icon> -->
 
 
                   </div>
+                  <!-- End of Meeting timer box -->
 
-                  <mat-card *ngIf="currentQueue.getCurrentPatient()" class="processing-patient-card"
-                    [class.mat-elevation-z2]="true">
+                  <!-- current Patient information card -->
+                  <mat-card *ngIf="helper.showThisPatient(currentQueue.getCurrentPatient())"
+                    class="processing-patient-card" [class.mat-elevation-z2]="true">
                     <mat-card-header *ngIf="consultStarted">
-                      <img mat-card-avatar src="https://material.angular.io/assets/img/examples/shiba1.jpg">
+                      <img mat-card-avatar src="currentQueue.getCurrentPatient().getPicUrl()"
+                        src-fallback="{{session.profilePlaceholder}}">
                       <mat-card-title>
                         <mat-label class="header-label">{{currentQueue.getCurrentPatient().getName()}}</mat-label>
                       </mat-card-title>
@@ -142,11 +162,15 @@
                     </mat-card-content>
 
                   </mat-card>
+                  <!-- End of current Patient information card -->
+
+
                 </ng-container>
 
               </div>
 
-              <mat-progress-bar mode="buffer" *ngIf="currentQueue.getCurrentPatient()"></mat-progress-bar>
+              <mat-progress-bar mode="buffer" *ngIf="helper.showThisPatient(currentQueue.getCurrentPatient())">
+              </mat-progress-bar>
             </div>
 
 
@@ -162,16 +186,38 @@
 
     <div class="timing-container" fxLayout="row wrap" fxFlexOffset="20px" fxLayoutAlign="space-between center">
       <!-- <span></span> -->
-      <div class="timer-box" fxLayout="row" fxLayoutAlign="center center">
+      <div class="timer-box" fxLayout="column" fxLayoutAlign="center center">
         <mat-label class="small-label">Current patient</mat-label>
-        <mat-label class="header-label " fxFlexOffset="10px">
-          {{currentQueue.getCurrentPatient()?currentQueue.getCurrentPatient().getBookingId():'__'}}</mat-label>
+        <ng-container *ngIf="helper.showThisPatient(currentQueue.getCurrentPatient())">
+          <div fxLayout="row">
+            <mat-label class="header-label ">
+              {{currentQueue.getCurrentPatient().getName()}}</mat-label>
+            <mat-label class="header-label " fxFlexOffset="2px">
+              - #{{currentQueue.getCurrentPatient().getQueuePlace()}}</mat-label>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!helper.showThisPatient(currentQueue.getCurrentPatient())">
+          <mat-label class="header-label">__</mat-label>
+        </ng-container>
       </div>
 
-      <div class="timer-box" fxLayout="row" fxLayoutAlign="center center">
-        <mat-label class="small-label">Next patient</mat-label>
-        <mat-label class="header-label " fxFlexOffset="10px">
-          {{currentQueue.getNextNumber()?"#"+currentQueue.getNextNumber():'__'}}</mat-label>
+      <div class="timer-box" fxLayout="column" fxLayoutAlign="center center">
+        <mat-label class="small-label">Next patient
+        </mat-label>
+
+        <ng-container *ngIf="helper.showThisPatientAsNext(currentQueue.getNextPatient())">
+          <div fxLayout="row">
+            <mat-label class="header-label ">
+              {{currentQueue.getNextPatient().getName()}}</mat-label>
+            <mat-label class="header-label " fxFlexOffset="10px">
+              - #{{currentQueue.getNextPatient().getQueuePlace()}}</mat-label>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!helper.showThisPatient(currentQueue.getNextPatient())">
+          <mat-label class="header-label">__</mat-label>
+        </ng-container>
+
+
       </div>
 
     </div>
@@ -186,7 +232,13 @@
         <mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title>
-              Queue Information
+              <div fxLayout="row">
+                <mat-label> Queue Information </mat-label>
+                <ng-container
+                  *ngIf="!helper.isBookingAvailable(currentQueue) || currentQueue.getBookings().length >= currentQueue.getPatientLimit()">
+                  <mat-label class="red-label">&nbsp;- Booking Closed</mat-label>
+                </ng-container>
+              </div>
             </mat-panel-title>
             <mat-panel-description>
               <span fxFlex="1 1 auto"></span>
@@ -302,7 +354,8 @@
         <!-- <span></span> -->
         <div class="timer-box" fxLayout="row" fxLayoutAlign="center center">
           <mat-label class="small-label">Your meeting will start in</mat-label>
-          <mat-label class="header-label highlighted-text" fxFlexOffset="10px">
+          <mat-label fxFlexOffset="10px"
+            [ngClass]="{'header-label':true, 'highlighted-text':currentQueue.getMyBooking().getSelfWaitingTime() >= calculation.getMinutesToMillis(currentQueue.getTimePerPatient()), 'green-label': currentQueue.getMyBooking().getSelfWaitingTime() < calculation.getMinutesToMillis(currentQueue.getTimePerPatient()) }">
             {{currentQueue.getMyBooking().getSelfWaitingTimeString()}}</mat-label>
         </div>
         <div class="timer-box" fxLayout="row" fxLayoutAlign="center center">
@@ -386,8 +439,7 @@
 
 
           <mat-card-header class="patient-info-header">
-            <img mat-card-avatar
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4QcsAkyJy8YJXzB_ODAR9Q88d50--zfXfNw&usqp=CAU">
+            <img mat-card-avatar src="booking.getPicUrl()" src-fallback="{{session.profilePlaceholder}}">
             <mat-card-title fxLayout="row">
               <mat-label class="header-label">{{booking.getName()}}</mat-label>
 
@@ -403,7 +455,7 @@
               </ng-container>
             </mat-card-title>
             <mat-card-subtitle fxLayout="row">
-              {{booking.getStatus()}}
+              {{booking.getStatus() || 'offline'}}
             </mat-card-subtitle>
           </mat-card-header>
 

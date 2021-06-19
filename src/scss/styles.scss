@@ -131,6 +131,12 @@ div::-webkit-scrollbar-thumb {
   font-size: small;
   cursor: pointer;
 }
+.green-label{
+  color: $accent;
+}
+.red-label{
+  color: $warn;
+}
 .green-icon{
   color: $accent;
 }

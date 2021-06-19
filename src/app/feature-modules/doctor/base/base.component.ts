@@ -5,12 +5,11 @@ import { SessionService } from '../services/session.service';
 @Component({
   selector: 'app-base',
   templateUrl: './base.component.html',
-  styleUrls: ['./base.component.css'],
-  providers:[SessionService]
+  styleUrls: ['./base.component.css']
 })
 export class BaseComponent implements OnInit {
 
-  constructor(private router:Router) { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
 

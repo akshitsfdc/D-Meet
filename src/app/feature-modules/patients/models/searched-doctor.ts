@@ -1,4 +1,5 @@
-import { DoctorUserData } from 'src/app/models/doctor-user-data';
+
+import { DoctorUserData } from '../../common-features/models/doctor-user-data';
 import { QueueModel } from '../../common-features/models/queue-model';
 export class SearchedDoctor {
 
@@ -59,7 +60,7 @@ export class SearchedDoctor {
         this.queueInitialized = queueInitialized;
     }
 
-    public changeCurrentDoctor(doctor: DoctorUserData) {
+    public changeCurrentDoctor(doctor: DoctorUserData): void {
 
         if (doctor !== null && this.currentDoctor !== null) {
 

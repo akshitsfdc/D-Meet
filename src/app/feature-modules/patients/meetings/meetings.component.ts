@@ -1,4 +1,4 @@
-import { CalculationService } from './../service/calculation.service';
+
 import { SearchedDoctor } from './../models/searched-doctor';
 import { RequestRefundComponent } from './../request-refund/request-refund.component';
 import { CancelMeetingAlertComponent } from './../cancel-meeting-alert/cancel-meeting-alert.component';
@@ -23,6 +23,7 @@ import { RefundRequestNotification } from '../../common-features/models/n-refund
 import { MeetupRefundRequest } from '../models/meetup-refund-requst';
 import { BookingCancledNotification } from '../../common-features/models/n-booking-canceled';
 import { PNBookingReschedule } from '../../common-features/models/p-n-booking-reschedule';
+import { CalculationService } from '../../common-features/services/calculation.service';
 
 
 
@@ -57,10 +58,10 @@ class IntervalWrapper {
 export class MeetingsComponent implements OnInit, OnDestroy {
 
 
-  public serverDateString: string = "";
+  public serverDateString = '';
 
-  private loadLimit: number = 1;
-  private serverDate: number = 0;
+  private loadLimit = 1;
+  private serverDate = 0;
 
   private subscriptions: Subscription[] = [];
   private intervalWrappers: IntervalWrapper[] = [];
@@ -87,13 +88,13 @@ export class MeetingsComponent implements OnInit, OnDestroy {
     end: new FormControl()
   });
   constructor(public session: SessionService,
-    private firestore: PatientFirestoreService,
-    private http: HttpService, public utills: UtilsService,
-    private matDialog: MatDialog,
-    public searchService: SearchService,
-    public utils: UtilsService,
-    public calculation: CalculationService,
-    private router: Router) {
+              private firestore: PatientFirestoreService,
+              private http: HttpService, public utills: UtilsService,
+              private matDialog: MatDialog,
+              public searchService: SearchService,
+              public utils: UtilsService,
+              public calculation: CalculationService,
+              private router: Router) {
 
     this.liveBookings.bookings = [];
     this.myBokings.bookings = [];
@@ -129,7 +130,7 @@ export class MeetingsComponent implements OnInit, OnDestroy {
   }
 
 
-  private loadLiveBookings() {
+  private loadLiveBookings(): void {
 
     const userId: string = this.session.getUserData().getUserId();
 
@@ -151,21 +152,21 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
 
             this.liveBookings.initCompleted = true;
-            if (docChangeList.length == 0) {
+            if (docChangeList.length === 0) {
               this.liveBookings.noData = true;
             } else {
               this.liveBookings.noData = false;
             }
-            console.log("Live booking subscribed ! " + docChangeList.length);
+            console.log('Live booking subscribed ! ' + docChangeList.length);
 
             docChangeList.forEach(async (change) => {
 
               switch (change.payload.type) {
 
-                case "added":
-                  let booking: BookedPatient = new BookedPatient();
-                  let postPone: BookingPostpond = new BookingPostpond();
-                  let refund: BookingRefund = new BookingRefund();
+                case 'added':
+                  const booking: BookedPatient = new BookedPatient();
+                  const postPone: BookingPostpond = new BookingPostpond();
+                  const refund: BookingRefund = new BookingRefund();
 
                   Object.assign(booking, change.payload.doc.data());
 
@@ -182,13 +183,13 @@ export class MeetingsComponent implements OnInit, OnDestroy {
                   this.subscribeToQueue(booking);
 
                   break;
-                case "modified":
-                  let bookingUpdate: BookedPatient = new BookedPatient();
+                case 'modified':
+                  const bookingUpdate: BookedPatient = new BookedPatient();
                   Object.assign(bookingUpdate, change.payload.doc.data());
                   this.updateBookings(this.liveBookings, bookingUpdate);
                   bookingUpdate.setDocReference(change.payload.doc.ref);
                   break;
-                case "removed":
+                case 'removed':
 
                   break;
 
@@ -199,50 +200,50 @@ export class MeetingsComponent implements OnInit, OnDestroy {
       })
       .catch(error => {
         this.utills.hideLoading();
-        console.log("Server date error " + error);
+        console.log('Server date error ' + error);
 
       });
 
 
   }
 
-  private subscribeToQueue(booking: BookedPatient) {
+  private subscribeToQueue(booking: BookedPatient): void {
 
     const thisRef = this;
 
     booking.getQueueRef().onSnapshot({
-      next(snapshot) {
-        let queue: QueueModel = new QueueModel();
+      next(snapshot): void {
+        const queue: QueueModel = new QueueModel();
         Object.assign(queue, snapshot.data());
         booking.setSelfWaitingTime(thisRef.calculation.getRemainingTimeBeforeMeeting(queue, booking));
-        //console.log("Time : " + thisRef.calculation.getRemainingTimeBeforeMeeting(queue, booking));
+        // console.log("Time : " + thisRef.calculation.getRemainingTimeBeforeMeeting(queue, booking));
         if (!booking.isPending()) {
           thisRef.startTimer(booking);
         } else {
-          booking.setSelfWaitingTimeString("in pending list");
+          booking.setSelfWaitingTimeString('in pending list');
         }
 
       },
-      error(msg) {
-        console.log("Obs error subscribeToQueue >> : " + msg);
+      error(msg): void {
+        console.log('Obs error subscribeToQueue >> : ' + msg);
       },
       complete: () => console.log('subscribeToQueue >> completed')
-    })
+    });
 
 
   }
 
-  private startTimer(booking: BookedPatient) {
+  private startTimer(booking: BookedPatient): void {
 
 
 
-    let interval: NodeJS.Timeout = setInterval(() => {
+    const interval: NodeJS.Timeout = setInterval(() => {
 
-      let timeLeft = booking.getSelfWaitingTime() - 1000;
+      const timeLeft = booking.getSelfWaitingTime() - 1000;
 
       if (timeLeft <= 0) {
         booking.setSelfWaitingTime(0);
-        booking.setSelfWaitingTimeString("about to start...");
+        booking.setSelfWaitingTimeString('about to start...');
         clearInterval(interval);
       } else {
         booking.setSelfWaitingTime(timeLeft);
@@ -250,7 +251,7 @@ export class MeetingsComponent implements OnInit, OnDestroy {
       }
     }, 1000);
 
-    let intervalWrapper: IntervalWrapper = this.getInterValWrapper(booking.getBookingId());
+    const intervalWrapper: IntervalWrapper = this.getInterValWrapper(booking.getBookingId());
 
     if (intervalWrapper !== null) {
 
@@ -261,7 +262,8 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
     } else {
 
-      let intervalWrapper: IntervalWrapper = new IntervalWrapper();
+      // tslint:disable-next-line:no-shadowed-variable
+      const intervalWrapper: IntervalWrapper = new IntervalWrapper();
 
       intervalWrapper.interval = interval;
       intervalWrapper.bookingId = booking.getBookingId();
@@ -273,7 +275,8 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
   private getInterValWrapper(bookingId: string): IntervalWrapper {
 
-    for (let i: number = 0; i < this.intervalWrappers.length; ++i) {
+    // tslint:disable-next-line:prefer-for-of
+    for (let i = 0; i < this.intervalWrappers.length; ++i) {
       if (this.intervalWrappers[i].bookingId === bookingId) {
         return this.intervalWrappers[i];
       }
@@ -283,6 +286,7 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
   private updateBookings(bookingWrapper: BookingWrapper, bookingUpdate: BookedPatient): void {
 
+    // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < bookingWrapper.bookings.length; ++i) {
       if (bookingUpdate.getBookingId() === bookingWrapper.bookings[i].getBookingId()) {
         this.bookingReasign(bookingWrapper.bookings[i], bookingUpdate);
@@ -301,7 +305,7 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
     return -1;
   }
-  private removeFromList(wrapper: BookingWrapper, index: number) {
+  private removeFromList(wrapper: BookingWrapper, index: number): void {
     if (index === -1) {
       return;
     }
@@ -331,8 +335,8 @@ export class MeetingsComponent implements OnInit, OnDestroy {
     oldBooking.setAddress(newBooking.getAddress());
     oldBooking.setGender(newBooking.getGender());
 
-    let postPoneUpdate: BookingPostpond = new BookingPostpond();
-    let refund: BookingRefund = new BookingRefund();
+    const postPoneUpdate: BookingPostpond = new BookingPostpond();
+    const refund: BookingRefund = new BookingRefund();
 
     Object.assign(postPoneUpdate, newBooking.getPostpond());
     Object.assign(refund, newBooking.getRefund());
@@ -342,23 +346,23 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
   }
 
-  rangeChanged(wrapper: BookingWrapper, group: FormGroup) {
+  rangeChanged(wrapper: BookingWrapper, group: FormGroup): void {
 
-    const start: string = group.get("start").value || "";
-    const end: string = group.get("end").value || "";
+    const start: string = group.get('start').value || '';
+    const end: string = group.get('end').value || '';
 
-    console.log("start : " + start);
-    console.log("end : " + end);
+    console.log('start : ' + start);
+    console.log('end : ' + end);
 
     if (start.length === 0 || end.length === 0) {
       return;
     }
 
-    let startDate: Date = new Date(start);
-    let endDate: Date = new Date(end);
+    const startDate: Date = new Date(start);
+    const endDate: Date = new Date(end);
 
-    console.log("Start date number : " + startDate.getTime());
-    console.log("End date number : " + endDate.getTime());
+    console.log('Start date number : ' + startDate.getTime());
+    console.log('End date number : ' + endDate.getTime());
 
     wrapper.filterStart = startDate.getTime();
     wrapper.filterEnd = endDate.getTime();
@@ -375,7 +379,7 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
 
   }
-  public loadMoreAction(wrapper: BookingWrapper) {
+  public loadMoreAction(wrapper: BookingWrapper): void {
 
     if (wrapper === this.myBokings) {
 
@@ -427,14 +431,14 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
       })
       .catch(error => {
-        console.log("error > " + error);
+        console.log('error > ' + error);
         if (!firstRequest) {
           wrapper.loadingMore = false;
         } else {
           wrapper.initCompleted = true;
         }
 
-      })
+      });
   }
 
   private loadNonFilteredBookings(firstRequest: boolean, wrapper: BookingWrapper): void {
@@ -459,18 +463,18 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
       })
       .catch(error => {
-        console.log("error > " + error);
+        console.log('error > ' + error);
         if (!firstRequest) {
           wrapper.loadingMore = false;
         } else {
           wrapper.initCompleted = true;
         }
 
-      })
+      });
   }
 
 
-  //for cancelled
+  // for cancelled
 
   private loadCancelledFilteredBookings(firstRequest: boolean, wrapper: BookingWrapper): void {
 
@@ -482,7 +486,8 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
     const userId: string = this.session.getUserData().getUserId();
 
-    this.firestore.getCancelledFilteredBookings(userId, this.loadLimit, firstRequest, wrapper.filterStart, wrapper.filterEnd, wrapper.lastVisible)
+    this.firestore.getCancelledFilteredBookings(userId, this.loadLimit,
+      firstRequest, wrapper.filterStart, wrapper.filterEnd, wrapper.lastVisible)
       .then(snapshots => {
 
         if (!snapshots || !snapshots.docs) {
@@ -493,14 +498,14 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
       })
       .catch(error => {
-        console.log("error > " + error);
+        console.log('error > ' + error);
         if (!firstRequest) {
           wrapper.loadingMore = false;
         } else {
           wrapper.initCompleted = true;
         }
 
-      })
+      });
   }
 
   private loadCancelledBookings(firstRequest: boolean, wrapper: BookingWrapper): void {
@@ -529,7 +534,7 @@ export class MeetingsComponent implements OnInit, OnDestroy {
       })
       .catch(error => {
 
-        console.log("error > " + error);
+        console.log('error > ' + error);
 
         if (!firstRequest) {
           wrapper.loadingMore = false;
@@ -537,11 +542,11 @@ export class MeetingsComponent implements OnInit, OnDestroy {
           wrapper.initCompleted = true;
         }
 
-      })
+      });
   }
 
 
-  //for unhandled meetings
+  // for unhandled meetings
 
   private loadUnhandledFilteredBookings(firstRequest: boolean, wrapper: BookingWrapper): void {
 
@@ -564,14 +569,14 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
       })
       .catch(error => {
-        console.log("error > " + error);
+        console.log('error > ' + error);
         if (!firstRequest) {
           wrapper.loadingMore = false;
         } else {
           wrapper.initCompleted = true;
         }
 
-      })
+      });
   }
 
   private loadUnhandledBookings(firstRequest: boolean, wrapper: BookingWrapper): void {
@@ -599,7 +604,7 @@ export class MeetingsComponent implements OnInit, OnDestroy {
       })
       .catch(error => {
 
-        console.log("error > " + error);
+        console.log('error > ' + error);
 
         if (!firstRequest) {
           wrapper.loadingMore = false;
@@ -607,24 +612,25 @@ export class MeetingsComponent implements OnInit, OnDestroy {
           wrapper.initCompleted = true;
         }
 
-      })
+      });
   }
 
-  private loadingActions(firstRequest: boolean, snapshots: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>, wrapper: BookingWrapper): void {
+  private loadingActions(firstRequest: boolean,
+                         snapshots: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>, wrapper: BookingWrapper): void {
 
     if (firstRequest) {
       wrapper.bookings = [];
     }
 
-    //for loading indicator
+    // for loading indicator
     if (!firstRequest) {
       wrapper.loadingMore = false;
     } else {
       wrapper.initCompleted = true;
     }
-    //for loading indicator end
+    // for loading indicator end
 
-    //List loading ended
+    // List loading ended
     if (snapshots.docs.length < this.loadLimit) {
       wrapper.listEnded = true;
     } else {
@@ -640,9 +646,9 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
     snapshots.docs.forEach(doc => {
 
-      let booking: BookedPatient = new BookedPatient();
-      let postPone: BookingPostpond = new BookingPostpond();
-      let refund: BookingRefund = new BookingRefund();
+      const booking: BookedPatient = new BookedPatient();
+      const postPone: BookingPostpond = new BookingPostpond();
+      const refund: BookingRefund = new BookingRefund();
 
       Object.assign(booking, doc.data());
 
@@ -660,14 +666,14 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
 
 
-    })
+    });
   }
 
   public showReSchedulePopup(booking: BookedPatient): void {
 
-    let dialogData = {
+    const dialogData = {
       currentDate: this.serverDate
-    }
+    };
 
 
     this.matDialog.open(BookingRescheduleSelectorComponent, {
@@ -682,9 +688,9 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
   public showCancelMeetingPopup(booking: BookedPatient): void {
 
-    let dialogData = {
+    const dialogData = {
       currentDate: this.serverDate
-    }
+    };
 
 
     this.matDialog.open(CancelMeetingAlertComponent, {
@@ -700,9 +706,9 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
   public showRequestRefundPopup(booking: BookedPatient): void {
 
-    let dialogData = {
+    const dialogData = {
       currentDate: this.serverDate
-    }
+    };
 
 
     this.matDialog.open(RequestRefundComponent, {
@@ -720,12 +726,12 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
   private requestRefund(booking: BookedPatient): void {
 
-    this.utills.showLoading("Sending request...");
+    this.utills.showLoading('Sending request...');
 
-    let date: Date = new Date();
+    const date: Date = new Date();
     const currentTime: number = date.getTime();
 
-    let refundNoitification: RefundRequestNotification = new RefundRequestNotification();
+    const refundNoitification: RefundRequestNotification = new RefundRequestNotification();
 
     refundNoitification.setPatientName(booking.getName());
     refundNoitification.setRefundAmount(booking.getPaidFees() || 0);
@@ -733,22 +739,22 @@ export class MeetingsComponent implements OnInit, OnDestroy {
     refundNoitification.setQueueId(booking.getQueueId());
     refundNoitification.setRead(false);
     refundNoitification.setRequestHandled(false);
-    refundNoitification.setNotificationId("" + currentTime);
-    refundNoitification.setNotificationType("refund_request");
+    refundNoitification.setNotificationId('' + currentTime);
+    refundNoitification.setNotificationType('refund_request');
 
-    let meetupRefundReq: MeetupRefundRequest = new MeetupRefundRequest();
+    const meetupRefundReq: MeetupRefundRequest = new MeetupRefundRequest();
 
     meetupRefundReq.setAmount(booking.getPaidFees() || 0);
     meetupRefundReq.setBookingRef(booking.getDocReference());
     meetupRefundReq.setPatientName(booking.getName());
-    meetupRefundReq.setReason("Doctor not contacted");
-    meetupRefundReq.setStatus("Requested");
+    meetupRefundReq.setReason('Doctor not contacted');
+    meetupRefundReq.setStatus('Requested');
     meetupRefundReq.setRequestTime(currentTime);
 
-    let finalBookingJson: any = { "refund": {} };
+    const finalBookingJson: any = { refund: {} };
 
 
-    let bookingrefund: BookingRefund = new BookingRefund();
+    const bookingrefund: BookingRefund = new BookingRefund();
     bookingrefund.setRequested(true);
     bookingrefund.setApproved(false);
     bookingrefund.setRejected(false);
@@ -756,7 +762,7 @@ export class MeetingsComponent implements OnInit, OnDestroy {
     bookingrefund.setHandled(false);
     bookingrefund.setRequestedAt(currentTime);
 
-    let refundBackup: BookingRefund = booking.getRefund();
+    const refundBackup: BookingRefund = booking.getRefund();
 
     booking.setRefund(bookingrefund);
 
@@ -766,38 +772,38 @@ export class MeetingsComponent implements OnInit, OnDestroy {
       , booking.getDocReference(), finalBookingJson, Object.assign({}, meetupRefundReq)
     )
       .then(() => {
-        this.utills.showMsgSnakebar("Your refund request has been sent!");
+        this.utills.showMsgSnakebar('Your refund request has been sent!');
         this.utills.hideLoading();
       })
       .catch(error => {
-        console.log("Error sending postpond Notification.");
+        console.log('Error sending postpond Notification.');
         booking.setRefund(refundBackup);
         this.utills.hideLoading();
       });
   }
-  private cancelMeeting(booking: BookedPatient) {
+  private cancelMeeting(booking: BookedPatient): void {
 
-    this.utills.showLoading("Cancelling meeting...");
+    this.utills.showLoading('Cancelling meeting...');
 
-    let date: Date = new Date();
+    const date: Date = new Date();
     const currentTime: number = date.getTime();
 
-    let bookingCanceledObject: BookingCancledNotification = new BookingCancledNotification();
+    const bookingCanceledObject: BookingCancledNotification = new BookingCancledNotification();
 
     bookingCanceledObject.setPatientName(booking.getName());
     bookingCanceledObject.setQueuePlace(booking.getQueuePlace());
     bookingCanceledObject.setQueueId(booking.getQueueId());
     bookingCanceledObject.setRead(false);
     bookingCanceledObject.setRequestHandled(false);
-    bookingCanceledObject.setNotificationId("" + currentTime);
-    bookingCanceledObject.setNotificationType("meeting_canceled");
+    bookingCanceledObject.setNotificationId('' + currentTime);
+    bookingCanceledObject.setNotificationType('meeting_canceled');
 
 
     booking.setCancelled(true);
     booking.setCancelledBy('p');
     booking.setCancelledAt(currentTime);
 
-    let finalBookingJson: any = Object.assign({}, booking);
+    const finalBookingJson: any = Object.assign({}, booking);
 
     finalBookingJson.postpond = Object.assign({}, booking.getPostpond());
 
@@ -805,12 +811,12 @@ export class MeetingsComponent implements OnInit, OnDestroy {
       , booking.getDocReference(), finalBookingJson
     )
       .then(() => {
-        this.utills.showMsgSnakebar("Meeting Cancelled!");
+        this.utills.showMsgSnakebar('Meeting Cancelled!');
         this.utills.hideLoading();
 
       })
       .catch(error => {
-        console.log("Error sending cancel meeting Notification.");
+        console.log('Error sending cancel meeting Notification.');
         this.utills.hideLoading();
         booking.setCancelled(false);
         booking.setCancelledBy('');
@@ -822,24 +828,24 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
   private sendPostpondRequest(booking: BookedPatient, rescheduleDateMilli: number, reason: string): void {
 
-    this.utills.showLoading("Sending request...");
+    this.utills.showLoading('Sending request...');
 
-    let date: Date = new Date();
+    const date: Date = new Date();
     const currentTime: number = date.getTime();
 
-    let postpondObject: PNBookingReschedule = new PNBookingReschedule();
+    const postpondObject: PNBookingReschedule = new PNBookingReschedule();
 
     postpondObject.setPatientName(booking.getName());
     postpondObject.setQueuePlace(booking.getQueuePlace());
     postpondObject.setQueueId(booking.getQueueId());
     postpondObject.setRead(false);
     postpondObject.setRequestHandled(false);
-    postpondObject.setNotificationId("" + currentTime);
-    postpondObject.setNotificationType("meeting_reschedule_request");
+    postpondObject.setNotificationId('' + currentTime);
+    postpondObject.setNotificationType('meeting_reschedule_request');
 
-    let finalBookingJson: any = Object.assign({}, booking);
+    const finalBookingJson: any = Object.assign({}, booking);
 
-    let bookingPostpond: BookingPostpond = new BookingPostpond();
+    const bookingPostpond: BookingPostpond = new BookingPostpond();
     bookingPostpond.setRequested(true);
     bookingPostpond.setApproved(false);
     bookingPostpond.setRejected(false);
@@ -857,11 +863,11 @@ export class MeetingsComponent implements OnInit, OnDestroy {
       , booking.getDocReference(), finalBookingJson
     )
       .then(() => {
-        this.utills.showMsgSnakebar("Meeting Postpone request has been sent!");
+        this.utills.showMsgSnakebar('Meeting Postpone request has been sent!');
         this.utills.hideLoading();
       })
       .catch(error => {
-        console.log("Error sending postpond Notification.");
+        console.log('Error sending postpond Notification.');
         booking.setPostpond(null);
         this.utills.hideLoading();
       });
@@ -872,18 +878,18 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
 
     if (reason === undefined || reason === null || reason.length === 0) {
-      return "N/A";
+      return 'N/A';
     }
     if (reason.length <= 15) {
       return reason;
     } else {
-      return reason.substring(0, 15) + "...";
+      return reason.substring(0, 15) + '...';
     }
   }
 
   public goToQueue(booking: BookedPatient): void {
 
-    let bundleObj: any = this.getExistingLobbyObject(booking);
+    const bundleObj: any = this.getExistingLobbyObject(booking);
 
     if (bundleObj !== null) {
 
@@ -893,25 +899,26 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
 
 
-    this.utills.showLoading("Please wait..");
+    this.utills.showLoading('Please wait..');
 
-    let queue: QueueModel = new QueueModel();
+    const queue: QueueModel = new QueueModel();
 
-    let doctor: DoctorUserData = new DoctorUserData();
+    const doctor: DoctorUserData = new DoctorUserData();
 
-    console.log("booking.getQueueRef() : " + booking.getQueueRef());
-    console.log("booking.getDoctorRef() : " + booking.getDoctorRef());
+    console.log('booking.getQueueRef() : ' + booking.getQueueRef());
+    console.log('booking.getDoctorRef() : ' + booking.getDoctorRef());
 
     this.firestore.getByRef(booking.getQueueRef())
       .then(document => {
 
-        console.log("TTYT : " + document.data());
+        console.log('TTYT : ' + document.data());
 
         Object.assign(queue, document.data());
 
 
 
         this.firestore.getByRef(booking.getDoctorRef())
+          // tslint:disable-next-line:no-shadowed-variable
           .then(document => {
 
             Object.assign(doctor, document.data());
@@ -920,8 +927,8 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
 
             const object = {
-              doctor: doctor,
-              queue: queue
+              doctor,
+              queue
             };
 
             this.viewLobby(object);
@@ -932,13 +939,13 @@ export class MeetingsComponent implements OnInit, OnDestroy {
 
           })
           .catch(error => {
-            console.log("Error getting doctor : " + error);
+            console.log('Error getting doctor : ' + error);
             this.utills.hideLoading();
 
           });
       })
       .catch(error => {
-        console.log("Error getting queue : " + error);
+        console.log('Error getting queue : ' + error);
         this.utills.hideLoading();
       });
 
@@ -958,6 +965,7 @@ export class MeetingsComponent implements OnInit, OnDestroy {
       return null;
     }
 
+    // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < searchedDoctor.getQueues().length; ++i) {
       if (searchedDoctor.getQueues()[i].getQueueId() === booking.getQueueId()) {
         queue = searchedDoctor.getQueues()[i];
@@ -969,7 +977,7 @@ export class MeetingsComponent implements OnInit, OnDestroy {
     }
     const object = {
       doctor: searchedDoctor.getDoctor(),
-      queue: queue
+      queue
     };
 
     return object;

@@ -1,6 +1,6 @@
 import { UtilsService } from './../../../services/utils.service';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators, NgForm } from '@angular/forms';
+import { FormGroup, FormControl, Validators, NgForm, AbstractControl } from '@angular/forms';
 import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
@@ -26,20 +26,20 @@ export class EditQueueComponent implements OnInit {
   enableBookEnd = false;
   enableConsultingEnd = false;
 
-  bookStartTime = "";
-  bookEndTime = "";
-  consultingStartTime = "";
-  consultingEndTime = "";
+  bookStartTime = '';
+  bookEndTime = '';
+  consultingStartTime = '';
+  consultingEndTime = '';
 
-  slectedCurrency = "INR";
+  slectedCurrency = 'INR';
 
-  feeStructureText: string = "";
-  serviceChargePercent: number = 5;
+  feeStructureText = '';
+  serviceChargePercent = 5;
   defaultFees = 300;
 
   private currentUser: string;
 
-  disableSubmit: boolean = false;
+  disableSubmit = false;
   showProgressBar = false;
 
   queueForm: FormGroup;
@@ -70,7 +70,7 @@ export class EditQueueComponent implements OnInit {
 
   }
 
-  drop(event: CdkDragDrop<string[]>) {
+  drop(event: CdkDragDrop<string[]>): void {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
@@ -88,13 +88,13 @@ export class EditQueueComponent implements OnInit {
   ngOnInit(): void {
 
     this.queueForm = new FormGroup({
-      'first': new FormGroup({
+      first: new FormGroup({
         numberOfPatients: new FormControl(250, Validators.required),
         currency: new FormControl(this.slectedCurrency, Validators.required),
         fees: new FormControl(this.defaultFees, Validators.required),
         aTimePerPatient: new FormControl(7, [Validators.required, Validators.max(30), Validators.min(1)])
       }),
-      'second': new FormGroup({
+      second: new FormGroup({
         bStartTime: new FormControl(this.util.get24Time(this.currentQueue.getBookingStarting()), Validators.required),
         bEndTime: new FormControl(this.util.get24Time(this.currentQueue.getBookingEnding()), Validators.required),
         cStartTime: new FormControl(this.util.get24Time(this.currentQueue.getConsultingStarting()), Validators.required),
@@ -120,7 +120,7 @@ export class EditQueueComponent implements OnInit {
 
   }
 
-  timeChangeBookStart(time) {
+  timeChangeBookStart(time): void {
 
 
 
@@ -132,16 +132,16 @@ export class EditQueueComponent implements OnInit {
 
     this.convertToMiliSeconds(this.bookEndMin);
 
-    this.bookEndTime = "";
-    this.consultingStartTime = "";
-    this.consultingEndTime = "";
+    this.bookEndTime = '';
+    this.consultingStartTime = '';
+    this.consultingEndTime = '';
   }
 
-  timeChangeBookEnd(time) {
+  timeChangeBookEnd(time): void {
     this.bookEndTime = time;
   }
 
-  timeChangeConsultStart(time) {
+  timeChangeConsultStart(time): void {
 
     this.consultingStartTime = time;
 
@@ -149,22 +149,23 @@ export class EditQueueComponent implements OnInit {
 
     this.enableConsultingEnd = true;
 
-    this.consultingEndTime = "";
+    this.consultingEndTime = '';
 
   }
-  timeChangeConsultEnd(time) {
+  timeChangeConsultEnd(time): void {
     this.consultingEndTime = time;
   }
   private convertToMiliSeconds(time: string): number {
 
-    var seconds = 0;
+    let seconds = 0;
     try {
 
-      var a = time.split(':'); // split it at the colons
+      const a = time.split(':'); // split it at the colons
 
       // minutes are worth 60 seconds. Hours are worth 60 minutes.
-      //  seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60;// + (+a[2]); 
-      let date: Date = new Date();
+      //  seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60;// + (+a[2]);
+      const date: Date = new Date();
+      // tslint:disable-next-line:radix
       date.setHours(parseInt(a[0]), parseInt(a[1]));
 
       seconds = date.getTime();
@@ -178,14 +179,14 @@ export class EditQueueComponent implements OnInit {
   }
   private validateForm(): boolean {
 
-    let valid: boolean = true;
+    let valid = true;
 
 
     try {
-      let bookingStartTime = this.convertToMiliSeconds(this.bookStartTime);
-      let bookingEndTime = this.convertToMiliSeconds(this.bookEndTime);
-      let consultingStartTime = this.convertToMiliSeconds(this.consultingStartTime);
-      let consultingEndTime = this.convertToMiliSeconds(this.consultingEndTime);
+      const bookingStartTime = this.convertToMiliSeconds(this.bookStartTime);
+      const bookingEndTime = this.convertToMiliSeconds(this.bookEndTime);
+      const consultingStartTime = this.convertToMiliSeconds(this.consultingStartTime);
+      const consultingEndTime = this.convertToMiliSeconds(this.consultingEndTime);
 
       if (this.numberOfPatients.value.length <= 0) {
         valid = false;
@@ -201,59 +202,59 @@ export class EditQueueComponent implements OnInit {
       }
 
       if (bookingEndTime <= bookingStartTime) {
-        alert("Booking end time can not be less than or equal to booking start time");
+        alert('Booking end time can not be less than or equal to booking start time');
         valid = false;
       }
       if (consultingStartTime < bookingStartTime) {
-        alert("Consulting start time can not be less than or equal to booking start time");
+        alert('Consulting start time can not be less than or equal to booking start time');
         valid = false;
       }
       if (consultingEndTime <= consultingStartTime) {
-        alert("Consulting end time can not be less than or equal to Consulting start time");
+        alert('Consulting end time can not be less than or equal to Consulting start time');
         valid = false;
       }
 
     } catch {
-      alert("It seems that you might have given some invalid input, please check all your fields again!");
+      alert('It seems that you might have given some invalid input, please check all your fields again!');
       valid = false;
     }
 
     return valid;
   }
 
-  get firstForm() {
+  get firstForm(): AbstractControl {
     return this.queueForm.get('first');
   }
-  get secondForm() {
+  get secondForm(): AbstractControl {
     return this.queueForm.get('second');
   }
-  get numberOfPatients() {
+  get numberOfPatients(): AbstractControl {
     return this.queueForm.get('first').get('numberOfPatients');
   }
-  get currency() {
+  get currency(): AbstractControl {
     return this.queueForm.get('first').get('currency');
   }
-  get fees() {
+  get fees(): AbstractControl {
     return this.queueForm.get('first').get('fees');
   }
-  get aTimePerPatient() {
+  get aTimePerPatient(): AbstractControl {
     return this.queueForm.get('first').get('aTimePerPatient');
   }
-  get bStartTime() {
+  get bStartTime(): AbstractControl {
     return this.queueForm.get('second').get('bStartTime');
   }
-  get bEndTime() {
+  get bEndTime(): AbstractControl {
     return this.queueForm.get('second').get('bEndTime');
   }
-  get cStartTime() {
+  get cStartTime(): AbstractControl {
     return this.queueForm.get('second').get('cStartTime');
   }
-  get cEndTime() {
+  get cEndTime(): AbstractControl {
     return this.queueForm.get('second').get('cEndTime');
   }
 
 
-  onSubmit(queueForm: NgForm) {
+  onSubmit(queueForm: NgForm): void {
     if (!this.validateForm()) {
       return;
     }
@@ -268,37 +269,39 @@ export class EditQueueComponent implements OnInit {
   private setFeeStructureText(fees: number): void {
 
     // console.log("this.currency : "+JSON.stringify(this.currency.value));
-    let serviceCharge: number = (fees / 100) * this.serviceChargePercent;
-    let totalFees: number = Number(fees) + Number(serviceCharge);
-    this.feeStructureText = "*Service Charge = " + serviceCharge + " " + this.currency.value + ",  You will be paid = " + fees + " " + this.currency.value + ", Total Payable for patient = " + totalFees.toString() + " " + this.currency.value;
+    const serviceCharge: number = (fees / 100) * this.serviceChargePercent;
+    const totalFees: number = Number(fees) + Number(serviceCharge);
+    this.feeStructureText = '*Service Charge = ' + serviceCharge + ' ' + this.currency.value +
+      ',  You will be paid = ' + fees + ' ' + this.currency.value +
+      ', Total Payable for patient = ' + totalFees.toString() + ' ' + this.currency.value;
   }
 
   onFeesChangedEvent(event: any): void {
-    let value = event.target.value;
+    const value = event.target.value;
     if (isNaN(value)) {
-      alert("Invalid fees provided! Please provide a valid number.");
+      alert('Invalid fees provided! Please provide a valid number.');
       return;
     }
-    this.setFeeStructureText(value)
+    this.setFeeStructureText(value);
   }
   private constructQueueObject(): QueueModel {
 
     if (!this.currentUser) {
-      alert("You seems to be logged out because of some reason, please login again or wait for some time or try to refresh this page!");
+      alert('You seems to be logged out because of some reason, please login again or wait for some time or try to refresh this page!');
       return;
     }
-    let bookingStartTime = this.convertToMiliSeconds(this.bookStartTime);
-    let bookingEndTime = this.convertToMiliSeconds(this.bookEndTime);
-    let consultingStartTime = this.convertToMiliSeconds(this.consultingStartTime);
-    let consultingEndTime = this.convertToMiliSeconds(this.consultingEndTime);
+    const bookingStartTime = this.convertToMiliSeconds(this.bookStartTime);
+    const bookingEndTime = this.convertToMiliSeconds(this.bookEndTime);
+    const consultingStartTime = this.convertToMiliSeconds(this.consultingStartTime);
+    const consultingEndTime = this.convertToMiliSeconds(this.consultingEndTime);
 
-    let queue: QueueModel = new QueueModel();
+    const queue: QueueModel = new QueueModel();
 
-    queue.setStatus("scheduled");
+    queue.setStatus('scheduled');
     queue.setQueueId(this.currentQueue.getQueueId());
     queue.setPatientLimit(this.numberOfPatients.value);
     queue.setActive(true);
-    queue.setOwnerId(this.currentUser); //to be changed
+    queue.setOwnerId(this.currentUser); // to be changed
     queue.setFees(this.fees.value);
     queue.setBookingStarting(bookingStartTime);
     queue.setBookingEnding(bookingEndTime);
@@ -316,52 +319,53 @@ export class EditQueueComponent implements OnInit {
     try {
       return (new Date().getTime()).toString();
     } catch {
-      return "invalid";
+      return 'invalid';
     }
 
   }
 
-  private saveQueue(queue: QueueModel) {
+  private saveQueue(queue: QueueModel): void {
 
     this.showProgress();
-    this.firestore.update("user-data/" + this.currentUser + "/queues", queue.getQueueId(), Object.assign({}, queue))
+    this.firestore.update('users/' + this.currentUser + '/queues', queue.getQueueId(), Object.assign({}, queue))
       .then(() => {
         this.hideProgress();
-        this.showMessageDialog('success', "Your queue has been updated and activated now patients can book online/offline appointments in this queue as per timings provided by you!", "Close");
+        this.showMessageDialog('success', 'Your queue has been updated and activated now patients can book online/offline appointments in this queue as per timings provided by you!', 'Close');
 
       })
       .catch(error => {
         this.hideProgress();
-        this.showMessageDialog('fail', "Could not update queue at this moment please try again. If you keep getting this error, please contact support at support@doctormeetup.com", "Close");
+        this.showMessageDialog('fail', 'Could not update queue at this moment please try again. If you keep getting this error, please contact support at support@doctormeetup.com', 'Close');
 
-      })
+      });
 
   }
 
   private showMessageDialog(type: string, msg: string, ok: string): void {
 
-    let dialogData = {
+    const dialogData = {
+      // tslint:disable-next-line:object-literal-shorthand
       type: type,
       message: msg,
       okText: ok
-    }
+    };
 
     this.matDialog.open(MessageDialogComponent, {
       data: dialogData, disableClose: false,
       maxWidth: '300px'
     }).afterClosed().toPromise().then(result => {
-      console.log("Dialoge closed!");
+      console.log('Dialoge closed!');
       this.router.navigate(['doctor/queues']);
     });
   }
 
-  private showProgress() {
+  private showProgress(): void {
     this.disableSubmit = true;
     this.showProgressBar = true;
 
   }
 
-  private hideProgress() {
+  private hideProgress(): void {
     this.disableSubmit = false;
     this.showProgressBar = false;
 

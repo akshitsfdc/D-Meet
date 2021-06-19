@@ -1,4 +1,5 @@
-import { CalculationService } from './../service/calculation.service';
+import { HelperService } from './../../common-features/services/helper.service';
+import { CalculationService } from '../../common-features/services/calculation.service';
 import { DoctorUserData } from './../../../models/doctor-user-data';
 import { SessionService } from './../service/session.service';
 import { Router } from '@angular/router';
@@ -18,9 +19,14 @@ export class DashboardComponent implements OnInit {
 
   // doctorArray = [1, 2, 3, 4, 5];
   // sessionQueues = [1, 2 ,3];
-  holidayList = ['Sunday', 'Saturday']
+  holidayList = ['Sunday', 'Saturday'];
 
-  constructor(public searchService: SearchService, public utils: UtilsService, public calculation: CalculationService, private router: Router, private session: SessionService) {
+  constructor(public searchService: SearchService,
+    public helper: HelperService,
+    public utils: UtilsService,
+    public calculation: CalculationService,
+    private router: Router,
+    private session: SessionService) {
 
 
   }
@@ -39,16 +45,17 @@ export class DashboardComponent implements OnInit {
     // })
     // .catch(error =>{
     //   console.log("Error >> "+error);
-    // });    
+    // });
 
   }
 
-  temp() {
+  temp(): void {
+    // tslint:disable-next-line:max-line-length
     // this.firestore.saveInGeoCollection((+new Date()).toString(), {testkey:"testing", coordinates:this.firestore.getGeopoints(29.608801, 78.349800)});
   }
 
-  onScroll() {
-    console.log("Scrolled!");
+  onScroll(): void {
+    console.log('Scrolled!');
   }
 
   bookingPannelExpended(searchedDoctor: SearchedDoctor): void {
@@ -60,8 +67,8 @@ export class DashboardComponent implements OnInit {
   viewLobby(queue: QueueModel, doctor: DoctorUserData): void {
 
     const object = {
-      doctor: doctor,
-      queue: queue
+      doctor,
+      queue
     };
 
     this.searchService.setCurrentQueue(queue);

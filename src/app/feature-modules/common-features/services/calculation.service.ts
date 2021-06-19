@@ -15,18 +15,18 @@ export class CalculationService {
 
         return new Date(milliseconds).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    }//End of millisToTimeString
+    }// End of millisToTimeString
 
     /* Returns number of milliseconds before meeting starts  */
     public getRemainingTimeBeforeMeeting(queue: QueueModel, booking: BookedPatient): number {
 
         const difference: number = this.timeDiffrenceFromNow(queue.getConsultingStarting());
-        let finaltime: number = (difference + (booking.getQueuePlace() - 1) * (queue.getTimePerPatient() * 60)) * 1000;
+        const finaltime: number = (difference + (booking.getQueuePlace() - 1) * (queue.getTimePerPatient() * 60)) * 1000;
         return finaltime;
-    }//end of getRemainingTimeBeforeMeeting
+    }// End of getRemainingTimeBeforeMeeting
 
     /* Provides time difference between provied milliseconds(timestamp) and now returns 0 if that time is passed*/
-    public timeDiffrenceFromNow(milliseconds: number) {
+    public timeDiffrenceFromNow(milliseconds: number): number {
 
         const nowSeconds = this.getSecondsOfTime((new Date()).getTime());
         const targetSeconds = this.getSecondsOfTime(milliseconds);
@@ -35,10 +35,10 @@ export class CalculationService {
             return 0;
         }
         return (targetSeconds - nowSeconds);
-    }//End of timeDiffrenceFromNow
+    }// End of timeDiffrenceFromNow
 
     /* Provides time difference between provied milliseconds(timestamp) and now*/
-    public getTimePassed(milliseconds: number) {
+    public getTimePassed(milliseconds: number): number {
 
         const nowSeconds = this.getSecondsOfTime((new Date()).getTime());
         const targetSeconds = this.getSecondsOfTime(milliseconds);
@@ -48,16 +48,16 @@ export class CalculationService {
         }
 
         return (nowSeconds - targetSeconds);
-    }//End of timeDiffrenceFromNow
+    }// End of timeDiffrenceFromNow
 
     /* Converts provided milliseconds to time string in format of hh:mm:ss */
     public getRemainingTimeString(ms: number): string {
 
         if (ms <= 0) {
-            return "00:00:00";
+            return '00:00:00';
         }
         return new Date(ms).toISOString().substr(11, 8);
-    }//end of getRemainingTimeString
+    }// End of getRemainingTimeString
 
     /*Returns number of seconds of a perticular time of the day e.g 1:05 am is (1*60*60 + 05*60) = 3,900 seconds */
     private getSecondsOfTime(milliseconds: number): number {
@@ -65,9 +65,11 @@ export class CalculationService {
         const date: Date = new Date(milliseconds);
 
         return (((+date.getHours()) * 60 * 60) + ((+date.getMinutes()) * 60)) + ((date.getSeconds()));
-    } //end of getSecondsOfTime
+    } // End of getSecondsOfTime
 
-    /** Checks whether or not current time lies between two provided milliseconds **/
+    /*
+     * Checks whether or not current time lies between two provided milliseconds
+     */
     public isWithinRange(msStart: number, msEnd: number): boolean {
 
         const currentSeconds: number = this.getSecondsOfTime((new Date()).getTime());
@@ -80,6 +82,42 @@ export class CalculationService {
             return false;
         }
 
-    }
+    }// End of isWithinRange
+
+    /*
+     * Checks whether or not current server time lies between two provided milliseconds
+     */
+    public isWithinRangeServer(msStart: number, msEnd: number, serverTime: number): boolean {
+
+        const currentSeconds: number = this.getSecondsOfTime((new Date(serverTime)).getTime());
+        const startSeconds: number = this.getSecondsOfTime(msStart);
+        const endSeconds: number = this.getSecondsOfTime(msEnd);
+
+        if (currentSeconds < endSeconds && currentSeconds >= startSeconds) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }// End of isWithinRangeServer
+
+    /*
+     * Checks if time has been passed with respect to local time
+     */
+    public isTimePassed(targetMillis: number): boolean {
+
+        const currentSeconds: number = this.getSecondsOfTime((new Date()).getTime());
+        const targetSeconds: number = this.getSecondsOfTime(targetMillis);
+
+        return targetSeconds < currentSeconds;
+
+    }// End of isWithinRange
+    /*
+    This functions takes minutes and converts it to milliseconds
+    */
+    public getMinutesToMillis(minutes: number): number {
+        return (minutes * 60 * 1000);
+    }// End of getMinutesToMillis
+
 
 }

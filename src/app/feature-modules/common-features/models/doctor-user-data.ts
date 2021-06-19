@@ -1,47 +1,64 @@
 import { DocumentReference } from '@angular/fire/firestore';
-import { QueueModel } from "./queue-model";
+import { QueueModel } from './queue-model';
 
 
 export class DoctorUserData {
 
-    private email:string;
-    private firstName:string;
-    private lastName:string;
-    private gender:string;
-    private picUrl:string;
+    private email: string;
+    private firstName: string;
+    private lastName: string;
+    private gender: string;
+    private picUrl: string;
     private userId: string;
     private phoneNumber: string;
-    private profileId:string;
-    private registrationNumber:string;
-    private experience:number;
-    private degree:string;
-    private speciality:string;
-    private clinicName:string;
-    private fullClinicAddress:string;
-    private country:string;
-    private state:string;
-    private city:string;
-    private varified:boolean;
-    private about:string;
-    private registrationLocalTimeStapm:number;
-    private kycSubmitted:boolean;
+    private profileId: string;
+    private registrationNumber: string;
+    private experience: number;
+    private degree: string;
+    private speciality: string;
+    private clinicName: string;
+    private fullClinicAddress: string;
+    private country: string;
+    private state: string;
+    private city: string;
+    private varified: boolean;
+    private about: string;
+    private registrationLocalTimeStapm: number;
+    private kycSubmitted: boolean;
     // private latitude:number;
     // private longitude:number;
-    private nearbyAddress:string;
+    private nearbyAddress: string;
     private diseaseSpecialist: string[];
     private coordinates: firebase.firestore.GeoPoint;
     private status: string;
+    private userType: string;
     private queues: QueueModel[];
     private ref: DocumentReference;
+    private doctor: boolean;
 
-
-   
 
 
     constructor() {
         this.diseaseSpecialist = [];
         this.queues = [];
     }
+
+    public isDoctor(): boolean {
+        return this.doctor;
+    }
+
+    public setDoctor(doctor: boolean): void {
+        this.doctor = doctor;
+    }
+
+    public getUserType(): string {
+        return this.userType;
+    }
+
+    public setUserType(userType: string): void {
+        this.userType = userType;
+    }
+
 
     public getRef(): DocumentReference {
         return this.ref;
@@ -59,7 +76,7 @@ export class DoctorUserData {
     public setPhoneNumber(phoneNumber: string): void {
         this.phoneNumber = phoneNumber;
     }
-    
+
     public getQueues(): QueueModel[] {
         return this.queues;
     }
@@ -68,7 +85,7 @@ export class DoctorUserData {
         this.queues = queues;
     }
 
-    
+
     public getStatus(): string {
         return this.status;
     }
@@ -76,7 +93,7 @@ export class DoctorUserData {
     public setStatus(status: string): void {
         this.status = status;
     }
-    
+
     public getCoordinates(): firebase.firestore.GeoPoint {
         return this.coordinates;
     }
@@ -84,8 +101,8 @@ export class DoctorUserData {
     public setCoordinates(coordinates: firebase.firestore.GeoPoint): void {
         this.coordinates = coordinates;
     }
-    
-    
+
+
     public getNearbyAddress(): string {
         return this.nearbyAddress;
     }
@@ -118,7 +135,7 @@ export class DoctorUserData {
     //     this.longitude = longitude;
     // }
 
-    
+
     public isKycSubmitted(): boolean {
         return this.kycSubmitted;
     }
@@ -126,7 +143,7 @@ export class DoctorUserData {
     public setKycSubmitted(kycSubmitted: boolean): void {
         this.kycSubmitted = kycSubmitted;
     }
-    
+
     public getEmail(): string {
         return this.email;
     }
@@ -165,7 +182,7 @@ export class DoctorUserData {
     public setPicUrl(picUrl: string): void {
         this.picUrl = picUrl;
     }
-    
+
     public getUserId(): string {
         return this.userId;
     }
@@ -278,6 +295,6 @@ export class DoctorUserData {
     public setRegistrationLocalTimeStapm(registrationLocalTimeStapm: number): void {
         this.registrationLocalTimeStapm = registrationLocalTimeStapm;
     }
-        
+
 
 }

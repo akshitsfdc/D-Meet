@@ -6,18 +6,20 @@ import { map, shareReplay } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { SessionService } from '../services/session.service';
-import { DoctorUserData } from 'src/app/models/doctor-user-data';
+
+import * as firebase from 'firebase';
+import { DoctorUserData } from '../../common-features/models/doctor-user-data';
 
 @Component({
   selector: 'app-main-navigation',
   templateUrl: './main-navigation.component.html',
   styleUrls: ['./main-navigation.component.css']
 })
-export class MainNavigationComponent  implements OnInit {
+export class MainNavigationComponent implements OnInit {
 
 
   isExpanded = true;
-  notificationCount:number = 0;
+  notificationCount = 0;
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -25,31 +27,32 @@ export class MainNavigationComponent  implements OnInit {
       shareReplay()
     );
 
-  constructor(private breakpointObserver: BreakpointObserver, private authService: AuthService, private router: Router, private route: ActivatedRoute, private session:SessionService) { 
+  constructor(private breakpointObserver: BreakpointObserver,
+    private authService: AuthService, private router: Router, private route: ActivatedRoute, private session: SessionService) {
 
-   
+
   }
-  
+
   ngOnInit(): void {
     this.liveQueueClick();
   }
 
-  openProfile(){
+  openProfile() {
     this.router.navigate(['doctor-profile'], { relativeTo: this.route });
   }
   liveQueueClick() {
     this.router.navigate(['dashboard'], { relativeTo: this.route });
   }
-  queuesClick(){
+  queuesClick() {
     this.router.navigate(['queues'], { relativeTo: this.route });
   }
-  logOut(){
+  logOut() {
     this.authService.signOut().then(() => {
       this.router.navigate(['login']);
       this.session.setUserData(new DoctorUserData());
     }).catch(error => {
-      console.log("Could not log you out : "+error);
+      console.log('Could not log you out : ' + error);
     });
   }
-  
+
 }

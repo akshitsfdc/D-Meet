@@ -43,8 +43,9 @@ export class BookedPatient {
     private refund: BookingRefund;
     private docReference: DocumentReference;
     private meetingTrials: number[] = [];
-    private selfWaitingTimeString: string = "calculating time...";
-    //this property is changed at server side when doctor choose this patient as current patient
+    // tslint:disable-next-line:no-inferrable-types
+    private selfWaitingTimeString: string = '__';
+    // This property is changed at server side when doctor choose this patient as current patient
     private selectionTime: number;
 
 

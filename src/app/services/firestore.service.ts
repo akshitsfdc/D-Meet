@@ -38,13 +38,13 @@ export class FirestoreService {
   }
 
   public getEqualsObs(collection: string, key: string, value: string): Observable<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
-    return this.firestore.collection(collection, ref => ref.where(key, "==", value)).get();
+    return this.firestore.collection(collection, ref => ref.where(key, '==', value)).get();
   }
   public getEquals(collection: string, key: string, value: string): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
-    return this.firestore.collection(collection, ref => ref.where(key, "==", value)).get().toPromise();
+    return this.firestore.collection(collection, ref => ref.where(key, '==', value)).get().toPromise();
   }
   public getEqualsDouble(collection: string, key1: string, value1: string, key2: string, value2: string): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
-    return this.firestore.collection(collection, ref => ref.where(key1, "==", value1).where(key2, "==", value2)).get().toPromise();
+    return this.firestore.collection(collection, ref => ref.where(key1, '==', value1).where(key2, '==', value2)).get().toPromise();
   }
   public get(collection: string, document: string): Promise<firebase.firestore.DocumentSnapshot> {
 
@@ -80,17 +80,17 @@ export class FirestoreService {
   // stateChanges
   public getRealTimeCollectionWithQuery(collection: string, key1: string, value1: string, key2: string, value2: string, key3: string, value3: string, orderBy: string): Observable<unknown[]> {
     return this.firestore.collection(collection, ref =>
-      ref.where(key1, "==", value1)
-        .where(key2, "==", value2)
-        .where(key3, "==", value3)
+      ref.where(key1, '==', value1)
+        .where(key2, '==', value2)
+        .where(key3, '==', value3)
         .orderBy(orderBy))
       .valueChanges();
   }
   public getBookingChanges(collection: string, key1: string, value1: string, key2: string, value2: string, key3: string, value3: string, orderBy: string): Observable<DocumentChangeAction<unknown>[]> {
     return this.firestore.collection(collection, ref =>
-      ref.where(key1, "==", value1)
-        .where(key2, "==", value2)
-        .where(key3, "==", value3)
+      ref.where(key1, '==', value1)
+        .where(key2, '==', value2)
+        .where(key3, '==', value3)
         .orderBy(orderBy))
       .stateChanges();
   }
@@ -119,8 +119,8 @@ export class FirestoreService {
 
   public getPrescriptionChanges(collection: string, key1: string, value1: string, key2: string, value2: string, limit: number, orderBy: string): Observable<DocumentChangeAction<unknown>[]> {
     return this.firestore.collection(collection, ref =>
-      ref.where(key1, "==", value1)
-        .where(key2, "==", value2)
+      ref.where(key1, '==', value1)
+        .where(key2, '==', value2)
         .limit(limit)
         .orderBy(orderBy))
       .stateChanges();
@@ -128,39 +128,37 @@ export class FirestoreService {
 
   public getMyBookingsP(patientId: string, dateStr: string, processed: boolean, cancelled: boolean, limit: number): Observable<DocumentChangeAction<unknown>[]> {
 
-    let collectionPath: string = "queue-bookings";
+    const collectionPath = 'queue-bookings';
 
     if (cancelled) {
       return this.firestore.collection(collectionPath, ref =>
-        ref.where("patientId", "==", patientId)
-          .where("cancelled", "==", cancelled)
+        ref.where('patientId', '==', patientId)
+          .where('cancelled', '==', cancelled)
           .limit(limit)
-          .orderBy("bookingTimeServer")
+          .orderBy('bookingTimeServer')
       )
         .stateChanges();
     }
     if (processed) {
       return this.firestore.collection(collectionPath, ref =>
-        ref.where("patientId", "==", patientId)
-          .where("processed", "==", processed)
+        ref.where('patientId', '==', patientId)
+          .where('processed', '==', processed)
           .limit(limit)
-          .orderBy("bookingTimeServer")
+          .orderBy('bookingTimeServer')
       )
         .stateChanges();
     } else {
       return this.firestore.collection(collectionPath, ref =>
-        ref.where("patientId", "==", patientId)
-          .where("processed", "==", processed)
-          .where("dateString", "==", dateStr)
-          .where("cancelled", "==", cancelled)
+        ref.where('patientId', '==', patientId)
+          .where('processed', '==', processed)
+          .where('dateString', '==', dateStr)
+          .where('cancelled', '==', cancelled)
           .limit(limit)
-          .orderBy("bookingTimeServer")
+          .orderBy('bookingTimeServer')
       )
         .stateChanges();
     }
 
   }
-
-
 
 }

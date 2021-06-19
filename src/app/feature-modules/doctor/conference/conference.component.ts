@@ -6,7 +6,6 @@ import { Observable, Subscription } from 'rxjs';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map, shareReplay } from 'rxjs/operators';
 import { FirestoreService } from 'src/app/services/firestore.service';
-import { DoctorUserData } from 'src/app/models/doctor-user-data';
 import { Router } from '@angular/router';
 import { MeetingHostService } from '../services/meeting-host.service';
 import { MatSidenav } from '@angular/material/sidenav';
@@ -19,6 +18,7 @@ import { BookedPatient } from '../../common-features/models/booked-patient';
 import { ChatModel } from '../../common-features/models/chat-model';
 import { CallerModel } from '../../common-features/models/caller-model';
 import { QueueModel } from '../../common-features/models/queue-model';
+import { DoctorUserData } from '../../common-features/models/doctor-user-data';
 
 @Component({
   selector: 'app-conference',
@@ -32,36 +32,36 @@ export class ConferenceComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('chatContainer') private chatContainer: ElementRef;
   @ViewChild('drawer') public sidenav: MatSidenav;
 
-  public localMute: boolean = true;
+  public localMute = true;
   public currentPatient: BookedPatient;
-  public remoteVisible: boolean = false;
-  public thubnailVisible: boolean = true;
+  public remoteVisible = false;
+  public thubnailVisible = true;
 
-  isExpanded: boolean = false;
+  isExpanded = false;
 
   private callerCollection: string;
 
   private callerObs: Subscription = null;
 
-  public chatMsgRT: string = "";
+  public chatMsgRT = '';
   public currentUser: DoctorUserData;
 
   public chatCollection: ChatModel[] = [];
 
-  public unreadMessages: number = 0;
+  public unreadMessages = 0;
 
   public mediaSignal: MediaSignal;
   public mediaSignalRemote: MediaSignal;
 
-  public bottombarVisible: boolean = true;
-  public fullScreenFlag: boolean = false;
+  public bottombarVisible = true;
+  public fullScreenFlag = false;
   public elem: HTMLElement;
 
   private prescription: Prescription;
 
   private roomId: string;
 
-  public activatePres: boolean = false;
+  public activatePres = false;
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -69,8 +69,13 @@ export class ConferenceComponent implements OnInit, OnDestroy, AfterViewInit {
       shareReplay()
     );
 
-  constructor(private matDialog: MatDialog, public meetingService: MeetingHostService, private breakpointObserver: BreakpointObserver, private session: SessionService,
-    private firestore: FirestoreService, private router: Router, private utill: UtilsService,
+  constructor(private matDialog: MatDialog,
+    public meetingService: MeetingHostService,
+    private breakpointObserver: BreakpointObserver,
+    private session: SessionService,
+    private firestore: FirestoreService,
+    private router: Router,
+    private utill: UtilsService,
 
     @Inject(DOCUMENT) private document: any) {
 
@@ -82,7 +87,7 @@ export class ConferenceComponent implements OnInit, OnDestroy, AfterViewInit {
       this.currentPatient = new BookedPatient();
     }
 
-    this.callerCollection = "caller_collection";
+    this.callerCollection = 'caller_collection';
 
     this.mediaSignal = new MediaSignal();
     this.mediaSignalRemote = new MediaSignal();
@@ -92,14 +97,14 @@ export class ConferenceComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
-  private initPrescription() {
+  private initPrescription(): void {
 
     this.prescription.setName(this.currentUser.getFirstName() + ' ' + this.currentUser.getLastName());
     this.prescription.setPicUrl(this.currentUser.getPicUrl());
     this.prescription.setProfileId(this.currentUser.getProfileId());
     this.prescription.setEmail(this.currentUser.getEmail());
     this.prescription.setDoctorId(this.currentUser.getUserId());
-    this.prescription.setPhoneNumber(this.currentUser.getPhoneNumber() || "");
+    this.prescription.setPhoneNumber(this.currentUser.getPhoneNumber() || '');
     this.prescription.setDegree(this.currentUser.getDegree());
     this.prescription.setSpeciality(this.currentUser.getSpeciality());
     this.prescription.setClinicName(this.currentUser.getClinicName());
@@ -108,13 +113,13 @@ export class ConferenceComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.prescription.setPatientName(this.currentPatient.getName());
     this.prescription.setPatientId(this.currentPatient.getPatientId());
-    this.prescription.setPatientAddress(this.currentPatient.getAddress() || "");
+    this.prescription.setPatientAddress(this.currentPatient.getAddress() || '');
     this.prescription.setAge(this.currentPatient.getAge());
-    this.prescription.setPatientgender(this.currentPatient.getGender() || "");
+    this.prescription.setPatientgender(this.currentPatient.getGender() || '');
     this.prescription.setBookingId(this.currentPatient.getBookingId());
     this.prescription.setRoomId(this.roomId);
-    this.prescription.setPrescription("");
-    this.prescription.setWrittenTime((new Date()).getTime())
+    this.prescription.setPrescription('');
+    this.prescription.setWrittenTime((new Date()).getTime());
   }
 
   ngOnInit(): void {
@@ -124,16 +129,16 @@ export class ConferenceComponent implements OnInit, OnDestroy, AfterViewInit {
     this.elem = document.documentElement;
     this.elem.onfullscreenchange = () => {
       this.fullScreenFlag = !this.fullScreenFlag;
-    }
+    };
 
     this.currentUser = this.session.getUserData();
 
     const userId = this.currentUser.getUserId();
-    let roomId: string = userId + "_" + (new Date().getTime());
+    const roomId: string = userId + '_' + (new Date().getTime());
 
     this.roomId = roomId;
 
-    //return;
+    // return;
     this.meetingService.setRoomId(roomId);
 
     this.meetingService.setCalleeIceDoc(this.currentPatient.getPatientId());
@@ -142,7 +147,7 @@ export class ConferenceComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.meetingService.setCallBack(() => {
 
-      this.meetingService.setConnectionStatus("CONNECTED");
+      this.meetingService.setConnectionStatus('CONNECTED');
 
     });
     this.meetingService.setTimeoverCallback(() => {
@@ -173,10 +178,10 @@ export class ConferenceComponent implements OnInit, OnDestroy, AfterViewInit {
       .then(() => {
 
         // this.meetingService.stopPrering();
-        this.meetingService.setConnectionStatus("Ringing...");
+        this.meetingService.setConnectionStatus('Ringing...');
         this.meetingService.startRingTimer();
 
-        console.log("Signal sent!");
+        console.log('Signal sent!');
 
         this.callerObs = this.firestore.getDocChanges(callCollection, callDocument)
           .subscribe((change) => {
@@ -193,15 +198,15 @@ export class ConferenceComponent implements OnInit, OnDestroy, AfterViewInit {
 
       })
       .catch(error => {
-        console.log("Error : caller candidates could not be added.");
-        this.meetingService.setConnectionStatus("Connection failed");
+        console.log('Error : caller candidates could not be added.');
+        this.meetingService.setConnectionStatus('Connection failed');
         this.meetingService.stopPrering();
       });
 
     this.initPrescription();
   }
 
-  public endCall() {
+  public endCall(): void {
     this.meetingService.setHostDisconnectAction(true);
     this.sendReject(this.callerCollection, this.currentPatient.getPatientId());
   }
@@ -209,22 +214,22 @@ export class ConferenceComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.meetingService.stopRinging();
     this.navigateBack();
-    this.utill.showMsgSnakebar("Call disconnected");
+    this.utill.showMsgSnakebar('Call disconnected');
     // this.closeBottomSheet();
 
     this.firestore.update(callCollection, callDocument, Object.assign({}, this.setupRejectObject()))
       .then(() => {
-        this.meetingService.setConnectionStatus("Ended");
-        //this.closeBottomSheet();
+        this.meetingService.setConnectionStatus('Ended');
+        // this.closeBottomSheet();
       })
       .catch(error => {
-        console.log("Error : caller candidates could not be added.");
+        console.log('Error : caller candidates could not be added.');
       });
   }
 
   private setupRejectObject(): CallerModel {
 
-    let caller: CallerModel = new CallerModel();
+    const caller: CallerModel = new CallerModel();
 
     caller.setBusy(false);
     caller.setAnswered(false);
@@ -234,7 +239,7 @@ export class ConferenceComponent implements OnInit, OnDestroy, AfterViewInit {
     return caller;
 
   }
-  private routeAnswer(caller: CallerModel) {
+  private routeAnswer(caller: CallerModel): void {
 
     if (caller.isReject()) {
 
@@ -245,7 +250,7 @@ export class ConferenceComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
       } else {
-        this.utill.showMsgSnakebar("Call disconnected by " + this.currentPatient.getName());
+        this.utill.showMsgSnakebar('Call disconnected by ' + this.currentPatient.getName());
       }
       this.activatePres = false;
 
@@ -259,23 +264,23 @@ export class ConferenceComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private navigateBack(): void {
-    let data = {
+    const data = {
       queue: this.session.getSharedData().queue as QueueModel,
       doctor: this.session.getSharedData().doctor as DoctorUserData
-    }
+    };
     this.session.setSharedData(data);
     this.router.navigate(['doctor/meetup-lobby']);
   }
 
   private setupCallerObject(roomId: string): CallerModel {
 
-    let caller: CallerModel = new CallerModel();
+    const caller: CallerModel = new CallerModel();
 
     caller.setBusy(true);
     caller.setAnswered(false);
     caller.setNewCall(true);
     caller.setReject(false);
-    caller.setCallerName(this.session.getUserData().getFirstName() + " " + this.session.getUserData().getLastName());
+    caller.setCallerName(this.session.getUserData().getFirstName() + ' ' + this.session.getUserData().getLastName());
     caller.setCallerId(this.session.getUserData().getUserId());
     caller.setRoomId(roomId);
 
@@ -289,14 +294,14 @@ export class ConferenceComponent implements OnInit, OnDestroy, AfterViewInit {
     this.closeFullscreen();
   }
 
-  micToggle() {
+  micToggle(): void {
 
     this.meetingService.getLocalStream().getAudioTracks().forEach(track => { track.enabled = !track.enabled; });
 
     this.mediaSignal.setAudioOn(!this.mediaSignal.isAudioOn());
     this.sendMediaSignal();
   }
-  videoToggle() {
+  videoToggle(): void {
 
     this.meetingService.getLocalStream().getVideoTracks().forEach(track => {
       track.enabled = !track.enabled;
@@ -311,10 +316,10 @@ export class ConferenceComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     const date: Date = new Date();
-    const senderLabel: string = this.currentUser.getFirstName() + ", " + date.getHours() + ':' + date.getMinutes();
+    const senderLabel: string = this.currentUser.getFirstName() + ', ' + date.getHours() + ':' + date.getMinutes();
     const timeLabel: string = date.getHours() + ':' + date.getMinutes();
 
-    let chat: ChatModel = new ChatModel();
+    const chat: ChatModel = new ChatModel();
     chat.setMsg(this.chatMsgRT);
     chat.setSenderId(this.currentUser.getUserId());
     chat.setSenderLabel(senderLabel);
@@ -324,7 +329,7 @@ export class ConferenceComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.chatCollection.push(chat);
 
-    this.chatMsgRT = "";
+    this.chatMsgRT = '';
 
     return chat;
   }
@@ -335,11 +340,11 @@ export class ConferenceComponent implements OnInit, OnDestroy, AfterViewInit {
       const dataChannel: RTCDataChannel = this.meetingService.getDataChannel();
       if (dataChannel && dataChannel.readyState === 'open') {
         const data: string = JSON.stringify(Object.assign({}, this.setSenderChatObj()));
-        console.log("message sent !");
+        console.log('message sent !');
         dataChannel.send(data);
       }
     } catch (error) {
-      //error
+      // error
     }
 
 
@@ -350,7 +355,7 @@ export class ConferenceComponent implements OnInit, OnDestroy, AfterViewInit {
     try {
 
 
-      console.log("message recieved !" + data);
+      console.log('message recieved !' + data);
 
       const chatJson: any = JSON.parse(data);
 
@@ -379,7 +384,7 @@ export class ConferenceComponent implements OnInit, OnDestroy, AfterViewInit {
       this.chatCollection.push(chat);
 
     } catch (error) {
-      //error
+      // error
     }
 
   }
@@ -391,17 +396,17 @@ export class ConferenceComponent implements OnInit, OnDestroy, AfterViewInit {
       if (!chat.isRead()) {
         chat.setRead(true);
       }
-    })
+    });
   }
 
 
   public sendMediaSignal(): void {
 
-    console.log("this.mediaSignal : " + JSON.stringify(Object.assign({}, this.mediaSignal)));
+    console.log('this.mediaSignal : ' + JSON.stringify(Object.assign({}, this.mediaSignal)));
     const dataChannel: RTCDataChannel = this.meetingService.getDataChannel();
     if (dataChannel && dataChannel.readyState === 'open') {
       const data: string = JSON.stringify(Object.assign({}, this.mediaSignal));
-      console.log("media signal sent !");
+      console.log('media signal sent !');
       dataChannel.send(data);
     }
 
@@ -409,11 +414,11 @@ export class ConferenceComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private showMediaDialog(type: string, msg: string, ok: string): void {
 
-    let dialogData = {
-      type: type,
+    const dialogData = {
+      type,
       message: msg,
       okText: ok
-    }
+    };
 
     this.matDialog.open(MediaAlertDialogComponent, {
       data: dialogData, disableClose: false,
@@ -424,7 +429,7 @@ export class ConferenceComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
-  public togleFullScreen() {
+  public togleFullScreen(): void {
     if (this.fullScreenFlag) {
       this.closeFullscreen();
     } else {
@@ -432,45 +437,46 @@ export class ConferenceComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
   private openFullscreen(): void {
-    if (this.elem["requestFullscreen"]) {
-      this.elem["requestFullscreen"]();
 
-    } else if (this.elem["mozRequestFullScreen"]) {
-      /* Firefox */
-      this.elem["mozRequestFullScreen"]();
+    // if (this.elem.requestFullscreen) {
+    //   this.elem.requestFullscreen();
 
-    } else if (this.elem["webkitRequestFullscreen"]) {
-      /* Chrome, Safari and Opera */
-      this.elem["webkitRequestFullscreen"]();
+    // } else if (this.elem.mozRequestFullScreen) {
+    //   /* Firefox */
+    //   this.elem.mozRequestFullScreen();
 
-    } else if (this.elem["msRequestFullscreen"]) {
-      /* IE/Edge */
-      this.elem["msRequestFullscreen"]();
+    // } else if (this.elem.webkitRequestFullscreen) {
+    //   /* Chrome, Safari and Opera */
+    //   this.elem.webkitRequestFullscreen();
 
-    }
+    // } else if (this.elem.msRequestFullscreen) {
+    //   /* IE/Edge */
+    //   this.elem.msRequestFullscreen();
+
+    // }
   }
 
   /* Close fullscreen */
   private closeFullscreen(): void {
-    if (this.document["exitFullscreen"]) {
-      this.document["exitFullscreen"]();
+    // if (this.document.exitFullscreen) {
+    //   this.document.exitFullscreen();
 
-    } else if (this.document["mozCancelFullScreen"]) {
-      /* Firefox */
-      this.document["mozCancelFullScreen"]();
+    // } else if (this.document.mozCancelFullScreen) {
+    //   /* Firefox */
+    //   this.document.mozCancelFullScreen();
 
-    } else if (this.document["webkitExitFullscreen"]) {
-      /* Chrome, Safari and Opera */
-      this.document["webkitExitFullscreen"]();
+    // } else if (this.document.webkitExitFullscreen) {
+    //   /* Chrome, Safari and Opera */
+    //   this.document.webkitExitFullscreen();
 
-    } else if (this.document["msExitFullscreen"]) {
-      /* IE/Edge */
-      this.document["msExitFullscreen"]();
+    // } else if (this.document.msExitFullscreen) {
+    //   /* IE/Edge */
+    //   this.document.msExitFullscreen();
 
-    }
+    // }
   }
 
-  public showPrescription() {
+  public showPrescription(): void {
 
     this.matDialog.open(PrescriptionDialogComponent, {
       maxWidth: '560px', width: '560px',

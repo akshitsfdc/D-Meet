@@ -1,8 +1,9 @@
+import { ManagementService } from './../../common-features/services/management.service';
 import { UtilsService } from './../../../services/utils.service';
 import { IncomingCallBottomSheetComponent } from './../incoming-call-bottom-sheet/incoming-call-bottom-sheet.component';
-import { Injectable } from "@angular/core";
-import { MatBottomSheet } from "@angular/material/bottom-sheet";
-import { PatientUserData } from "src/app/models/patient-user-data";
+import { Injectable } from '@angular/core';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { PatientUserData } from 'src/app/models/patient-user-data';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { Subscription } from 'rxjs';
@@ -18,42 +19,45 @@ export class SessionService {
     private userData: PatientUserData;
     private callerObs: Subscription = null;
     private audio = new Audio();
-    private callerCollection: string = "caller_collection";
-    private isCallInit: boolean = false;
-    public profilePlaceholder: string = "/assets/imgs/profile_placeholder.svg";
+    private callerCollection = 'caller_collection';
+    private isCallInit = false;
+    public profilePlaceholder = '/assets/imgs/profile_placeholder.svg';
 
-    constructor(private _bottomSheet: MatBottomSheet, private firestore: FirestoreService, private authService: AuthService, private utill: UtilsService, private route: Router) {
-
-        console.log("SessionService created");
-        this.audio.src = "/assets/audio/ringing.wav";
-        this.audio.addEventListener('ended', function () {
-            this.currentTime = 0;
-            this.play();
+    // tslint:disable-next-line:variable-name
+    constructor(private _bottomSheet: MatBottomSheet,
+        private firestore: FirestoreService,
+        private authService: AuthService,
+        private utill: UtilsService,
+        private route: Router,
+        private managerService: ManagementService) {
+        this.audio.src = '/assets/audio/ringing.wav';
+        this.audio.addEventListener('ended', () => {
+            // this.currentTime = 0;
+            // this.play();
         }, false);
 
         this.initSession();
     }
 
-    public initSession() {
+    public initSession(): void {
         this.authService.getUser()
             .then(userData => {
-
                 this.loadUserData(userData.uid);
                 this.subscribeToCalls(this.callerCollection, userData.uid);
             })
             .catch(error => {
-                //error
-                console.log("no auth >> ");
+                // error
+                console.log('no auth >> ');
 
             });
     }
 
 
-    public startTone() {
+    public startTone(): void {
         try {
             this.audio.play()
                 .catch(error => {
-                    console.log("Ringtone could not be played!");
+                    console.log('Ringtone could not be played!');
                 });
         } catch {
 
@@ -61,10 +65,10 @@ export class SessionService {
         }
 
     }
-    public endTone() {
+    public endTone(): void {
         this.audio.pause();
     }
-    public getCallerCollection() {
+    public getCallerCollection(): string {
         return this.callerCollection;
     }
     private subscribeToCalls(callCollection: string, callDocument: string): void {
@@ -78,10 +82,10 @@ export class SessionService {
                 this.routeAnswer(caller);
             });
     }
-    private routeAnswer(caller: CallerModel) {
+    private routeAnswer(caller: CallerModel): void {
 
         if (caller.isNewCall()) {
-            console.log("got a call");
+            console.log('got a call');
             this.startTone();
             this.openCallingBottomSheet(caller);
             this.isCallInit = true;
@@ -90,34 +94,35 @@ export class SessionService {
             this.endTone();
             this._bottomSheet.dismiss();
             if (this.isCallInit) {
-                this.utill.showMsgSnakebar("Call diconnected");
+                this.utill.showMsgSnakebar('Call diconnected');
             }
 
         }
     }
     private loadUserData(userId: string): void {
 
-        let currentRef = this;
+        const currentRef = this;
 
-        this.firestore.getValueChanges('user-data-patient', userId)
+        this.firestore.getValueChanges('users', userId)
             .subscribe(
 
                 {
-                    next(userData) {
-                        let user: PatientUserData = new PatientUserData();
+                    next(userData): void {
+                        const user: PatientUserData = new PatientUserData();
                         Object.assign(user, userData);
                         if (currentRef.getUserData() === null || currentRef.getUserData() === undefined) {
                             currentRef.setUserData(user);
+                            currentRef.managerService.presenseManagement(user.getUserId(), user.isDoctor());
 
-                            console.log("got user data >> new ");
+                            console.log('got user data >> new ');
                         } else {
                             currentRef.updateUserData(user);
-                            console.log("got user data updated ");
+                            console.log('got user data updated ');
                         }
 
                     },
-                    error(msg) {
-                        console.log("Obs error >> : " + msg);
+                    error(msg): void {
+                        console.log('Obs error >> : ' + msg);
                     },
                     complete: () => console.log('completed')
                 });
@@ -154,9 +159,9 @@ export class SessionService {
 
     public openCallingBottomSheet(caller: any): void {
         const objects = {
-            caller: caller,
+            caller,
             session: this
-        }
+        };
         this._bottomSheet.open(IncomingCallBottomSheetComponent, { disableClose: true, closeOnNavigation: false, panelClass: 'bottom-sheet-custom', data: objects });
     }
 

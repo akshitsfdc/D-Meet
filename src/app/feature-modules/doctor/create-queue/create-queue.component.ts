@@ -149,14 +149,14 @@ export class CreateQueueComponent implements OnInit {
   }
   private convertToMiliSeconds(time: string): number {
 
-    var seconds = 0;
+    let seconds = 0;
     try {
-      var a = time.split(':'); // split it at the colons
+      const a = time.split(':'); // split it at the colons
 
       // minutes are worth 60 seconds. Hours are worth 60 minutes.
-      //seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60;// + (+a[2]); 
+      // seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60;// + (+a[2]);
 
-      let date: Date = new Date();
+      const date: Date = new Date();
       date.setHours(parseInt(a[0]), parseInt(a[1]));
 
       seconds = date.getTime();
@@ -170,14 +170,14 @@ export class CreateQueueComponent implements OnInit {
   }
   private validateForm(): boolean {
 
-    let valid: boolean = true;
+    let valid = true;
 
 
     try {
-      let bookingStartTime = this.convertToMiliSeconds(this.bookStartTime);
-      let bookingEndTime = this.convertToMiliSeconds(this.bookEndTime);
-      let consultingStartTime = this.convertToMiliSeconds(this.consultingStartTime);
-      let consultingEndTime = this.convertToMiliSeconds(this.consultingEndTime);
+      const bookingStartTime = this.convertToMiliSeconds(this.bookStartTime);
+      const bookingEndTime = this.convertToMiliSeconds(this.bookEndTime);
+      const consultingStartTime = this.convertToMiliSeconds(this.consultingStartTime);
+      const consultingEndTime = this.convertToMiliSeconds(this.consultingEndTime);
 
       if (this.numberOfPatients.value.length <= 0) {
         valid = false;
@@ -193,20 +193,20 @@ export class CreateQueueComponent implements OnInit {
       }
 
       if (bookingEndTime <= bookingStartTime) {
-        alert("Booking end time can not be less than or equal to booking start time");
+        alert('Booking end time can not be less than or equal to booking start time');
         valid = false;
       }
       if (consultingStartTime < bookingStartTime) {
-        alert("Consulting start time can not be less than or equal to booking start time");
+        alert('Consulting start time can not be less than or equal to booking start time');
         valid = false;
       }
       if (consultingEndTime <= consultingStartTime) {
-        alert("Consulting end time can not be less than or equal to Consulting start time");
+        alert('Consulting end time can not be less than or equal to Consulting start time');
         valid = false;
       }
 
     } catch {
-      alert("It seems that you might have given some invalid input, please check all your fields again!");
+      alert('It seems that you might have given some invalid input, please check all your fields again!');
       valid = false;
     }
 
@@ -266,41 +266,41 @@ export class CreateQueueComponent implements OnInit {
   private setFeeStructureText(fees: number): void {
 
     // console.log("this.currency : "+JSON.stringify(this.currency.value));
-    let serviceCharge: number = (fees / 100) * this.serviceChargePercent;
-    let totalFees: number = Number(fees) + Number(serviceCharge);
-    this.feeStructureText = "*Service Charge = " + serviceCharge + " " + this.currency.value + ",  You will be paid = " + fees + " " + this.currency.value + ", Total Payable for patient = " + totalFees.toString() + " " + this.currency.value;
+    const serviceCharge: number = (fees / 100) * this.serviceChargePercent;
+    const totalFees: number = Number(fees) + Number(serviceCharge);
+    this.feeStructureText = '*Service Charge = ' + serviceCharge + ' ' + this.currency.value + ',  You will be paid = ' + fees + ' ' + this.currency.value + ', Total Payable for patient = ' + totalFees.toString() + ' ' + this.currency.value;
   }
 
   onFeesChangedEvent(event: any): void {
-    let value = event.target.value;
+    const value = event.target.value;
     if (isNaN(value)) {
-      alert("Invalid fees provided! Please provide a valid number.");
+      alert('Invalid fees provided! Please provide a valid number.');
       return;
     }
-    this.setFeeStructureText(value)
+    this.setFeeStructureText(value);
   }
   private constructQueueObject(): QueueModel {
 
     if (!this.currentUser) {
-      alert("You seems to be logged out because of some reason, please login again or wait for some time or try to refresh this page!");
+      alert('You seems to be logged out because of some reason, please login again or wait for some time or try to refresh this page!');
       return;
     }
-    let bookingStartTime = this.convertToMiliSeconds(this.bookStartTime);
-    let bookingEndTime = this.convertToMiliSeconds(this.bookEndTime);
-    let consultingStartTime = this.convertToMiliSeconds(this.consultingStartTime);
-    let consultingEndTime = this.convertToMiliSeconds(this.consultingEndTime);
+    const bookingStartTime = this.convertToMiliSeconds(this.bookStartTime);
+    const bookingEndTime = this.convertToMiliSeconds(this.bookEndTime);
+    const consultingStartTime = this.convertToMiliSeconds(this.consultingStartTime);
+    const consultingEndTime = this.convertToMiliSeconds(this.consultingEndTime);
 
-    let queue: QueueModel = new QueueModel();
+    const queue: QueueModel = new QueueModel();
 
 
     queue.setType(this.type.value);
     queue.setPaymentOption(this.paymentOption.value);
-    queue.setStatus("scheduled");
+    queue.setStatus('scheduled');
     queue.setQueueId(this.getTimestamp());
     queue.setPatientLimit(this.numberOfPatients.value);
     queue.setTimePerPatient(this.aTimePerPatient.value);
     queue.setActive(true);
-    queue.setOwnerId(this.currentUser.uid); //to be changed
+    queue.setOwnerId(this.currentUser.uid); // to be changed
     queue.setCurrency(this.currency.value);
     queue.setFees(this.fees.value);
     queue.setBookingStarting(bookingStartTime);
@@ -319,35 +319,36 @@ export class CreateQueueComponent implements OnInit {
     try {
       return (new Date().getTime()).toString();
     } catch {
-      return "invalid";
+      return 'invalid';
     }
 
   }
 
-  private saveQueue(queue: QueueModel) {
+  private saveQueue(queue: QueueModel): void {
 
     this.showProgress();
-    this.firestore.save("user-data/" + this.currentUser.uid + "/queues", queue.getQueueId(), Object.assign({}, queue))
+    this.firestore.save('users/' + this.currentUser.uid + '/queues', queue.getQueueId(), Object.assign({}, queue))
       .then(() => {
         this.hideProgress();
-        this.showMessageDialog('success', "Your queue has been created and activated now patients can book online/offline appointments in this queue as per timings provided by you!", "Close");
+        this.showMessageDialog('success', 'Your queue has been created and activated now patients can book online/offline appointments in this queue as per timings provided by you!', 'Close');
 
       })
       .catch(error => {
         this.hideProgress();
-        this.showMessageDialog('fail', "Could not create queue at this moment please try again. If you keep getting this error, please contact support at support@doctormeetup.com", "Close");
+        this.showMessageDialog('fail', 'Could not create queue at this moment please try again. If you keep getting this error, please contact support at support@doctormeetup.com', 'Close');
 
-      })
+      });
 
   }
 
   private showMessageDialog(type: string, msg: string, ok: string): void {
 
-    let dialogData = {
+    const dialogData = {
+      // tslint:disable-next-line:object-literal-shorthand
       type: type,
       message: msg,
       okText: ok
-    }
+    };
 
     this.matDialog.open(MessageDialogComponent, {
       data: dialogData, disableClose: false,
@@ -357,13 +358,13 @@ export class CreateQueueComponent implements OnInit {
     });
   }
 
-  private showProgress() {
+  private showProgress(): void {
     this.disableSubmit = true;
     this.showProgressBar = true;
 
   }
 
-  private hideProgress() {
+  private hideProgress(): void {
     this.disableSubmit = false;
     this.showProgressBar = false;
 

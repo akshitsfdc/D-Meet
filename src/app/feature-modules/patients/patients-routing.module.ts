@@ -11,28 +11,22 @@ import { MainNavigationComponent } from './main-navigation/main-navigation.compo
 const routes: Routes = [
 
   {
-    path: '', component: BaseComponent,
+    path: '', component: MainNavigationComponent,
 
     children: [
       {
-        path: '', component: MainNavigationComponent,
-
-        children: [
-          {
-            path: 'home', component: DashboardComponent
-          },
-          {
-            path: 'meetup-lobby', component: MeetupLobbyComponent
-          },
-          {
-            path: 'meetings', component: MeetingsComponent
-          }
-        ]
+        path: 'home', component: DashboardComponent
       },
       {
-        path: 'conference', component: ConferenceComponent,
+        path: 'meetup-lobby', component: MeetupLobbyComponent
+      },
+      {
+        path: 'meetings', component: MeetingsComponent
       }
     ]
+  },
+  {
+    path: 'conference', component: ConferenceComponent
   }
 ];
 

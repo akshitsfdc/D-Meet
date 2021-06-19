@@ -27,29 +27,22 @@ export class DoctorUserData {
     // private latitude:number;
     // private longitude:number;
     private nearbyAddress: string;
-    private diseaseSpecialist: string[];
     private coordinates: firebase.firestore.GeoPoint;
     private status: string;
-    private queues: any = [];
-    private ref: DocumentReference;
-
-
-
+    private doctor: boolean;
 
 
     constructor() {
-        this.diseaseSpecialist = [];
-        this.queues = [];
     }
 
-    public getRef(): DocumentReference {
-        return this.ref;
+
+    public isDoctor(): boolean {
+        return this.doctor;
     }
 
-    public setRef(ref: DocumentReference): void {
-        this.ref = ref;
+    public setDoctor(doctor: boolean): void {
+        this.doctor = doctor;
     }
-
 
     public getPhoneNumber(): string {
         return this.phoneNumber;
@@ -58,15 +51,6 @@ export class DoctorUserData {
     public setPhoneNumber(phoneNumber: string): void {
         this.phoneNumber = phoneNumber;
     }
-
-    public getQueues(): any[] {
-        return this.queues;
-    }
-
-    public setQueues(queues: any[]): void {
-        this.queues = queues;
-    }
-
 
     public getStatus(): string {
         return this.status;
@@ -92,31 +76,6 @@ export class DoctorUserData {
     public setNearbyAddress(nearbyAddress: string): void {
         this.nearbyAddress = nearbyAddress;
     }
-
-    public getDiseaseSpecialist(): string[] {
-        return this.diseaseSpecialist;
-    }
-
-    public setDiseaseSpecialist(diseaseSpecialist: string[]): void {
-        this.diseaseSpecialist = diseaseSpecialist;
-    }
-
-    // public getLatitude(): number {
-    //     return this.latitude;
-    // }
-
-    // public setLatitude(latitude: number): void {
-    //     this.latitude = latitude;
-    // }
-
-    // public getLongitude(): number {
-    //     return this.longitude;
-    // }
-
-    // public setLongitude(longitude: number): void {
-    //     this.longitude = longitude;
-    // }
-
 
     public isKycSubmitted(): boolean {
         return this.kycSubmitted;

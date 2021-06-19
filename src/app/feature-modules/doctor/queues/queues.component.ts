@@ -28,11 +28,12 @@ export class QueuesComponent implements OnInit {
 
   private showDialog(type: string, msg: string, ok: string, queue: QueueModel): void {
 
-    let dialogData = {
+    const dialogData = {
+      // tslint:disable-next-line:object-literal-shorthand
       type: type,
       message: msg,
       okText: ok
-    }
+    };
 
     this.matDialog.open(MessageDialogComponent, {
       data: dialogData, disableClose: false,
@@ -48,7 +49,7 @@ export class QueuesComponent implements OnInit {
 
 
   private deleteQueue(queue: QueueModel): void {
-    this.server.delete("user-data/" + this.session.getUserData().getUserId() + "/queues", queue.getQueueId())
+    this.server.delete('users/' + this.session.getUserData().getUserId() + '/queues', queue.getQueueId())
       .then(() => {
 
       })
@@ -56,15 +57,15 @@ export class QueuesComponent implements OnInit {
         this.showDialog('fail', 'Could not delete queue at this time please try again. If you keep getting this error, please contact support at support@doctormeetup.com', 'Close', null);
       });
   }
-  queueStatusChanged(queue: QueueModel) {
+  queueStatusChanged(queue: QueueModel): void {
 
     queue.setLoading(true);
-    this.server.update('user-data/' + this.session.getUserData().getUserId() + '/queues', queue.getQueueId(), { 'active': !queue.isActive() })
+    this.server.update('users/' + this.session.getUserData().getUserId() + '/queues', queue.getQueueId(), { active: !queue.isActive() })
       .then(() => {
         queue.setLoading(false);
       })
       .catch(error => {
-        //error
+        // error
         queue.setLoading(false);
       });
 
@@ -81,7 +82,7 @@ export class QueuesComponent implements OnInit {
 
   }
 
-  goToCreateQueue() {
+  goToCreateQueue(): void {
     this.router.navigate(['createQueue'], { relativeTo: this.route });
   }
 }

@@ -1,6 +1,7 @@
+import { CalculationService } from './../../common-features/services/calculation.service';
+import { HelperService } from './../../common-features/services/helper.service';
 import { DoctorFirestoreService } from './../services/doctor-firestore.service';
-import { PatientUserData } from './../../../models/patient-user-data'
-import { DoctorUserData } from './../../../models/doctor-user-data';
+import { PatientUserData } from './../../../models/patient-user-data';
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { UtilsService } from 'src/app/services/utils.service';
@@ -12,6 +13,7 @@ import { SessionService } from '../services/session.service';
 import { Router } from '@angular/router';
 import { BookedPatient } from '../../common-features/models/booked-patient';
 import { QueueModel } from '../../common-features/models/queue-model';
+import { DoctorUserData } from '../../common-features/models/doctor-user-data';
 
 declare var Razorpay: any;
 
@@ -24,11 +26,11 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
   @ViewChild('bookingList') bookingListElement: ElementRef;
 
-  rippleColor = "#4294f4";
-  selectedStatus = "live";
-  selectStatusDisplay = "Live";
+  rippleColor = '#4294f4';
+  selectedStatus = 'live';
+  selectStatusDisplay = 'Live';
 
-  bookingavailable: boolean = false;
+  bookingavailable = false;
 
   disableNext = false;
 
@@ -41,64 +43,45 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
   currentPaient: BookedPatient;
   nextPatient: BookedPatient;
 
-  totalPatientSize: Number;
+  totalPatientSize: number;
   currentQueue: QueueModel;
 
   extraheight: number = 75 + 15 + 60;
-  consultingStartWaitingTimeLabel: string = "0h:00m"
+  consultingStartWaitingTimeLabel = '0h:00m';
 
-  bookingStartingWaitingTime: number = 0;
-  bookingStartingWaitingTimeLabel: String = "0h:00m";
-
-  movies = [
-    'Episode I - The Phantom Menace',
-    'Episode II - Attack of the Clones',
-    'Episode III - Revenge of the Sith',
-    'Episode IV - A New Hope',
-    'Episode V - The Empire Strikes Back',
-    'Episode VI - Return of the Jedi',
-    'Episode VII - The Force Awakens',
-    'Episode VIII - The Last Jedi',
-    'Episode IV - A New Hope',
-    'Episode I - The Phantom Menace',
-    'Episode II - Attack of the Clones',
-    'Episode III - Revenge of the Sith',
-    'Episode IV - A New Hope',
-    'Episode V - The Empire Strikes Back',
-    'Episode VI - Return of the Jedi',
-    'Episode VII - The Force Awakens',
-    'Episode VIII - The Last Jedi',
-    'Episode IV - A New Hope',
-    'Episode III - Revenge of the Sith',
-    'Episode IV - A New Hope',
-    'Episode V - The Empire Strikes Back',
-    'Episode VI - Return of the Jedi',
-    'Episode VII - The Force Awakens',
-    'Episode VIII - The Last Jedi',
-    'Episode IV - A New Hope',
-    'Episode I - The Phantom Menace',
-    'Episode II - Attack of the Clones',
-    'Episode III - Revenge of the Sith',
-    'Episode IV - A New Hope',
-    'Episode V - The Empire Strikes Back',
-    'Episode VI - Return of the Jedi',
-    'Episode VII - The Force Awakens',
-    'Episode VIII - The Last Jedi',
-    'Episode IV - A New Hope',
-
-  ];
+  bookingStartingWaitingTime = 0;
+  // tslint:disable-next-line:ban-types
+  bookingStartingWaitingTimeLabel: String = '0h:00m';
 
   private myWaitingTimeTimer;
 
-  private consultingStartWaitingTime: number = 0;
+  private consultingStartWaitingTime = 0;
   private loading: MatDialogRef<LoadingDialogComponent>;
 
-  selftWaitingTime: string = "";
+  selftWaitingTime = '';
 
   userData: PatientUserData;
 
+  // tslint:disable-next-line:no-inferrable-types
+  private currentMeetingTime: number = 0;
+
+  private bstartingInterval: NodeJS.Timeout;
+  private bEndInterval: NodeJS.Timeout;
+  private cstartingInterval: NodeJS.Timeout;
+
+  private queueQuardInterval: NodeJS.Timeout;
+  private selfWaitingInterval: NodeJS.Timeout;
+  private currentBookingInterval: NodeJS.Timeout;
+  private processingPatientId: string;
+  private processingPatientSelectionTime: number;
+  // tslint:disable-next-line:no-trailing-whitespace
+
+
   constructor(private matDialog: MatDialog, private router: Router,
-    public utils: UtilsService, private session: SessionService, private firestoreService: DoctorFirestoreService) {
+    public utils: UtilsService, public session: SessionService,
+    private firestoreService: DoctorFirestoreService,
+    public helper: HelperService,
+    public calculation: CalculationService) {
 
 
   }
@@ -111,61 +94,116 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
     this.currentDoctor = this.session.getSharedData().doctor as DoctorUserData;
 
-    this.bookingAvailability();
+    // this.bookingAvailability();
 
-    this.consultingStarted();
+    // this.consultingStarted();
 
-    this.setTimerForAvailability();
+    // this.setTimerForAvailability();
 
-
-    // if (!this.currentQueue.isConsultingStarted()) {
-
-    //   this.consultingStartWaitingTime = this.utils.getTimeDifference(this.currentQueue.getConsultingStarting());
-
-    //   this.consultingStartWaitingTimeLabel = this.utils.getDateDigits(this.consultingStartWaitingTime);
-
-    //   this.initConsultingWaitingTime();
-
-
-    // }
-
-    // if (!this.currentQueue.isBookingAvailable()) {
-
-    //   this.bookingStartingWaitingTime = this.utils.getTimeDifference(this.currentQueue.getBookingStarting());
-
-    //   this.bookingStartingWaitingTimeLabel = this.utils.getDateDigits(this.bookingStartingWaitingTime);
-
-    //   this.initBookingWaitingTime();
-    // }
-
-
-    // this.startTimerCounter();
-
+    this.startLobbyTimers();
 
   }
 
 
-  private setTimerForAvailability() {
+  private startLobbyTimers(): void {
 
-    setInterval(() => {
-      this.bookingAvailability();
-      this.consultingStarted();
-    }, 60000);
+    this.currentQueue.setBookingStartRemaingTime(this.calculation.timeDiffrenceFromNow(this.currentQueue.getBookingStarting()) * 1000);
+
+    this.bstartingInterval = setInterval(() => {
+
+      if (this.currentQueue.getBookingStartRemaingTime() <= 0) {
+        this.currentQueue.setBookingStartRemaingTime(0);
+        clearInterval(this.bstartingInterval);
+      } else {
+        this.currentQueue.setBookingStartRemaingTime(this.currentQueue.getBookingStartRemaingTime() - 1000);
+      }
+
+    }, 1000);
+
+    this.currentQueue.setConsultingStartingRemaingTime(
+      this.calculation.timeDiffrenceFromNow(this.currentQueue.getConsultingStarting()) * 1000);
+
+    this.cstartingInterval = setInterval(() => {
+
+
+      if (this.currentQueue.getConsultingStartingRemaingTime() <= 0) {
+        this.currentQueue.setConsultingStartingRemaingTime(0);
+        clearInterval(this.cstartingInterval);
+      } else {
+        this.currentQueue.setConsultingStartingRemaingTime(this.currentQueue.getConsultingStartingRemaingTime() - 1000);
+      }
+
+    }, 1000);
+
+    this.currentQueue.setBookingEndingRemaingTime(this.calculation.timeDiffrenceFromNow(this.currentQueue.getBookingEnding()) * 1000);
+
+    this.bEndInterval = setInterval(() => {
+
+
+      if (this.currentQueue.getBookingEndingRemaingTime() <= 0) {
+        this.currentQueue.setBookingEndingRemaingTime(0);
+        clearInterval(this.bEndInterval);
+      } else {
+        this.currentQueue.setBookingEndingRemaingTime(this.currentQueue.getBookingEndingRemaingTime() - 1000);
+      }
+
+    }, 1000);
+
+
+    // this is generic timer which take care of queue state every 1 second
+    this.queueQuardInterval = setInterval(() => {
+
+      const currentBooking: BookedPatient = this.currentQueue.getCurrentPatient();
+
+      if (currentBooking
+        && (currentBooking.getBookingId() !== this.processingPatientId
+          || currentBooking.getSelectionTime() !== this.processingPatientSelectionTime) && currentBooking.getSelectionTime() > 0) {
+
+        this.processingPatientId = currentBooking.getBookingId();
+        this.processingPatientSelectionTime = currentBooking.getSelectionTime();
+
+        if (this.currentBookingInterval) {
+          clearInterval(this.currentBookingInterval);
+        }
+        this.setCurrentMeetingTime(currentBooking);
+      }
+
+    }, 1000);
+
   }
 
-  ngAfterViewInit() {
+  private setCurrentMeetingTime(booking: BookedPatient): void {
 
-    let windowHeight = window.innerHeight;
+    this.currentMeetingTime = this.calculation.getTimePassed(booking.getSelectionTime()) * 1000;
+
+    this.currentBookingInterval = setInterval(() => {
+      this.currentMeetingTime += 1000;
+    }, 1000);
+
+  }
+
+  // private setTimerForAvailability(): void {
+
+  //   setInterval(() => {
+  //     this.bookingAvailability();
+  //     this.consultingStarted();
+  //   }, 60000);
+  // }
+
+  // tslint:disable-next-line:use-lifecycle-interface
+  ngAfterViewInit(): void {
+
+    const windowHeight = window.innerHeight;
     // this.bookingListElement.nativeElement.style.height = 50 +'px';    // set height
     this.bookingListElement.nativeElement.style.height = (windowHeight - this.extraheight) + 'px';
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    let windowHeight = window.innerHeight;
+  onResize(event): void {
+    const windowHeight = window.innerHeight;
     this.bookingListElement.nativeElement.style.height = (windowHeight - this.extraheight) + 'px';
   }
-  initConsultingWaitingTime() {
+  initConsultingWaitingTime(): void {
     setInterval(() => {
       this.consultingStartWaitingTime -= 60000;
       this.consultingStartWaitingTimeLabel = this.utils.getDateDigits(this.consultingStartWaitingTime);
@@ -173,7 +211,7 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
     }, 60000);
   }
 
-  initBookingWaitingTime() {
+  initBookingWaitingTime(): void {
     setInterval(() => {
       if (this.bookingStartingWaitingTime > 0) {
         this.bookingStartingWaitingTime -= 60000;
@@ -182,11 +220,11 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
       }
     }, 60000);
   }
-  drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.movies, event.previousIndex, event.currentIndex);
+  drop(event: CdkDragDrop<string[]>): void {
+    // moveItemInArray(this.movies, event.previousIndex, event.currentIndex);
   }
 
-  goPatientMeet() {
+  goPatientMeet(): void {
     // this.router.navigate(['patientMeet'], { relativeTo: this.route });
     this.saveData();
   }
@@ -207,15 +245,15 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
   //   }
 
   // }
-  movePatient() {
+  movePatient(): void {
 
-    let dialogData = {
+    const dialogData = {
       maxPosition: this.tempPatients.length,
       minPosition: this.tempPatients.length > 2 ? 2 : this.tempPatients.length
-    }
+    };
 
 
-    let dialog = this.matDialog.open(MovePatientComponent, { data: dialogData });
+    const dialog = this.matDialog.open(MovePatientComponent, { data: dialogData });
 
     dialog.afterClosed().subscribe(result => {
 
@@ -232,7 +270,7 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
     });
   }
 
-  private shiftPatientToPosition(position: number) {
+  private shiftPatientToPosition(position: number): void {
 
     if (this.tempPatients.length > 0) {
       this.tempPatients.splice(position, 0, this.currentPaient);
@@ -241,7 +279,7 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
   }
 
-  private shiftPatientToLast() {
+  private shiftPatientToLast(): void {
 
     if (this.tempPatients.length > 0) {
       this.tempPatients.splice(this.tempPatients.length, 0, this.currentPaient);
@@ -250,34 +288,34 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
 
   }
-  statusChanged() {
+  statusChanged(): void {
     switch (this.selectedStatus) {
-      case "live": {
-        this.selectStatusDisplay = "Live";
+      case 'live': {
+        this.selectStatusDisplay = 'Live';
         break;
       }
-      case "offline": {
-        this.selectStatusDisplay = "Offline";
+      case 'offline': {
+        this.selectStatusDisplay = 'Offline';
         break;
       }
       default: {
-        this.selectStatusDisplay = "Away";
+        this.selectStatusDisplay = 'Away';
         break;
       }
     }
   }
 
-  private saveData() {
+  private saveData(): void {
     // const roomRef = this.firestore.collection('doctor-meta').doc((+ new Date()).toString());
     // roomRef.set(this.getCitydata());
 
     // const coollection = this.firestore.collection('cities');
     // this.firestore
     // .collection('cities', ref => ref.where("state", "==", "Uttar Pradesh").where("country", "==", "India"))
-    // .get().toPromise().then((querySnapshot) => { 
+    // .get().toPromise().then((querySnapshot) => {
     //   querySnapshot.forEach((doc) => {
-    //        console.log(doc.id, "=>", doc.data());  
-    //   }); 
+    //        console.log(doc.id, "=>", doc.data());
+    //   });
     // });
   }
 
@@ -287,11 +325,11 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
   private showDialog(type: string, msg: string, ok: string): void {
 
-    let dialogData = {
-      type: type,
+    const dialogData = {
+      type,
       message: msg,
       okText: ok
-    }
+    };
 
     this.matDialog.open(MessageDialogComponent, {
       data: dialogData, disableClose: false,
@@ -304,23 +342,25 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
 
 
-  private showLoading() {
+  private showLoading(): void {
 
-    this.utils.showLoading("Please wait...");
+    this.utils.showLoading('Please wait...');
 
   }
-  private hideLoading() {
+  private hideLoading(): void {
     this.utils.hideLoading();
   }
 
-  bookingAvailability() {
-    this.currentQueue.setBookingAvailable(this.utils.isWithinTimeFrame(this.currentQueue.getBookingStarting(), this.currentQueue.getBookingEnding()));
+  bookingAvailability(): void {
+    this.currentQueue.setBookingAvailable(
+      this.utils.isWithinTimeFrame(this.currentQueue.getBookingStarting(), this.currentQueue.getBookingEnding()));
   }
-  consultingStarted() {
-    this.currentQueue.setConsultingStarted(this.utils.isWithinTimeFrame(this.currentQueue.getConsultingStarting(), this.currentQueue.getConsultingEnding()));
+  consultingStarted(): void {
+    this.currentQueue.setConsultingStarted(
+      this.utils.isWithinTimeFrame(this.currentQueue.getConsultingStarting(), this.currentQueue.getConsultingEnding()));
   }
 
-  startTimerCounter() {
+  startTimerCounter(): void {
     this.myWaitingTimeTimer = setInterval(() => {
       this.changeSelfWaitingTime();
     }, 1000);
@@ -330,11 +370,11 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
 
 
-  changeSelfWaitingTime() {
-    console.log("Outside >> ");
+  changeSelfWaitingTime(): void {
+    console.log('Outside >> ');
     if (this.currentQueue.getBookings().length > 0 && this.currentQueue.getMyBooking()) {
 
-      console.log("Inside >> ");
+      console.log('Inside >> ');
 
       this.currentQueue.getMyBooking().setSelfWaitingTime(+new Date());
     }
@@ -348,20 +388,20 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
     if (makePending) {
       serverInput = {
-        "currentPatient": false, "processed": false, "pending": true
+        currentPatient: false, processed: false, pending: true
       };
     } else {
       serverInput = {
-        "currentPatient": false, "processed": true, "pending": false
+        currentPatient: false, processed: true, pending: false
       };
     }
     currentUserInput = {
-      "currentPatient": true, "processed": false, "pending": false
+      currentPatient: true, processed: false, pending: false
     };
 
     this.nextPatient = this.findNextPatient();
 
-    let queueEnded: boolean = false;
+    let queueEnded = false;
     let queueData: any;
 
     if (this.nextPatient === null) {
@@ -372,7 +412,8 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
       queueData = { queueEnded: false, currentNumber: this.nextPatient.getQueuePlace() };
     }
 
-    this.firestoreService.finalizeCurrentPatient(this.currentQueue.getCurrentPatient().getDocReference(), this.nextPatient?.getDocReference(),
+    this.firestoreService.finalizeCurrentPatient(
+      this.currentQueue.getCurrentPatient().getDocReference(), this.nextPatient?.getDocReference(),
       this.currentQueue.getDocRef(), serverInput, currentUserInput, queueData, queueEnded)
       .then(() => {
 
@@ -383,7 +424,7 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
       })
       .catch(error => {
         this.hideLoading();
-        console.log("Error in finalizing current patient");
+        console.log('Error in finalizing current patient');
 
       });
 
@@ -431,11 +472,11 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
   }
 
-  startQueueProcessing() {
+  startQueueProcessing(): void {
 
 
     if (this.currentQueue.getBookings().length < 1) {
-      //error
+      // error
       return;
     }
 
@@ -443,10 +484,10 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
     this.showLoading();
 
     currentUserInput = {
-      "currentPatient": true, "processed": false, "pending": false
+      currentPatient: true, processed: false, pending: false
     };
 
-    let firstPatient: BookedPatient = this.findNextPatient();
+    const firstPatient: BookedPatient = this.findNextPatient();
     if (firstPatient === null) {
       this.hideLoading();
       return;
@@ -458,20 +499,20 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
     queueData = { currentNumber: firstPatient.getQueuePlace() };
 
 
-    console.log("queue started with : ");
+    console.log('queue started with : ');
 
 
     this.firestoreService.startQueue(firstPatient.getDocReference(), this.currentQueue.getDocRef(), currentUserInput, queueData)
       .then(() => {
         // this.nextPatient = this.findNextPatient();
         this.hideLoading();
-        console.log("Success started queue!");
+        console.log('Success started queue!');
 
       })
       .catch(error => {
-        //error
+        // error
         this.hideLoading();
-        console.log("Failed started queue!");
+        console.log('Failed started queue!');
       });
 
 
@@ -479,14 +520,15 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
   private findNextPatient(): BookedPatient {
 
-    const pId: string = this.currentQueue.getCurrentPatient()?.getBookingId() || "";
+    const pId: string = this.currentQueue.getCurrentPatient()?.getBookingId() || '';
 
+    // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < this.currentQueue.getBookings().length; ++i) {
-      console.log("searching for candidate..");
-      let patient = this.currentQueue.getBookings()[i];
+      console.log('searching for candidate..');
+      const patient = this.currentQueue.getBookings()[i];
 
       if (!patient.isPending() && !patient.isProcessed() && pId !== patient.getBookingId()) {
-        console.log("Canndidate..mached!");
+        console.log('Canndidate..mached!');
         return patient;
       }
 
@@ -498,9 +540,10 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
   private findNextPendingPatient(): BookedPatient {
 
+    // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < this.currentQueue.getBookings().length; ++i) {
-      console.log("searching for pending candidates..");
-      let patient = this.currentQueue.getBookings()[i];
+      console.log('searching for pending candidates..');
+      const patient = this.currentQueue.getBookings()[i];
 
       if (patient.isPending() && !patient.isProcessed()) {
         return patient;
@@ -513,11 +556,11 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
   }
   navigateToMeeting(currentPatient: BookedPatient): void {
 
-    let data = {
+    const data = {
       queue: this.session.getSharedData().queue as QueueModel,
       doctor: this.session.getSharedData().doctor as DoctorUserData,
-      currentPatient: currentPatient
-    }
+      currentPatient
+    };
 
     this.session.setSharedData(data);
     this.router.navigate(['doctor/conference']);

@@ -11,61 +11,64 @@ import { AuthService } from '../services/auth.service';
 })
 export class LoadingSplashComponent implements OnInit {
 
-  constructor(private authService: AuthService, private router: Router, private firestore:FirestoreService) { }
+  constructor(private authService: AuthService, private router: Router, private firestore: FirestoreService) { }
 
   ngOnInit(): void {
     this.checkLogin();
   }
 
-  private async checkLogin() {
-    
-    const user:firebase.User =  await this.authService.getUser().then(user => {return user;})
-    .catch(error => {console.log("error occured in getting current user : "+error)
-      return null;
-    });
+  private async checkLogin(): Promise<void> {
 
-    console.log("user : "+JSON.stringify(user));
-    if(user){
+    // tslint:disable-next-line:no-shadowed-variable
+    const user: firebase.User = await this.authService.getUser().then(user => user)
+      .catch(error => {
+        console.log('error occured in getting current user : ' + error);
+        return null;
+      });
+
+    console.log('user : ' + JSON.stringify(user));
+    if (user) {
       this.loadUserData(user);
-    }else{
-      this.router.navigate(['login'])
+    } else {
+      this.router.navigate(['login']);
     }
   }
 
-  private loadUserData(user:firebase.User){
+  private loadUserData(user: firebase.User): void {
 
     const userId = user.uid;
 
-    this.firestore.get("user-identity", userId)
+    this.firestore.get('users', userId)
 
-    .then(data => {
+      .then(data => {
 
-      const doctor:boolean = data.data().doctor;
+        const doctor: boolean = data.data().doctor;
 
-      if(doctor === null || doctor === undefined){
+        this.authService.isDoctor = doctor;
+
+        if (doctor === null || doctor === undefined) {
+          this.authService.signOut().then(() => {
+            this.router.navigate(['login']);
+          }).catch(() => {
+            this.router.navigate(['login']);
+          });
+          return;
+        }
+        if (doctor) {
+          this.router.navigate(['doctor']);
+        } else {
+          this.router.navigate(['patient']);
+        }
+
+      })
+      .catch(error => {
+        console.log(error);
         this.authService.signOut().then(() => {
           this.router.navigate(['login']);
         }).catch(() => {
           this.router.navigate(['login']);
-        })
-        return;
-      }
-      console.log("doctor >> "+doctor);
-      if(doctor){      
-        this.router.navigate(['doctor']);
-      }else{
-        this.router.navigate(['patient']);
-      }
-
-    })
-    .catch(error => {
-        console.log(error);
-        this.authService.signOut().then(() => {
-          this.router.navigate(['login']);
-         }).catch(() => {
-          this.router.navigate(['login']);
-         })
-    });
-  }  
+        });
+      });
+  }
 
 }

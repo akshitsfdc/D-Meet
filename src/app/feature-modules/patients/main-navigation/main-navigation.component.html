@@ -1,147 +1,86 @@
-<!-- <div fxLayout="column" class="parent" > 
-
- 
-  <mat-sidenav-container class="sidenav-container" fxFlex="1 1 auto" fxLayout="row">
-    <mat-sidenav #drawer class="sidenav" fixedInViewport="true" [mode]="(isHandset$ | async) ? 'over' : 'side'"
-      [opened]="(isHandset$ | async) === false" fxFlex="1 1 200px">
-      <mat-toolbar>Menu</mat-toolbar>
-      <mat-nav-list>
-        <mat-list-item (click)="liveQueueClick()">
-          <mat-icon mat-list-icon>person</mat-icon>  
-           <label *ngIf="isExpanded">Home</label>
-        </mat-list-item>
-        <mat-list-item (click)="queuesClick()">
-          <mat-icon mat-list-icon>person</mat-icon>  
-            <label *ngIf="isExpanded">Queues</label>
-        </mat-list-item>
-         <a mat-list-item href="#">Patients</a>
-        <a mat-list-item href="#">Followers</a>
-        <a mat-list-item href="#">Following</a>
-        <a mat-list-item href="#">Payment</a>-->
-
-        <!-- <mat-list-item (click)="logOut()"> 
-
-          <mat-icon mat-list-icon>person</mat-icon>  
-          <label *ngIf="isExpanded">Logout</label> 
-
-        </mat-list-item>
-      </mat-nav-list>
-    </mat-sidenav>
-
-    <mat-toolbar color="primary" fxFlex="1 1 76px">
-
-      <mat-toolbar-row class="toolbar-row1" fxLayout="row" fxLayoutGap="10px">
-        <button
-          type="button"
-          aria-label="Toggle sidenav"
-          mat-icon-button
-          (click)="drawer.toggle()"
-        >
-        <mat-icon aria-label="Side nav toggle icon" [ngStyle]="{'color':'#0F9D58'}">menu</mat-icon>
-      </button>
-    
-     <img id="meetupImage" src="/assets/imgs/meetup_logo_with.png" alt="Meetup Logo">
-      
-      
-    </mat-toolbar-row>
-   
-  </mat-toolbar>
-    <mat-sidenav-content fxFlex="1 1 auto">
-      <router-outlet></router-outlet>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
-</div>  -->
-
-
 <!-- [opened]="(isHandset$ | async) === false" -->
 <mat-sidenav-container class="sidenav-container" fxLayout="row" autosize="true">
-  <mat-sidenav #drawer class="sidenav" fixedInViewport
-      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-      [mode]="(isHandset$ | async) ? 'over' : 'side'"
-      opened = "true"
-      [opened]="(isHandset$ | async) === false"
-      fxFlex="1 1 auto"
-      >
- 
-      <div id="sidenavInner"  fxLayout="column">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'" opened="true" [opened]="(isHandset$ | async) === false"
+    fxFlex="1 1 auto">
 
-        <div fxFlex="1 1 auto" fxLayout="column">
-          <mat-toolbar fxLayout="row" fxLayoutAlign="start center" fxFlex="1 1 100px">
-            <img id="meetupImage" *ngIf="isExpanded" src="/assets/imgs/meetup_logo_with.svg" alt="Meetup Logo">
-            <img id="meetupImageSmall" *ngIf="!isExpanded" src="/assets/imgs/meetup_logo_without.svg" alt="Meetup Logo">
+    <div id="sidenavInner" fxLayout="column">
 
-          </mat-toolbar>
-          <mat-nav-list>
-            <mat-list-item (click)="gotoHome()" >
-              <div class="list-item-div" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start center" >
-                <mat-icon mat-list-icon>home</mat-icon>  
-                <mat-label *ngIf="isExpanded">Home</mat-label>
-              </div>               
-            </mat-list-item>
-            <mat-list-item (click)="meetingsClick()">
-              <div class="list-item-div" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start center" >
-                <mat-icon mat-list-icon>meeting_room</mat-icon>  
-                <mat-label *ngIf="isExpanded">Meetings</mat-label>
+      <div fxFlex="1 1 auto" fxLayout="column">
+        <mat-toolbar fxLayout="row" fxLayoutAlign="start center" fxFlex="1 1 100px">
+          <img id="meetupImage" *ngIf="isExpanded" src="/assets/imgs/meetup_logo_with.svg" alt="Meetup Logo">
+          <img id="meetupImageSmall" *ngIf="!isExpanded" src="/assets/imgs/meetup_logo_without.svg" alt="Meetup Logo">
+
+        </mat-toolbar>
+        <mat-nav-list>
+          <mat-list-item (click)="gotoHome()">
+            <div class="list-item-div" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start center">
+              <mat-icon mat-list-icon>home</mat-icon>
+              <mat-label *ngIf="isExpanded">Home</mat-label>
             </div>
-            </mat-list-item>
-            
-            <mat-list-item (click)="logOut()"> 
-              <div class="list-item-div" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start center" >
-                <mat-icon mat-list-icon>person</mat-icon>  
-                <mat-label *ngIf="isExpanded">Logout</mat-label> 
-                </div>
-            </mat-list-item>
-          </mat-nav-list>
-        </div>
+          </mat-list-item>
+          <mat-list-item (click)="meetingsClick()">
+            <div class="list-item-div" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start center">
+              <mat-icon mat-list-icon>meeting_room</mat-icon>
+              <mat-label *ngIf="isExpanded">Meetings</mat-label>
+            </div>
+          </mat-list-item>
 
-        <mat-divider></mat-divider>
-
-        <div *ngIf="isExpanded"  fxFlex="1 1 50px" fxLayout="column" fxLayoutAlign="center end">
-          <mat-icon  aria-label="Side nav toggle icon" (click)="isExpanded = !isExpanded">keyboard_arrow_left</mat-icon>
-        </div>
-        <div *ngIf="!isExpanded" fxFlex="1 1 50px" fxLayout="column" fxLayoutAlign="center center" >
-          <mat-icon aria-label="Side nav toggle icon" (click)="isExpanded = !isExpanded">keyboard_arrow_right</mat-icon>
-        </div>
-
+          <mat-list-item (click)="logOut()">
+            <div class="list-item-div" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start center">
+              <mat-icon mat-list-icon>person</mat-icon>
+              <mat-label *ngIf="isExpanded">Logout</mat-label>
+            </div>
+          </mat-list-item>
+        </mat-nav-list>
       </div>
+
+      <mat-divider></mat-divider>
+
+      <div *ngIf="isExpanded" fxFlex="1 1 50px" fxLayout="column" fxLayoutAlign="center end">
+        <mat-icon aria-label="Side nav toggle icon" (click)="isExpanded = !isExpanded">keyboard_arrow_left</mat-icon>
+      </div>
+      <div *ngIf="!isExpanded" fxFlex="1 1 50px" fxLayout="column" fxLayoutAlign="center center">
+        <mat-icon aria-label="Side nav toggle icon" (click)="isExpanded = !isExpanded">keyboard_arrow_right</mat-icon>
+      </div>
+
+    </div>
   </mat-sidenav>
   <mat-sidenav-content fxFlex="1 1 auto" fxLayout="column">
 
-    <mat-toolbar class="header-toolbar" fxLayout="row" fxFlex="1 1 75px" fxLayoutAlign="center center" >
+    <mat-toolbar class="header-toolbar" fxLayout="row" fxFlex="1 1 75px" fxLayoutAlign="center center">
 
-        <span fxFlex="1 1 auto"></span>
+      <span fxFlex="1 1 auto"></span>
 
-        <div class="search-container" fxFlex="1 1 600px" fxLayout="row">
-          <div class="search-input-wrapper" fxFlex="1 1 auto">
-            <input matInput placeholder="Search" class="search-input" >
-          </div>
-          
-          <button mat-stroked-button class="search-button" fxFlex="1 1 75px">
-            <mat-icon class="search-icon" >search</mat-icon>
-          </button>
+      <div class="search-container" fxFlex="1 1 600px" fxLayout="row">
+        <div class="search-input-wrapper" fxFlex="1 1 auto">
+          <input matInput placeholder="Search" class="search-input">
         </div>
-      
-        <span fxFlex="1 1 auto"></span>
-      
-        <!-- <div> -->
-          <!-- <mat-icon *ngIf="notificationCount <= 0" matBadgeColor="warn"></mat-icon> -->
-          <mat-icon [matBadgeHidden]="notificationCount <= 0" matBadge="{{notificationCount}}" matBadgeColor="warn" class="notification-icon"
 
-          matTooltip="{{(notificationCount <= 0)?'no new notification':'new notifications : click to view'}}"
-          matTooltipPosition ="below"
-          matTooltipHideDelay="1000"
-          
-          >{{(notificationCount <= 0)?'notifications':'notifications_active'}}</mat-icon>
-        <!-- </div> -->
-      
-      <!-- </mat-toolbar-row> -->
-      
+        <button mat-stroked-button class="search-button" fxFlex="1 1 75px">
+          <mat-icon class="search-icon">search</mat-icon>
+        </button>
+      </div>
+
+      <span fxFlex="1 1 auto"></span>
+
+      <!-- <div> -->
+      <!-- <mat-icon *ngIf="notificationCount <= 0" matBadgeColor="warn"></mat-icon> -->
+      <mat-icon [matBadgeHidden]="notificationCount <= 0" matBadge="{{notificationCount}}" matBadgeColor="warn"
+        class="notification-icon"
+        matTooltip="{{(notificationCount <= 0)?'no new notification':'new notifications : click to view'}}"
+        matTooltipPosition="below" matTooltipHideDelay="1000">{{(notificationCount <=
+          0)?'notifications':'notifications_active'}}</mat-icon>
+          <!-- </div> -->
+
+          <!-- </mat-toolbar-row> -->
+
     </mat-toolbar>
     <mat-divider></mat-divider>
     <!-- <mat-divider></mat-divider> -->
     <div fxFlex="1 1 auto" class="content-div">
       <router-outlet></router-outlet>
     </div>
-    
+
   </mat-sidenav-content>
 </mat-sidenav-container>
