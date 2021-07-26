@@ -90,9 +90,9 @@ export class EditQueueComponent implements OnInit {
     this.queueForm = new FormGroup({
       first: new FormGroup({
         numberOfPatients: new FormControl(250, Validators.required),
-        currency: new FormControl(this.slectedCurrency, Validators.required),
-        fees: new FormControl(this.defaultFees, Validators.required),
-        aTimePerPatient: new FormControl(7, [Validators.required, Validators.max(30), Validators.min(1)])
+        currency: new FormControl(this.currentQueue.getCurrency(), Validators.required),
+        fees: new FormControl(this.currentQueue.getFees(), Validators.required),
+        aTimePerPatient: new FormControl(this.currentQueue.getTimePerPatient(), [Validators.required, Validators.max(30), Validators.min(1)])
       }),
       second: new FormGroup({
         bStartTime: new FormControl(this.util.get24Time(this.currentQueue.getBookingStarting()), Validators.required),
@@ -166,7 +166,7 @@ export class EditQueueComponent implements OnInit {
       //  seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60;// + (+a[2]);
       const date: Date = new Date();
       // tslint:disable-next-line:radix
-      date.setHours(parseInt(a[0]), parseInt(a[1]));
+      date.setHours(parseInt(a[0]), parseInt(a[1]), 0, 0);
 
       seconds = date.getTime();
 
@@ -297,6 +297,7 @@ export class EditQueueComponent implements OnInit {
 
     const queue: QueueModel = new QueueModel();
 
+    queue.setTimePerPatient(this.aTimePerPatient.value);
     queue.setStatus('scheduled');
     queue.setQueueId(this.currentQueue.getQueueId());
     queue.setPatientLimit(this.numberOfPatients.value);

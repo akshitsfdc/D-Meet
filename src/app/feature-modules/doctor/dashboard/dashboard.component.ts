@@ -1,3 +1,4 @@
+import { DoctorHelperService } from './../services/doctor-helper.service';
 import { CalculationService } from './../../common-features/services/calculation.service';
 import { HelperService } from './../../common-features/services/helper.service';
 import { PrescriptionDialogComponent } from '../../../prescription-dialog/prescription-dialog.component';
@@ -10,7 +11,7 @@ import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { FirestoreService } from 'src/app/services/firestore.service';
-import { AuthService } from 'src/app/services/auth.service';
+
 import { PaymentRecievedModel } from '../models/payment-recieved-model';
 import { MessageDialogComponent } from 'src/app/message-dialog/message-dialog.component';
 import { QueueModel } from '../../common-features/models/queue-model';
@@ -31,15 +32,15 @@ declare var google: any;
 export class DashboardComponent implements OnInit {
 
   // tslint:disable-next-line:variable-name
-  live_image = 'dot_live.png';
+  public live_image;
 
-  innerWidth;
+  public innerWidth: number;
 
-  dataSource;
-  columnsToDisplay = ['amount', 'payment Id', 'created at', 'status'];
-  expandedElement: PaymentRecievedModel | null;
-  isVarified = false;
-  isKYCFilled = false;
+  public dataSource: PaymentRecievedModel[];
+  public columnsToDisplay;
+  public expandedElement: PaymentRecievedModel | null;
+  public isVarified: boolean = false;
+  public isKYCFilled: boolean = false;
 
   columnMapper = {
     amount: 'convertedAmount',
@@ -58,7 +59,14 @@ export class DashboardComponent implements OnInit {
     public utils: UtilsService,
     public session: SessionService,
     public helper: HelperService,
-    public calculation: CalculationService) { }
+    public doctorHelper: DoctorHelperService,
+    public calculation: CalculationService) {
+
+    this.columnsToDisplay = ['amount', 'payment Id', 'created at', 'status'];
+    this.isKYCFilled = false;
+    this.isVarified = false;
+    this.live_image = 'dot_live.png';
+  }
 
   ngOnInit(): void {
 

@@ -1,4 +1,3 @@
-import { PatientUserData } from 'src/app/models/patient-user-data';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
@@ -17,6 +16,7 @@ import { CallerModel } from '../../common-features/models/caller-model';
 import { ChatModel } from '../../common-features/models/chat-model';
 import { Prescription } from '../../common-features/models/prescription';
 import { MediaSignal } from '../../common-features/models/media-signal';
+import { PatientUserData } from '../../common-features/models/patient-user-data';
 
 @Component({
   selector: 'app-conference',

@@ -1,15 +1,23 @@
+import { HelperService } from './../../common-features/services/helper.service';
 import { PatientFirestoreService } from './patient-firestore.service';
 import { UtilsService } from './../../../services/utils.service';
 import { DocumentData, QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { FirestoreService } from './../../../services/firestore.service';
 import { SearchedDoctor } from './../models/searched-doctor';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { HttpService } from 'src/app/services/http.service';
 import { SessionService } from './session.service';
 import { QueueModel } from '../../common-features/models/queue-model';
 import { BookedPatient } from '../../common-features/models/booked-patient';
 import { CalculationService } from '../../common-features/services/calculation.service';
 import { DoctorUserData } from '../../common-features/models/doctor-user-data';
+import { Observable } from 'rxjs';
+import { ObjectHelperService } from '../../common-features/services/object-helper.service';
+
+class TimerModel {
+  timer: NodeJS.Timeout;
+  bookingId: string
+}
 
 @Injectable()
 export class SearchService {
@@ -22,14 +30,20 @@ export class SearchService {
 
   private currentQueue: QueueModel;
 
-  private myMeetingInterval: NodeJS.Timeout;
+  private bookingTimers: TimerModel[];
 
   constructor(private firestore: FirestoreService,
     private pFirebase: PatientFirestoreService,
     private utils: UtilsService, private http: HttpService,
-    private session: SessionService, private calculate: CalculationService) {
+    private calculation: CalculationService,
+    private session: SessionService,
+    private objectHelper: ObjectHelperService,
+    private helper: HelperService) {
+
     this.nearbyDoctors = [];
     this.globalDoctors = [];
+    this.bookingTimers = [];
+
     this.globalLastVisible = null;
     this.globalDocsLimit = 15;
     this.currentQueue = null;
@@ -180,27 +194,31 @@ export class SearchService {
               // currentRef.changeQueueStatus(queueObj);
               currentRef.getBookingsOfQueue(queueObj);
 
-              currentRef.setNext(queueObj);
+              queueObj
+                .setNextPatient(this.objectHelper.findNextPatient(queueObj));
 
               break;
 
             case 'modified':
-              // currentRef.changeQueueStatus(queueObj);
-              currentRef.updateQueueOfDoctor(queueObj, searchedDoctor);
-              currentRef.setNext(queueObj);
+              currentRef.objectHelper
+                .updateQueueOfUser(searchedDoctor.getQueues()
+                  , queueObj);
+              queueObj
+                .setNextPatient(this.objectHelper.findNextPatient(queueObj));
               break;
             case 'removed':
-              currentRef.deleteQueue(queueObj, searchedDoctor);
+              currentRef.objectHelper
+                .deleteQueue(searchedDoctor.getQueues(), queueObj);
               break;
 
           }
+
+          this.helper.setQueueLiveMessage(queueObj);
 
         });
 
 
       });
-
-
   }
 
   public getBookingsOfQueue(queue: QueueModel): void {
@@ -219,6 +237,8 @@ export class SearchService {
 
             docChangeList => {
 
+              queue.setBookingCheckCompleted(true);
+
               docChangeList.forEach(updatedPatient => {
 
                 const patient: BookedPatient = new BookedPatient();
@@ -228,194 +248,129 @@ export class SearchService {
 
                 if (patient.getPatientId() === currentRef.session.getUserData().getUserId()) {
                   queue.setMyBooking(patient);
+                  this.setMyBookingTimer(queue, patient);
                 }
 
                 switch (updatedPatient.payload.type) {
 
                   case 'added':
-                    if (patient.isCurrentPatient()) {
-                      queue.setCurrentPatient(patient);
-                    }
                     queue.getBookings().push(patient);
                     break;
 
                   case 'modified':
-                    currentRef.updatePatient(patient, queue);
+                    currentRef.objectHelper.updatePatient(patient, queue);
                     break;
                   case 'removed':
-                    break;
+                    currentRef.objectHelper.deletePatient(queue.getBookings(), patient); break;
 
                 }
 
+
               });
-              currentRef.setNext(queue);
-              currentRef.setCurrentPatient(queue);
-              // currentRef.setCurrentNext(queue);
+              currentRef.objectHelper.setCurrentPatient(queue);
+              queue
+                .setNextPatient(this.objectHelper.findNextPatient(queue));
+
+              this.helper.setQueueLiveMessage(queue);
+
             });
       });
   }
 
 
-  private setNext(queue: QueueModel): void {
+  private setMyBookingTimer(queue: QueueModel, booking: BookedPatient) {
 
-    queue.setNextPatient(this.findNextPatient(queue));
+    booking.setSelfWaitingTime(this.calculation.getRemainingTimeBeforeMeeting(queue, booking));
 
-  }
+    this.joinMeetingRoom(booking);
 
-  private setCurrentPatient(queue: QueueModel): void {
-
-    // tslint:disable-next-line:prefer-for-of
-    for (let i = 0; i < queue.getBookings().length; ++i) {
-      const patient = queue.getBookings()[i];
-      if (patient.isCurrentPatient()) {
-        queue.setCurrentPatient(patient);
-        return;
-      }
-
-    }
-    queue.setCurrentPatient(null);
-  }
-
-
-  private findNextPatient(queue: QueueModel): BookedPatient {
-
-    const pId: string = queue.getCurrentPatient()?.getBookingId() || '';
-
-    // tslint:disable-next-line:prefer-for-of
-    for (let i = 0; i < queue.getBookings().length; ++i) {
-      const patient = queue.getBookings()[i];
-      if (!patient.isPending() && !patient.isProcessed() && pId !== patient.getBookingId()) {
-        return patient;
-      }
-
+    if (this.timerSettingCompleted(booking.getBookingId())) {
+      return;
     }
 
-    return this.findNextPendingPatient(queue);
+    let timerModel: TimerModel = new TimerModel();
 
-  }
+    const interval: NodeJS.Timeout = setInterval(() => {
 
-  private findNextPendingPatient(queue: QueueModel): BookedPatient {
+      const timeLeft = booking.getSelfWaitingTime() - 1000;
 
-    // tslint:disable-next-line:prefer-for-of
-    for (let i = 0; i < queue.getBookings().length; ++i) {
-      const patient = queue.getBookings()[i];
-
-      console.log('Searching for pending patients');
-
-      if (patient.isPending() && !patient.isProcessed()) {
-        console.log('Found pending patient');
-        return patient;
+      if (timeLeft <= 0) {
+        booking.setSelfWaitingTime(0);
+        booking.setSelfWaitingTimeString('about to start...');
+        clearInterval(interval);
+        this.deleteFromTimers(timerModel)
+        if (!this.amICurrentUser(queue)) {
+          this.setMyBookingTimer(queue, booking);
+        } else {
+          booking.setSelfWaitingTimeString('Joined');
+        }
+      } else {
+        booking.setSelfWaitingTime(timeLeft);
+        booking.setSelfWaitingTimeString(this.calculation.getRemainingTimeString(timeLeft));
       }
 
+
+    }, 1000);
+
+    timerModel.bookingId = booking.getBookingId();
+    timerModel.timer = interval;
+    this.bookingTimers.push(timerModel);
+  }
+
+  private joinMeetingRoom(booking: BookedPatient) {
+
+    console.log("booking.isCurrentPatient() : " + booking.isCurrentPatient());
+
+    if (booking.isCurrentPatient()) {
+      const timerModel: TimerModel = this.getTimerModel(booking.getBookingId());
+      if (timerModel) {
+        clearInterval(timerModel.timer);
+        this.deleteFromTimers(timerModel);
+      }
+      booking.setSelfWaitingTime(0);
+      booking.setSelfWaitingTimeString('Joined');
     }
+
+  }
+  private deleteFromTimers(timerModel: TimerModel) {
+    const index = this.bookingTimers.indexOf(timerModel, 0);
+    if (index > -1) {
+      this.bookingTimers.splice(index, 1);
+      console.log("Timer deleted");
+    }
+  }
+  private timerSettingCompleted(bookingId: string): boolean {
+
+    this.bookingTimers.forEach(timerModel => {
+      if (timerModel.bookingId === bookingId) {
+        return true;
+      }
+    });
+
+    return false;
+  }
+  private getTimerModel(bookingId: string): TimerModel {
+
+    this.bookingTimers.forEach(timerModel => {
+      if (timerModel.bookingId === bookingId) {
+        return timerModel;
+      }
+    });
+
     return null;
   }
+  private amICurrentUser(queue: QueueModel): boolean {
+    ;
 
-  private updateQueueOfDoctor(queueUpdate: QueueModel, searchedDoctor: SearchedDoctor): void {
-
-    const queues = searchedDoctor.getQueues();
-
-    // tslint:disable-next-line:prefer-for-of
-    for (let i = 0; i < queues.length; ++i) {
-
-      const queue = queues[i];
-
-      if (queue.getQueueId() === queueUpdate.getQueueId()) {
-
-
-        this.updateQueueModel(queue, queueUpdate);
-
-        // this.changeQueueStatus(queue);
-
-        return;
-      }
-
+    if (!this.session.getUserData() || !queue.getCurrentPatient()) {
+      return false;
     }
-
-  }
-
-  private deleteQueue(queueUpdate: QueueModel, searchedDoctor: SearchedDoctor): void {
-
-    const queues = searchedDoctor.getQueues();
-
-    for (let i = 0; i < queues.length; ++i) {
-
-      const queue = queues[i];
-
-      if (queue.getQueueId() === queueUpdate.getQueueId()) {
-
-        queues.splice(i, 1);
-
-        return;
-      }
-
+    if (this.session.getUserData().getUserId() === queue.getCurrentPatient().getPatientId()) {
+      return true
     }
-  }
-
-  private updatePatient(patientUpdate: BookedPatient, queue: QueueModel): void {
-
-
-    // tslint:disable-next-line:prefer-for-of
-    for (let i = 0; i < queue.getBookings().length; ++i) {
-
-      const patient = queue.getBookings()[i];
-
-      if (patientUpdate.getBookingId() === patient.getBookingId()) {
-
-        patient.setName(patientUpdate.getName());
-        patient.setPhone(patientUpdate.getPhone());
-        patient.setCurrentPatient(patientUpdate.isCurrentPatient());
-        patient.setPending(patientUpdate.isPending());
-        patient.setProcessed(patientUpdate.isProcessed());
-        patient.setPicUrl(patientUpdate.getPicUrl());
-        patient.setSelectionTime(patientUpdate.getSelectionTime());
-        patient.setStatus(patientUpdate.getStatus());
-
-        if (patient.isCurrentPatient()) {
-          queue.setCurrentPatient(patient);
-        }
-
-        return;
-      }
-
-    }
-
+    return false;
   }
 
 
-  private updateQueueModel(queueOriginal: QueueModel, queue: QueueModel): void {
-
-
-    queueOriginal.setCurrency(queue.getCurrency());
-    queueOriginal.setFees(queue.getFees());
-    queueOriginal.setStatus(queue.getStatus());
-    queueOriginal.setActive(queue.isActive());
-    queueOriginal.setPatientLimit(queue.getPatientLimit());
-    queueOriginal.setTimePerPatient(queue.getTimePerPatient());
-    queueOriginal.setBookingStarting(queue.getBookingStarting());
-    queueOriginal.setBookingEnding(queue.getBookingEnding());
-    queueOriginal.setConsultingStarting(queue.getConsultingStarting());
-    queueOriginal.setConsultingEnding(queue.getConsultingEnding());
-    queueOriginal.setBookedPatients(queue.getBookedPatients());
-    queueOriginal.setQueueId(queue.getQueueId());
-    queueOriginal.setOwnerId(queue.getOwnerId());
-    queueOriginal.setHolidayList(queue.getHolidayList());
-    queueOriginal.setType(queue.getType());
-    queueOriginal.setPaymentOption(queue.getPaymentOption());
-    queueOriginal.setStatus(queue.getStatus());
-    queueOriginal.setTodayDateString(queue.getTodayDateString());
-    queueOriginal.setCurrentBookingsCount(queue.getCurrentBookingsCount());
-    queueOriginal.setNextNumber(queue.getNextNumber());
-    queueOriginal.setCurrentNumber(queue.getCurrentNumber());
-
-    // private nextNumber: string;
-    // private currentNumber: number;
-
-    queueOriginal.setBookingStartRemaingTime(this.calculate.timeDiffrenceFromNow(queueOriginal.getBookingStarting()) * 1000);
-    queueOriginal.setBookingEndingRemaingTime(this.calculate.timeDiffrenceFromNow(queueOriginal.getBookingEnding()) * 1000);
-    queueOriginal.setConsultingStartingRemaingTime(this.calculate.timeDiffrenceFromNow(queueOriginal.getConsultingStarting()) * 1000);
-
-
-  }
 
 }

@@ -12,7 +12,6 @@ import * as firebase from 'firebase';
 
 export class AuthService {
 
-  private firebaseAuth: any;
   private loggedInUserId: string;
 
   public isDoctor: boolean;
@@ -20,8 +19,6 @@ export class AuthService {
   constructor(
     public afAuth: AngularFireAuth
   ) {
-    // let firebaseApp = firebase.getFirebase();
-    // this.firebaseAuth = firebaseApp.auth();
     this.afAuth.authState.subscribe(res => {
       if (res && res.uid) {
         console.log('user is logged in');
@@ -34,6 +31,10 @@ export class AuthService {
     });
   }
 
+
+  public getUserId(): string {
+    return this.loggedInUserId;
+  }
   // Sign up with email/password
   signUp(email, password) {
 

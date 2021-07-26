@@ -83,7 +83,6 @@
                       </div>
                     </ng-container>
 
-
                     <!-- <button mat-raised-button   >                                      
                                       Book Now</button> -->
                     <ng-container fxLayout="column"
@@ -187,6 +186,33 @@
     <div class="timing-container" fxLayout="row wrap" fxFlexOffset="20px" fxLayoutAlign="space-between center">
       <!-- <span></span> -->
       <div class="timer-box" fxLayout="column" fxLayoutAlign="center center">
+        <mat-label class="small-label">Queue Status</mat-label>
+        <mat-label>{{currentQueue.getQueueStatusMessage()}}</mat-label>
+      </div>
+
+      <ng-container *ngIf="currentQueue.getLiveMessage() && currentQueue.getLiveMessage().length > 0">
+        <mat-card class="live-queue-status-card">
+          <mat-card-content>
+            <mat-label class="live-queue-status-label">{{currentQueue.getLiveMessage()}}</mat-label>
+          </mat-card-content>
+        </mat-card>
+      </ng-container>
+
+
+      <div class="timer-box" fxLayout="column" fxLayoutAlign="center center">
+        <mat-label class="small-label">Time Laps
+        </mat-label>
+        <mat-label>{{currentQueue.getTimeOffset()}} minutes</mat-label>
+      </div>
+
+    </div>
+
+    <mat-divider fxFlexOffset="20px"></mat-divider>
+
+
+    <div class="timing-container" fxLayout="row wrap" fxFlexOffset="20px" fxLayoutAlign="space-between center">
+      <!-- <span></span> -->
+      <div class="timer-box" fxLayout="column" fxLayoutAlign="center center">
         <mat-label class="small-label">Current patient</mat-label>
         <ng-container *ngIf="helper.showThisPatient(currentQueue.getCurrentPatient())">
           <div fxLayout="row">
@@ -222,8 +248,6 @@
 
     </div>
     <mat-divider fxFlexOffset="20px"></mat-divider>
-
-
 
     <ng-container>
 
@@ -429,9 +453,89 @@
       <mat-label>#{{currentQueue.getBookings().length}}</mat-label>
     </mat-toolbar>
 
+
+    <ng-container *ngIf="currentQueue.getMyBooking()">
+
+      <div [ngClass]="{'patient-list-box': true, 'my-booking-bg':true}" fxLayout="row" fxLayoutAlign="start start">
+
+
+
+        <mat-card-header class="patient-info-header">
+          <img mat-card-avatar src="booking.getPicUrl()" src-fallback="{{session.profilePlaceholder}}">
+          <mat-card-title fxLayout="row">
+            <mat-label class="header-label">{{currentQueue.getMyBooking().getName()}}</mat-label>
+
+            <ng-container
+              *ngIf="!currentQueue.getMyBooking().isCurrentPatient() && currentQueue.getMyBooking().isProcessed()">
+              <mat-icon fxFlexOffset="10px" class="processed-icon"
+                matTooltip="This patient has been processed by the doctor" matTooltipPosition="above">done_outline
+              </mat-icon>
+            </ng-container>
+            <ng-container
+              *ngIf="!currentQueue.getMyBooking().isCurrentPatient() && currentQueue.getMyBooking().isPending()">
+              <mat-icon fxFlexOffset="10px" class="pending-icon"
+                matTooltip="This patient is in pending state and will be processed later by the doctor"
+                matTooltipPosition="above">tour</mat-icon>
+            </ng-container>
+          </mat-card-title>
+          <mat-card-subtitle fxLayout="row">
+            {{currentQueue.getMyBooking().getStatus() || 'offline'}}
+          </mat-card-subtitle>
+        </mat-card-header>
+
+        <span fxFlex="1 1 auto"></span>
+        <mat-card
+          [ngClass]="{'position-card': true, 'position-card-1': currentQueue.getMyBooking().getQueuePlace()===1, 'position-card-2': currentQueue.getMyBooking().getQueuePlace()==2, 'position-card-3': currentQueue.getMyBooking().getQueuePlace()==3}">
+          <mat-card-content>
+            <mat-label
+              [ngClass]="{'first-label': currentQueue.getMyBooking().getQueuePlace()===1 || currentQueue.getMyBooking().getQueuePlace()===2 || currentQueue.getMyBooking().getQueuePlace()===3}">
+              #{{currentQueue.getMyBooking().getQueuePlace()}}</mat-label>
+            <!-- [ngClass]="{'live-label': (queue.getStatus() !=='scheduled')}" -->
+          </mat-card-content>
+        </mat-card>
+        <span fxFlex="1 1 10px"></span>
+
+
+
+
+      </div>
+    </ng-container>
+
+
+
     <div #bookingList class="booking-list-wrapper">
 
-      <div cdkDropList class="patient-list fancy-scrollbar" (cdkDropListDropped)="drop($event)">
+
+      <div cdkDropList class="patient-list fancy-scrollbar">
+
+        <!-- Layout to show loading indicator -->
+        <ng-container *ngIf="!currentQueue.isBookingCheckCompleted()">
+
+          <div class="booking-loading-div" fxLayout="row" fxLayoutAlign="center center">
+            <div fxLayout="column" fxLayoutAlign="center center">
+              <mat-spinner diameter="25"></mat-spinner>
+
+              <mat-label fxFlexOffset="10px" class="loading-indicator-label">Loading appointments...
+              </mat-label>
+            </div>
+          </div>
+        </ng-container>
+        <!-- End of layout to show loading indicator -->
+
+        <!-- Layout to show empty bookings -->
+        <ng-container *ngIf="currentQueue.isBookingCheckCompleted() && currentQueue.getBookings().length === 0">
+
+          <div class="booking-loading-div" fxLayout="row" fxLayoutAlign="center center">
+            <div fxLayout="column" fxLayoutAlign="center center">
+              <img class="empty-girl" src="/assets/imgs/empty_list_girl.svg">
+
+              <mat-label fxFlexOffset="2px" class="loading-indicator-label">No appointments yet for this queue
+              </mat-label>
+            </div>
+          </div>
+        </ng-container>
+        <!-- End of layout to show empty bookings -->
+
 
         <div [ngClass]="{'patient-list-box': true, 'current-patient-bg':booking.isCurrentPatient()}"
           *ngFor="let booking of currentQueue.getBookings(); index as i" fxLayout="row" fxLayoutAlign="start start">

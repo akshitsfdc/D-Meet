@@ -10,9 +10,38 @@ export class PatientUserData {
     private status: string;
     private registrationLocalTimeStapm: number;
     private doctor: boolean;
+    private fullAddress: string;
+    private city: string;
+    private phoneNumber: string;
+
 
 
     constructor() { }
+
+
+    public getPhoneNumber(): string {
+        return this.phoneNumber;
+    }
+
+    public setPhoneNumber(phoneNumber: string): void {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public getFullAddress(): string {
+        return this.fullAddress;
+    }
+
+    public setFullAddress(fullAddress: string): void {
+        this.fullAddress = fullAddress;
+    }
+
+    public getCity(): string {
+        return this.city;
+    }
+
+    public setCity(city: string): void {
+        this.city = city;
+    }
 
     public getStatus(): string {
         return this.status;

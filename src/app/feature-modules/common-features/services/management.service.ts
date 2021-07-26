@@ -1,12 +1,3 @@
-
-
-
-import { UtilsService } from 'src/app/services/utils.service';
-import { CalculationService } from './calculation.service';
-import { QueueModel } from './../models/queue-model';
-import { DoctorUserData } from './../../../models/doctor-user-data';
-import { BookedPatient } from './../models/booked-patient';
-
 import { Injectable } from '@angular/core';
 import * as firebase from 'firebase';
 
@@ -15,6 +6,8 @@ import * as firebase from 'firebase';
 export class ManagementService {
 
     constructor() {
+
+
     }
 
     public presenseManagement(userId: string, isDoctor: boolean): void {
@@ -43,13 +36,11 @@ export class ManagementService {
         // and `false` when disconnected.
         firebase.database().ref('.info/connected').on('value', snapshot => {
 
-            console.log('Management called : ' + userId);
-            console.log('Management called : ' + isDoctor);
-
             // If we're not currently connected, don't do anything.
             if (snapshot.val() === false) {
                 return;
             }
+
 
             // If we are currently connected, then use the 'onDisconnect()'
             // method to add a set which will only trigger once this
@@ -63,6 +54,7 @@ export class ManagementService {
 
                 // We can now safely set ourselves as 'online' knowing that the
                 // server will mark us as offline once we lose connection.
+                console.log('Management called : >> crossed the border << inside');
                 userStatusDatabaseRef.update(isOnlineForDatabase);
             });
         });

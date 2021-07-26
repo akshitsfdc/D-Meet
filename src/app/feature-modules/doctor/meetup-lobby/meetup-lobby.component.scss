@@ -265,7 +265,17 @@
    width: fit-content;
    height: fit-content;
  }
- 
+ .loading-indicator-label{
+  font-size: smaller;
+  
+}
+.booking-loading-div{
+  padding: 50px;
+}
+.empty-girl{
+  height: 110px;
+  width: 110;
+}
 // .temp{
 //     width: 0;
 //     height: 0;

@@ -1,3 +1,4 @@
+import { ObjectHelperService } from './../../common-features/services/object-helper.service';
 import { CalculationService } from './../../common-features/services/calculation.service';
 import { HelperService } from './../../common-features/services/helper.service';
 import { DoctorFirestoreService } from './../services/doctor-firestore.service';
@@ -81,12 +82,11 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
     public utils: UtilsService, public session: SessionService,
     private firestoreService: DoctorFirestoreService,
     public helper: HelperService,
+    public objectHelper: ObjectHelperService,
     public calculation: CalculationService) {
 
 
   }
-
-
 
   ngOnInit(): void {
 
@@ -399,7 +399,7 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
       currentPatient: true, processed: false, pending: false
     };
 
-    this.nextPatient = this.findNextPatient();
+    this.nextPatient = this.objectHelper.findNextPatient(this.currentQueue);
 
     let queueEnded = false;
     let queueData: any;
@@ -487,7 +487,7 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
       currentPatient: true, processed: false, pending: false
     };
 
-    const firstPatient: BookedPatient = this.findNextPatient();
+    const firstPatient: BookedPatient = this.objectHelper.findNextPatient(this.currentQueue);
     if (firstPatient === null) {
       this.hideLoading();
       return;
@@ -517,43 +517,6 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
 
 
   }
-
-  private findNextPatient(): BookedPatient {
-
-    const pId: string = this.currentQueue.getCurrentPatient()?.getBookingId() || '';
-
-    // tslint:disable-next-line:prefer-for-of
-    for (let i = 0; i < this.currentQueue.getBookings().length; ++i) {
-      console.log('searching for candidate..');
-      const patient = this.currentQueue.getBookings()[i];
-
-      if (!patient.isPending() && !patient.isProcessed() && pId !== patient.getBookingId()) {
-        console.log('Canndidate..mached!');
-        return patient;
-      }
-
-    }
-
-    return this.findNextPendingPatient();
-
-  }
-
-  private findNextPendingPatient(): BookedPatient {
-
-    // tslint:disable-next-line:prefer-for-of
-    for (let i = 0; i < this.currentQueue.getBookings().length; ++i) {
-      console.log('searching for pending candidates..');
-      const patient = this.currentQueue.getBookings()[i];
-
-      if (patient.isPending() && !patient.isProcessed()) {
-        return patient;
-      }
-
-    }
-
-    return null;
-
-  }
   navigateToMeeting(currentPatient: BookedPatient): void {
 
     const data = {
@@ -568,6 +531,15 @@ export class MeetupLobbyComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.myWaitingTimeTimer) {
       clearInterval(this.myWaitingTimeTimer);
+    }
+    if (this.bstartingInterval) {
+      clearInterval(this.bstartingInterval);
+    }
+    if (this.bEndInterval) {
+      clearInterval(this.bEndInterval);
+    }
+    if (this.cstartingInterval) {
+      clearInterval(this.cstartingInterval);
     }
   }
 }

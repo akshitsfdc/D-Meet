@@ -242,6 +242,28 @@ mat-card-footer {
   color: $primary;
 }
 
+.loading-indicator-label {
+  font-size: smaller;
+}
+.booking-loading-div {
+  padding: 50px;
+}
+.empty-girl {
+  height: 110px;
+  width: 110;
+}
+.live-queue-status-card {
+  background-color: $primary;
+  width: fit-content;
+  border-radius: 10px;
+}
+.live-queue-status-label {
+  color: white;
+}
+.my-booking-bg {
+  background-color: $grey-lighter;
+  border: dashed 2px $primary;
+}
 // .temp{
 //     width: 0;
 //     height: 0;

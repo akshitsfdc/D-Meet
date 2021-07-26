@@ -1,3 +1,4 @@
+import { ObjectHelperService } from './object-helper.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { CalculationService } from './calculation.service';
 import { QueueModel } from './../models/queue-model';
@@ -12,7 +13,7 @@ export class HelperService {
 
 
 
-    constructor(private calculation: CalculationService, private utils: UtilsService) { }
+    constructor(private calculation: CalculationService, private objectHelper: ObjectHelperService) { }
 
     public showThisPatient(patient: BookedPatient): boolean {
 
@@ -67,22 +68,31 @@ export class HelperService {
 
     public shouldShowStartButton(queue: QueueModel): boolean {
 
-        if (this.calculation.isTimePassed(queue.getConsultingStarting()) && queue.getBookings().length > 0 && !queue.getCurrentPatient()) {
+
+
+        const bookings: BookedPatient[] = queue.getBookings();
+        const currentPatient: BookedPatient = queue.getCurrentPatient();
+        const consultingStarted: boolean = this.calculation.isQueueStartedNotEnded(queue.getConsultingStarting(), queue.getConsultingEnding());
+        const nextPatient: BookedPatient = queue.getNextPatient();
+        const queueNoDue: boolean = nextPatient === null;
+
+
+        if (queue && bookings && !currentPatient && consultingStarted && bookings.length > 0 && !queueNoDue) {
             return true;
         }
 
         return false;
+
     }
 
     public shouldShowNextEndButton(queue: QueueModel): boolean {
 
-
-        if (this.calculation.isTimePassed(queue.getConsultingStarting())
-            && queue.getBookings().length > 0 && queue.getCurrentPatient() && !queue.isQueueEnded()) {
-
+        const bookings: BookedPatient[] = queue.getBookings();
+        const currentPatient: BookedPatient = queue.getCurrentPatient();
+        const consultingStarted: boolean = this.calculation.isQueueStartedNotEnded(queue.getConsultingStarting(), queue.getConsultingEnding());
+        if (queue && bookings && currentPatient && consultingStarted && bookings.length > 0) {
             return true;
         }
-
         return false;
     }
 
@@ -122,33 +132,71 @@ export class HelperService {
         }
     }
 
-    public updateDoctor(userData: DoctorUserData, userDataUpdate: DoctorUserData): void {
+    public setQueueLiveMessage(queue: QueueModel) {
 
-        userData.setEmail(userDataUpdate.getEmail());
-        userData.setFirstName(userDataUpdate.getFirstName());
-        userData.setLastName(userDataUpdate.getLastName());
-        userData.setGender(userDataUpdate.getGender());
-        userData.setPicUrl(userDataUpdate.getPicUrl());
-        userData.setUserId(userDataUpdate.getUserId());
-        userData.setProfileId(userDataUpdate.getProfileId());
+        let liveMessage: string = "";
 
-        userData.setRegistrationNumber(userDataUpdate.getRegistrationNumber());
-        userData.setExperience(userDataUpdate.getExperience());
-        userData.setDegree(userDataUpdate.getDegree());
-        userData.setSpeciality(userDataUpdate.getSpeciality());
-        userData.setClinicName(userDataUpdate.getClinicName());
-        userData.setFullClinicAddress(userDataUpdate.getFullClinicAddress());
-        userData.setCountry(userDataUpdate.getCountry());
-        userData.setState(userDataUpdate.getState());
-        userData.setCity(userDataUpdate.getCity());
-        userData.setVarified(userDataUpdate.isVarified());
-        userData.setAbout(userDataUpdate.getAbout());
-        userData.setRegistrationLocalTimeStapm(userDataUpdate.getRegistrationLocalTimeStapm());
-        userData.setKycSubmitted(userDataUpdate.isKycSubmitted());
-        userData.setNearbyAddress(userDataUpdate.getNearbyAddress());
-        userData.setDiseaseSpecialist(userDataUpdate.getDiseaseSpecialist());
-        userData.setCoordinates(userDataUpdate.getCoordinates());
-        userData.setStatus(userDataUpdate.getStatus());
+        const bookings: BookedPatient[] = queue.getBookings();
+        const myBooking: BookedPatient = queue.getMyBooking();
+        const currentPatient: BookedPatient = queue.getCurrentPatient();
 
+        const bookingStarted: boolean = this.calculation.isQueueStartedNotEnded(queue.getBookingStarting(), queue.getBookingEnding());
+        const consultingStarted: boolean = this.calculation.isQueueStartedNotEnded(queue.getConsultingStarting(), queue.getConsultingEnding());
+
+        const bookingEnded: boolean = this.calculation.isQueueEnded(queue.getBookingStarting(), queue.getBookingEnding());
+        const consultingEnded: boolean = this.calculation.isQueueEnded(queue.getConsultingStarting(), queue.getConsultingEnding());
+
+        const nextPatient: BookedPatient = queue.getNextPatient();
+        const queueNoDue: boolean = nextPatient === null;
+
+        console.log(" consultingStarted : " + consultingStarted + " queueNoDue : " + queueNoDue + " !consultingEnded : " + consultingEnded);
+
+
+        if (!bookingStarted && !bookingEnded) {// Booking not started
+            liveMessage = "Boooking not started yet";
+        } else if (bookingStarted && !consultingStarted && bookings.length > 0) {
+            liveMessage = "Waiting for doctor to start consulting";
+        } else if (bookingEnded && consultingEnded && queueNoDue && bookings.length > 0) {
+            liveMessage = "Queue processing has been completed for today";
+        } else if (!currentPatient && consultingStarted && !queueNoDue) {
+            liveMessage = "Waiting for doctor to select " + nextPatient.getName() + " for meeting";
+        } else if (myBooking && currentPatient && myBooking.getBookingId() === currentPatient.getBookingId()) {
+            liveMessage = "You are currently in meeting room with doctor";
+        } else if (!currentPatient && consultingStarted && queueNoDue && !consultingEnded && bookings.length > 0) {
+            liveMessage = "Doctor has processed every patient in queue";
+        } else if (currentPatient) {
+            liveMessage = currentPatient.getName() + " is currently in meeting room with doctor";
+        }
+
+        queue.setLiveMessage(liveMessage);
+
+    }
+
+    public setQueueSatatusMessage(queue: QueueModel) {
+
+        let statusMessage: string = "";
+
+        const bookingStarted: boolean = this.calculation.isQueueStartedNotEnded(queue.getBookingStarting(), queue.getBookingEnding());
+        const bookingEnded: boolean = this.calculation.isQueueEnded(queue.getBookingStarting(), queue.getBookingEnding());
+
+        if (!bookingStarted && bookingEnded) {
+            statusMessage = "Booking Closed";
+        } else if (!bookingStarted && !bookingEnded) {
+            statusMessage = "Booking Starting soon";
+        } else if (bookingStarted) {
+            statusMessage = "Booking Open";
+        }
+
+        queue.setQueueStatusMessage(statusMessage);
+
+    }
+
+    public getDateStringForQuery(millis: number): string {
+
+        const date: Date = new Date(millis);
+
+        const dateStr = date.getDate() + '' + date.getMonth() + '' + date.getFullYear();
+
+        return dateStr;
     }
 }

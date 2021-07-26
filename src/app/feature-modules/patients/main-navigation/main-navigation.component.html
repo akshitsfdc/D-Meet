@@ -50,6 +50,8 @@
 
     <mat-toolbar class="header-toolbar" fxLayout="row" fxFlex="1 1 75px" fxLayoutAlign="center center">
 
+      <mat-label>{{session.getUserData()?.getEmail() + '( '+session.getUserData()?.getFirstName()+'
+        '+session.getUserData()?.getLastName()+')'}}</mat-label>
       <span fxFlex="1 1 auto"></span>
 
       <div class="search-container" fxFlex="1 1 600px" fxLayout="row">

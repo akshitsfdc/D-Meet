@@ -15,7 +15,7 @@ export class MainNavigationComponent {
 
 
   isExpanded = true;
-  notificationCount:number = 0;
+  notificationCount = 0;
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -23,33 +23,34 @@ export class MainNavigationComponent {
       shareReplay()
     );
 
-  constructor(private breakpointObserver: BreakpointObserver, private authService: AuthService, private router: Router, private route: ActivatedRoute, private session:SessionService) { 
+  constructor(private breakpointObserver: BreakpointObserver,
+    private authService: AuthService, private router: Router, private route: ActivatedRoute, public session: SessionService) {
 
-    
+
     this.gotoHome();
   }
 
-  gotoHome(){
-     this.router.navigate(['patient/home']);
+  gotoHome() {
+    this.router.navigate(['patient/home']);
   }
-  openProfile(){
+  openProfile() {
     // this.router.navigate(['doctor-profile'], { relativeTo: this.route });
   }
   liveQueueClick() {
     // this.router.navigate(['home'], { relativeTo: this.route });
   }
-  queuesClick(){
+  queuesClick() {
     // MainNavigationComponent
   }
-  meetingsClick(){
+  meetingsClick() {
     this.router.navigate(['patient/meetings']);
   }
-  logOut(){
+  logOut() {
     this.authService.signOut().then(() => {
       this.router.navigate(['login']);
 
     }).catch(error => {
-      console.log("Could not log you out : "+error);
+      console.log('Could not log you out : ' + error);
     });
   }
 }

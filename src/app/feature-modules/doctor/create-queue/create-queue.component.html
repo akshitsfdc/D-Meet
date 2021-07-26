@@ -1,13 +1,15 @@
 <div id="parent" fxLayout="column" fxLayoutAlign="center center">
 
 
-<form [formGroup]="queueForm" #f="ngForm" fxFlex.xs="100%" (ngSubmit)="onSubmit(f)" class="queue-form" fxLayout="column">
+  <form [formGroup]="queueForm" #f="ngForm" fxFlex.xs="100%" (ngSubmit)="onSubmit(f)" class="queue-form"
+    fxLayout="column">
 
-    <mat-progress-bar *ngIf="showProgressBar" mode="indeterminate" id="progressIndicator" color="primary"></mat-progress-bar>
+    <mat-progress-bar *ngIf="showProgressBar" mode="indeterminate" id="progressIndicator" color="primary">
+    </mat-progress-bar>
 
     <mat-card class="reg-card">
 
-      <mat-card-header >
+      <mat-card-header>
 
         <div fxLayout="column" fxFlexOffset="-8px">
 
@@ -20,216 +22,221 @@
 
       <mat-card-content fxLayout="column">
 
-        
+
 
         <div id="contentParent" fxLayout="row rwap" fxFlexOffset="30px" fxLayoutGap="20px">
-          
+
           <div id="contentLeft">
 
-          <mat-horizontal-stepper  linear #stepper>
-            
-            <mat-step formGroupName="first" >
+            <mat-horizontal-stepper linear #stepper>
 
-              <div fxLayout="column" fxLayoutGap="8px" >
+              <mat-step formGroupName="first">
 
-                <div fxLayout="row" fxLayoutGap="10px">
-                  <mat-form-field appearance="outline" fxFlex="1 1 auto">
-                    <mat-label>Consulting Type</mat-label>
-                    <mat-select formControlName="type">
-                        <mat-option value="video">Video (Online)</mat-option> 
-                        <mat-option value="offline">Offline (at your clinic/hospital)</mat-option>                     
-                    </mat-select>
-                    <mat-error *ngIf="type.touched && type.errors?.required">
+                <div fxLayout="column" fxLayoutGap="8px">
+
+                  <div fxLayout="row" fxLayoutGap="10px">
+                    <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                      <mat-label>Consulting Type</mat-label>
+                      <mat-select formControlName="type">
+                        <mat-option value="video">Video (Online)</mat-option>
+                        <mat-option value="offline">Offline (at your clinic/hospital)</mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="type.touched && type.errors?.required">
                         Choose consulting type
-                    </mat-error>
-                   </mat-form-field>
-                   <mat-form-field appearance="outline" fxFlex="1 1 auto">
-                    <mat-label>Payment Option</mat-label>
-                    <mat-select formControlName="paymentOption"  >
-                        <mat-option value="prepaid">Prepaid</mat-option> 
-                        <mat-option *ngIf="type.value === 'offline'" value="postpaid">Postpaid</mat-option>                     
-                    </mat-select>
-                    <mat-error *ngIf="paymentOption.touched && paymentOption.errors?.required">
+                      </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                      <mat-label>Payment Option</mat-label>
+                      <mat-select formControlName="paymentOption">
+                        <mat-option value="prepaid">Prepaid</mat-option>
+                        <mat-option *ngIf="type.value === 'offline'" value="postpaid">Postpaid</mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="paymentOption.touched && paymentOption.errors?.required">
                         Choose payment options
-                    </mat-error>
-                   </mat-form-field>
-                </div>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
 
-                <mat-form-field appearance="outline">
-                  <mat-label>Patients Limit</mat-label>
-                  <input matInput type="number" placeholder="Queue Size e.g 100" formControlName="numberOfPatients">
-                  <mat-error *ngIf="numberOfPatients.touched && numberOfPatients.errors?.required">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Patients Limit</mat-label>
+                    <input matInput type="number" placeholder="Queue Size e.g 100" [formControlName]="numberOfPatients">
+                    <mat-error *ngIf="numberOfPatients.touched && numberOfPatients.errors?.required">
                       Enter patient limit
-                  </mat-error>
-                </mat-form-field>
-                <mat-form-field appearance="outline" fxFlex="1 1 auto">
-                  <mat-label >Approximate time per patient</mat-label>
-                  <input matInput type="number" placeholder="Example 5 minutes" formControlName="aTimePerPatient">
-                  <mat-error *ngIf="aTimePerPatient.touched && aTimePerPatient.errors?.required">
-                    Enter approximate time per patient
-                  </mat-error>
-                  <mat-error *ngIf="aTimePerPatient.touched && aTimePerPatient.errors?.max">
-                    Maximum allowed time is {{aTimePerPatient.errors.max.max}} minutes
-                  </mat-error>
-                  <mat-error *ngIf="aTimePerPatient.touched && aTimePerPatient.errors?.min">
-                    Minimum allowed time is {{aTimePerPatient.errors.min.min}} minute
-                   
-                  </mat-error>
-                  <span matSuffix>Minutes</span>
-              </mat-form-field>
-
-
-              <div fxLayout="row" fxLayoutGap="10px">
-                <mat-form-field appearance="outline" fxFlex="1 1 auto">
-                  <mat-label>Currency</mat-label>
-                  <mat-select formControlName="currency" [(value)]="slectedCurrency" >
-                      <mat-option value="INR">INR( &#8377; )</mat-option>                      
-                  </mat-select>
-                  <mat-error *ngIf="currency.touched && currency.errors?.required">
-                      Choose currency
-                  </mat-error>
-                 </mat-form-field>
-                <mat-form-field appearance="outline">
-                    <mat-label>Fees</mat-label>
-                    <input matInput type="number" placeholder="Enter your consulting fees" formControlName="fees" (change)="onFeesChangedEvent($event)">
-                    <mat-error *ngIf="fees.touched && fees.errors?.required">
-                        Enter your fees
                     </mat-error>
-                </mat-form-field>
-              </div>
-                
-                <mat-label >{{feeStructureText}}</mat-label>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                    <mat-label>Approximate time per patient</mat-label>
+                    <input matInput type="number" placeholder="Example 5 minutes" [formControlName]="aTimePerPatient">
+                    <mat-error *ngIf="aTimePerPatient.touched && aTimePerPatient.errors?.required">
+                      Enter approximate time per patient
+                    </mat-error>
+                    <mat-error *ngIf="aTimePerPatient.touched && aTimePerPatient.errors?.max">
+                      Maximum allowed time is {{aTimePerPatient.errors.max.max}} minutes
+                    </mat-error>
+                    <mat-error *ngIf="aTimePerPatient.touched && aTimePerPatient.errors?.min">
+                      Minimum allowed time is {{aTimePerPatient.errors.min.min}} minute
 
-                <div fxLayout="row" fxFlexOffset="10px">
-                  <span fxFlex="1 1 auto"></span>
-                  <button class="next-button" mat-flat-button matStepperNext type="button" [disabled]="!firstForm.valid">Next</button>
+                    </mat-error>
+                    <span matSuffix>Minutes</span>
+                  </mat-form-field>
+
+
+                  <div fxLayout="row" fxLayoutGap="10px">
+                    <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                      <mat-label>Currency</mat-label>
+                      <mat-select formControlName="currency" [(value)]="slectedCurrency">
+                        <mat-option value="INR">INR( &#8377; )</mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="currency.touched && currency.errors?.required">
+                        Choose currency
+                      </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Fees</mat-label>
+                      <input matInput type="number" placeholder="Enter your consulting fees" formControlName="fees"
+                        (change)="onFeesChangedEvent($event)">
+                      <mat-error *ngIf="fees.touched && fees.errors?.required">
+                        Enter your fees
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+
+                  <mat-label>{{feeStructureText}}</mat-label>
+
+                  <div fxLayout="row" fxFlexOffset="10px">
+                    <span fxFlex="1 1 auto"></span>
+                    <button class="next-button" mat-flat-button matStepperNext type="button"
+                      [disabled]="!firstForm.valid">Next</button>
+                  </div>
+
                 </div>
 
-              </div>   
+              </mat-step>
 
-          </mat-step>
+              <mat-step formGroupName="second">
 
-        <mat-step formGroupName="second">
+                <div fxLayout="column" fxLayoutGap="8px">
+                  <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                    <mat-label>Booking Start Time</mat-label>
+                    <input matInput readonly [ngxTimepicker]="startTimePicker" [format]=24 [(value)]='bookStartTime'
+                      formControlName="bStartTime">
+                    <mat-icon matSuffix (click)="startTimePicker.open()">access_time</mat-icon>
+                    <mat-error *ngIf="bStartTime.touched && bStartTime.errors?.required">
+                      You must tell when your booking will start
+                    </mat-error>
+                    <ngx-material-timepicker [theme]="darkTheme" #startTimePicker
+                      (timeSet)="timeChangeBookStart($event)"></ngx-material-timepicker>
 
-            <div fxLayout="column" fxLayoutGap="8px" >
-              <mat-form-field appearance="outline" fxFlex="1 1 auto">
-                <mat-label >Booking Start Time</mat-label>
-                <input matInput readonly [ngxTimepicker]="startTimePicker" [format]=24 [(value)]='bookStartTime' formControlName="bStartTime">
-                <mat-icon matSuffix (click)="startTimePicker.open()">access_time</mat-icon>
-                <mat-error *ngIf="bStartTime.touched && bStartTime.errors?.required">
-                    You must tell when your booking will start
-                </mat-error>
-                <ngx-material-timepicker [theme]="darkTheme"  #startTimePicker  (timeSet)="timeChangeBookStart($event)" ></ngx-material-timepicker>
-               
-              </mat-form-field>
-              <mat-form-field appearance="outline" fxFlex="1 1 auto">
-                <mat-label >Booking End Time</mat-label>
-                <input matInput readonly [ngxTimepicker]="endTimePicker" [min]="bookEndMin" [format]=24 [disabled]="!enableBookEnd"  [(value)]='bookEndTime' formControlName="bEndTime" >
-                <mat-icon *ngIf="enableBookEnd" matSuffix (click)="endTimePicker.open()" >access_time</mat-icon>
-                <mat-error *ngIf="bEndTime.touched && bEndTime.errors?.required">
-                    You must tell when your booking will end
-                </mat-error>
-                <ngx-material-timepicker [theme]="darkTheme" #endTimePicker  (timeSet)="timeChangeBookEnd($event)"></ngx-material-timepicker>
-                
-              </mat-form-field>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                    <mat-label>Booking End Time</mat-label>
+                    <input matInput readonly [ngxTimepicker]="endTimePicker" [min]="bookEndMin" [format]=24
+                      [disabled]="!enableBookEnd" [(value)]='bookEndTime' formControlName="bEndTime">
+                    <mat-icon *ngIf="enableBookEnd" matSuffix (click)="endTimePicker.open()">access_time</mat-icon>
+                    <mat-error *ngIf="bEndTime.touched && bEndTime.errors?.required">
+                      You must tell when your booking will end
+                    </mat-error>
+                    <ngx-material-timepicker [theme]="darkTheme" #endTimePicker (timeSet)="timeChangeBookEnd($event)">
+                    </ngx-material-timepicker>
 
-              <mat-form-field appearance="outline" fxFlex="1 1 auto">
-                <mat-label >Consulting Start Time</mat-label>
-                <input matInput readonly [ngxTimepicker]="cStartTimePicker" [format]=24  [min]="bookEndMin"  [disabled]="!enableBookEnd" [(value)]='consultingStartTime' formControlName="cStartTime" >
-                <mat-icon  *ngIf="enableBookEnd" matSuffix (click)="cStartTimePicker.open()">access_time</mat-icon>
-                <mat-error *ngIf="cStartTime.touched && cStartTime.errors?.required">
-                    You must tell when your consulting will start
-                </mat-error>
-                <ngx-material-timepicker [theme]="darkTheme" #cStartTimePicker (timeSet)="timeChangeConsultStart($event)"></ngx-material-timepicker>
-                
-              </mat-form-field>
+                  </mat-form-field>
 
-              <mat-form-field appearance="outline" fxFlex="1 1 auto">
-                <mat-label >Consulting End Time</mat-label>
-                <input matInput readonly [ngxTimepicker]="cEndTimePicker" [format]=24  [min]="consultEndMin" [disabled]="!enableConsultingEnd" [(value)]='consultingEndTime' formControlName="cEndTime">
-                <mat-icon *ngIf="enableConsultingEnd" matSuffix (click)="cEndTimePicker.open()" >access_time</mat-icon>
-                <mat-error *ngIf="cEndTime.touched && cEndTime.errors?.required">
-                    You must tell when your consulting will end
-                </mat-error>
-                <ngx-material-timepicker [theme]="darkTheme" #cEndTimePicker (timeSet)="timeChangeConsultEnd($event)"></ngx-material-timepicker>
-               
-              </mat-form-field>
+                  <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                    <mat-label>Consulting Start Time</mat-label>
+                    <input matInput readonly [ngxTimepicker]="cStartTimePicker" [format]=24 [min]="bookEndMin"
+                      [disabled]="!enableBookEnd" [(value)]='consultingStartTime' formControlName="cStartTime">
+                    <mat-icon *ngIf="enableBookEnd" matSuffix (click)="cStartTimePicker.open()">access_time</mat-icon>
+                    <mat-error *ngIf="cStartTime.touched && cStartTime.errors?.required">
+                      You must tell when your consulting will start
+                    </mat-error>
+                    <ngx-material-timepicker [theme]="darkTheme" #cStartTimePicker
+                      (timeSet)="timeChangeConsultStart($event)"></ngx-material-timepicker>
 
-              <div fxLayout="row" fxFlexOffset="10px">
+                  </mat-form-field>
 
-                <button class="lighter-button" mat-flat-button matStepperPrevious type="button" >Back</button>
-                <span fxFlex="1 1 auto"></span>
-                <button class="next-button" mat-flat-button matStepperNext type="button" [disabled]="!secondForm.valid || disableSubmit" >Next</button>
-              </div>
-            
+                  <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                    <mat-label>Consulting End Time</mat-label>
+                    <input matInput readonly [ngxTimepicker]="cEndTimePicker" [format]=24 [min]="consultEndMin"
+                      [disabled]="!enableConsultingEnd" [(value)]='consultingEndTime' formControlName="cEndTime">
+                    <mat-icon *ngIf="enableConsultingEnd" matSuffix (click)="cEndTimePicker.open()">access_time
+                    </mat-icon>
+                    <mat-error *ngIf="cEndTime.touched && cEndTime.errors?.required">
+                      You must tell when your consulting will end
+                    </mat-error>
+                    <ngx-material-timepicker [theme]="darkTheme" #cEndTimePicker
+                      (timeSet)="timeChangeConsultEnd($event)"></ngx-material-timepicker>
 
-            </div>
+                  </mat-form-field>
 
-        </mat-step>
+                  <div fxLayout="row" fxFlexOffset="10px">
+
+                    <button class="lighter-button" mat-flat-button matStepperPrevious type="button">Back</button>
+                    <span fxFlex="1 1 auto"></span>
+                    <button class="next-button" mat-flat-button matStepperNext type="button"
+                      [disabled]="!secondForm.valid || disableSubmit">Next</button>
+                  </div>
 
 
-        <mat-step >
-
-          <div fxLayout="column" fxLayoutGap="8px" >
-
-            <div fxLayout="row">
-              <div class="example-container">
-                <h2>Working Days</h2>
-              
-                <div
-                  cdkDropList
-                  #workingList="cdkDropList"
-                  [cdkDropListData]="workings"
-                  [cdkDropListConnectedTo]="[doneList]"
-                  class="example-list"
-                  (cdkDropListDropped)="drop($event)">
-                  <div class="example-box" *ngFor="let item of workings" cdkDrag>{{item}}</div>
                 </div>
-              </div>
-              
-              <div class="example-container">
-                <h2>Holidays</h2>
-              
-                <div
-                  cdkDropList
-                  #doneList="cdkDropList"
-                  [cdkDropListData]="holidays"
-                  [cdkDropListConnectedTo]="[workingList]"
-                  class="example-list"
-                  (cdkDropListDropped)="drop($event)">
-                  <div class="example-box" *ngFor="let item of holidays" cdkDrag>{{item}}</div>
-                </div>
-              </div>
-            </div>
-            <mat-label>*Drag and drop to change working days</mat-label>
-            <div fxLayout="row" fxFlexOffset="10px">
 
-              <button class="lighter-button" mat-flat-button matStepperPrevious type="button" >Back</button>
-              <span fxFlex="1 1 auto"></span>
-              <button class="next-button" mat-flat-button matStepperNext type="submit" [disabled]="!f.valid" >Submit</button>
-            </div>
-          
+              </mat-step>
+
+
+              <mat-step>
+
+                <div fxLayout="column" fxLayoutGap="8px">
+
+                  <div fxLayout="row">
+                    <div class="example-container">
+                      <h2>Working Days</h2>
+
+                      <div cdkDropList #workingList="cdkDropList" [cdkDropListData]="workings"
+                        [cdkDropListConnectedTo]="[doneList]" class="example-list" (cdkDropListDropped)="drop($event)">
+                        <div class="example-box" *ngFor="let item of workings" cdkDrag>{{item}}</div>
+                      </div>
+                    </div>
+
+                    <div class="example-container">
+                      <h2>Holidays</h2>
+
+                      <div cdkDropList #doneList="cdkDropList" [cdkDropListData]="holidays"
+                        [cdkDropListConnectedTo]="[workingList]" class="example-list"
+                        (cdkDropListDropped)="drop($event)">
+                        <div class="example-box" *ngFor="let item of holidays" cdkDrag>{{item}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <mat-label>*Drag and drop to change working days</mat-label>
+                  <div fxLayout="row" fxFlexOffset="10px">
+
+                    <button class="lighter-button" mat-flat-button matStepperPrevious type="button">Back</button>
+                    <span fxFlex="1 1 auto"></span>
+                    <button class="next-button" mat-flat-button matStepperNext type="submit"
+                      [disabled]="!f.valid">Submit</button>
+                  </div>
+
+
+                </div>
+
+              </mat-step>
+
+            </mat-horizontal-stepper>
 
           </div>
 
-      </mat-step>
 
-          </mat-horizontal-stepper>
-
-          </div>
-
-          
-          <div id="contentRight" fxFlexOffset.xs="0" fxFlexOffset="25px" fxFlex="1 1 auto" fxLayout="row" fxLayoutAlign="center center">
+          <div id="contentRight" fxFlexOffset.xs="0" fxFlexOffset="25px" fxFlex="1 1 auto" fxLayout="row"
+            fxLayoutAlign="center center">
             <div fxLayout="column" class="img-wrapper">
-              <img class="right-image" matCardImageMedium src= 'assets/imgs/re_account_temp.svg' />
+              <img class="right-image" matCardImageMedium src='assets/imgs/re_account_temp.svg' />
               <mat-label class="right-label">Helps you connect your patients online</mat-label>
-            </div>    
+            </div>
           </div>
         </div>
       </mat-card-content>
     </mat-card>
-   
-</form>
+
+  </form>
 
 
 </div>

@@ -1,3 +1,4 @@
+import { DoctorHelperService } from './services/doctor-helper.service';
 
 import { CommonFeaturesModule } from './../common-features/common-features.module';
 import { DoctorFirestoreService } from './services/doctor-firestore.service';
@@ -41,7 +42,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     CommonFeaturesModule,
     NgxMaterialTimepickerModule.setLocale('en-US')
   ],
-  providers: [DoctorFirestoreService, SessionService],
+  providers: [DoctorFirestoreService, SessionService, DoctorHelperService],
   bootstrap: [BaseComponent]
 })
 export class DoctorModule { }

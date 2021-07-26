@@ -33,27 +33,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // console.log(this.firestore.getnearbyDoctors(29.372442,78.135849, 100));
-    // this.firestore.getnearbyDoctors(29.372442,78.135849, 100);
-    // this.firestore.getnearbyDoctors(29.372442,78.135849, 100).then((data)=>{
-    //   let collection = data.docs;
-    //   collection.forEach(element => {
-    //     console.log(element);
-    //     console.log(element.data());
-    //   });
-
-    // })
-    // .catch(error =>{
-    //   console.log("Error >> "+error);
-    // });
-
   }
-
-  temp(): void {
-    // tslint:disable-next-line:max-line-length
-    // this.firestore.saveInGeoCollection((+new Date()).toString(), {testkey:"testing", coordinates:this.firestore.getGeopoints(29.608801, 78.349800)});
-  }
-
   onScroll(): void {
     console.log('Scrolled!');
   }

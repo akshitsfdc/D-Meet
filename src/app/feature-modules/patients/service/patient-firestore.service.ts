@@ -301,6 +301,8 @@ export class PatientFirestoreService {
 
   public saveBooking(dateString: string, booking: any): Promise<void> {
 
+    // console.log("patient - firestore >> booking : " + JSON.stringify(booking));
+
     console.log('patientFirestoreService >> saveBooking : ' + booking.doctorId);
 
     const collectionPathQ: string = 'users/' + booking.doctorId + '/queues';
@@ -335,7 +337,7 @@ export class PatientFirestoreService {
         })
         .catch(error => {
           console.log('Error getting queue info : ' + error);
-
+          return Promise.reject("Something went wrong!");
         })
     );
     // .then(() => console.log("Transaction successfully committed!"))

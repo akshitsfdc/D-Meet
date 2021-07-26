@@ -25,8 +25,6 @@ export class LoadingSplashComponent implements OnInit {
         console.log('error occured in getting current user : ' + error);
         return null;
       });
-
-    console.log('user : ' + JSON.stringify(user));
     if (user) {
       this.loadUserData(user);
     } else {

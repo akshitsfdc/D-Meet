@@ -1,19 +1,19 @@
 import { ManagementService } from './../../common-features/services/management.service';
 import { UtilsService } from './../../../services/utils.service';
 import { IncomingCallBottomSheetComponent } from './../incoming-call-bottom-sheet/incoming-call-bottom-sheet.component';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { PatientUserData } from 'src/app/models/patient-user-data';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { CallerModel } from '../../common-features/models/caller-model';
+import { PatientUserData } from '../../common-features/models/patient-user-data';
 
 
 @Injectable()
 
-export class SessionService {
+export class SessionService implements OnDestroy {
 
     private sharedData: any;
     private userData: PatientUserData;
@@ -21,7 +21,15 @@ export class SessionService {
     private audio = new Audio();
     private callerCollection = 'caller_collection';
     private isCallInit = false;
+    private userDatasubScription: Subscription;
     public profilePlaceholder = '/assets/imgs/profile_placeholder.svg';
+
+
+    ngOnDestroy(): void {
+        if (this.userDatasubScription) {
+            this.userDatasubScription.unsubscribe();
+        }
+    }
 
     // tslint:disable-next-line:variable-name
     constructor(private _bottomSheet: MatBottomSheet,
@@ -103,7 +111,7 @@ export class SessionService {
 
         const currentRef = this;
 
-        this.firestore.getValueChanges('users', userId)
+        this.userDatasubScription = this.firestore.getValueChanges('users', userId)
             .subscribe(
 
                 {

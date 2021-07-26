@@ -1,15 +1,14 @@
-import { FirestoreService } from 'src/app/services/firestore.service';
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentChangeAction, DocumentData, DocumentReference } from '@angular/fire/firestore';
+import { Action, AngularFirestore, DocumentChangeAction, DocumentData, DocumentReference, DocumentSnapshot } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
+import { QueueModel } from '../../common-features/models/queue-model';
 
 @Injectable()
 
 export class DoctorFirestoreService {
 
     constructor(
-        private firestore: AngularFirestore,
-        private mainService: FirestoreService
+        private firestore: AngularFirestore
     ) {
     }
 
@@ -34,8 +33,8 @@ export class DoctorFirestoreService {
     }
 
     public finalizeCurrentPatient(bookingCurrentRef: DocumentReference, bookingNextRef: DocumentReference,
-                                  queueRef: DocumentReference, currentData: any,
-                                  nextData: any, queueData: any, queueEnded: boolean): Promise<void> {
+        queueRef: DocumentReference, currentData: any,
+        nextData: any, queueData: any, queueEnded: boolean): Promise<void> {
 
         const batch = this.firestore.firestore.batch();
 
@@ -50,6 +49,34 @@ export class DoctorFirestoreService {
         return batch.commit();
 
 
+    }
+
+
+    public getUserDataObs(userId: string): Observable<DocumentChangeAction<unknown>[]> {
+
+
+        return this.firestore.collection('users', ref =>
+            ref.where('userId', '==', userId)
+                .limit(1))
+            .stateChanges();
+
+    }
+
+    public getDoctorsQueues(userId: string): Observable<DocumentChangeAction<unknown>[]> {
+
+        const collectionPath: string = 'users/' + userId + '/queues'
+        return this.firestore.collection(collectionPath).stateChanges();
+
+    }
+
+    public getBookingsForQueue(queue: QueueModel, dateStr: string): Observable<DocumentChangeAction<unknown>[]> {
+
+        return this.firestore.collection('queue-bookings', ref =>
+            ref.where('doctorId', '==', queue.getOwnerId())
+                .where('dateString', '==', dateStr)
+                .where('queueId', '==', queue.getQueueId())
+                .orderBy('bookingTimeServer'))
+            .stateChanges();
     }
 
 

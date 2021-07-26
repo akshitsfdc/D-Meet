@@ -10,6 +10,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { HelperService } from './services/helper.service';
 import { CalculationService } from './services/calculation.service';
 import { ManagementService } from './services/management.service';
+import { ObjectHelperService } from './services/object-helper.service';
 
 
 @NgModule({
@@ -27,6 +28,6 @@ import { ManagementService } from './services/management.service';
     MaterialModule,
     InfiniteScrollModule
   ],
-  providers: [HelperService, CalculationService, ManagementService]
+  providers: [HelperService, CalculationService, ManagementService, ObjectHelperService]
 })
 export class CommonFeaturesModule { }

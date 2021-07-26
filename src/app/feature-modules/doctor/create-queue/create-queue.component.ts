@@ -157,7 +157,7 @@ export class CreateQueueComponent implements OnInit {
       // seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60;// + (+a[2]);
 
       const date: Date = new Date();
-      date.setHours(parseInt(a[0]), parseInt(a[1]));
+      date.setHours(parseInt(a[0]), parseInt(a[1]), 0, 0);
 
       seconds = date.getTime();
 

@@ -52,6 +52,9 @@ export class CalculationService {
 
     /* Converts provided milliseconds to time string in format of hh:mm:ss */
     public getRemainingTimeString(ms: number): string {
+        if (isNaN(ms)) {
+            return "00:00:00";
+        }
 
         if (ms <= 0) {
             return '00:00:00';
@@ -83,6 +86,25 @@ export class CalculationService {
         }
 
     }// End of isWithinRange
+
+    public isQueueStartedNotEnded(msStart: number, msEnd: number): boolean {
+
+        return this.isWithinRange(msStart, msEnd);
+
+    }
+
+    public isQueueEnded(msStart: number, msEnd: number): boolean {
+
+        const currentSeconds: number = this.getSecondsOfTime((new Date()).getTime());
+        const startSeconds: number = this.getSecondsOfTime(msStart);
+        const endSeconds: number = this.getSecondsOfTime(msEnd);
+
+        if (currentSeconds >= endSeconds && currentSeconds >= startSeconds) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /*
      * Checks whether or not current server time lies between two provided milliseconds

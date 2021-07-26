@@ -8,6 +8,7 @@ import * as firebase from 'firebase';
 @Injectable({
   providedIn: 'root'
 })
+
 export class FirestoreService {
 
   private serviceDate: any;
@@ -126,39 +127,39 @@ export class FirestoreService {
       .stateChanges();
   }
 
-  public getMyBookingsP(patientId: string, dateStr: string, processed: boolean, cancelled: boolean, limit: number): Observable<DocumentChangeAction<unknown>[]> {
+  // public getMyBookingsP(patientId: string, dateStr: string, processed: boolean, cancelled: boolean, limit: number): Observable<DocumentChangeAction<unknown>[]> {
 
-    const collectionPath = 'queue-bookings';
+  //   const collectionPath = 'queue-bookings';
 
-    if (cancelled) {
-      return this.firestore.collection(collectionPath, ref =>
-        ref.where('patientId', '==', patientId)
-          .where('cancelled', '==', cancelled)
-          .limit(limit)
-          .orderBy('bookingTimeServer')
-      )
-        .stateChanges();
-    }
-    if (processed) {
-      return this.firestore.collection(collectionPath, ref =>
-        ref.where('patientId', '==', patientId)
-          .where('processed', '==', processed)
-          .limit(limit)
-          .orderBy('bookingTimeServer')
-      )
-        .stateChanges();
-    } else {
-      return this.firestore.collection(collectionPath, ref =>
-        ref.where('patientId', '==', patientId)
-          .where('processed', '==', processed)
-          .where('dateString', '==', dateStr)
-          .where('cancelled', '==', cancelled)
-          .limit(limit)
-          .orderBy('bookingTimeServer')
-      )
-        .stateChanges();
-    }
+  //   if (cancelled) {
+  //     return this.firestore.collection(collectionPath, ref =>
+  //       ref.where('patientId', '==', patientId)
+  //         .where('cancelled', '==', cancelled)
+  //         .limit(limit)
+  //         .orderBy('bookingTimeServer')
+  //     )
+  //       .stateChanges();
+  //   }
+  //   if (processed) {
+  //     return this.firestore.collection(collectionPath, ref =>
+  //       ref.where('patientId', '==', patientId)
+  //         .where('processed', '==', processed)
+  //         .limit(limit)
+  //         .orderBy('bookingTimeServer')
+  //     )
+  //       .stateChanges();
+  //   } else {
+  //     return this.firestore.collection(collectionPath, ref =>
+  //       ref.where('patientId', '==', patientId)
+  //         .where('processed', '==', processed)
+  //         .where('dateString', '==', dateStr)
+  //         .where('cancelled', '==', cancelled)
+  //         .limit(limit)
+  //         .orderBy('bookingTimeServer')
+  //     )
+  //       .stateChanges();
+  //   }
 
-  }
+  // }
 
 }

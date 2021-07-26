@@ -1,90 +1,102 @@
-
 <div id="parent" fxLayout="column" fxLayoutAlign="center center">
 
-    <form  [formGroup]="loginForm" #f="ngForm" fxFlex.xs="100%" (ngSubmit)="onSubmit(f)" class="login-form" fxLayout="column">
+    <form [formGroup]="loginForm" #f="ngForm" fxFlex.xs="100%" (ngSubmit)="onSubmit(f)" class="login-form"
+        fxLayout="column">
 
-    <mat-progress-bar *ngIf="showProgressBar" mode="indeterminate" id="progressIndicator" color="primary"></mat-progress-bar>
-      <mat-card class="login-card">
-        <mat-card-content fxLayout="row" >
-            <mat-horizontal-stepper  linear #stepper fxFlex="1 1 430px" fxFlex.xs="1 1 auto">
-                <mat-step >
-                    <div fxLayout="column"  >
-                        <div fxLayout="column" >
+        <mat-progress-bar *ngIf="showProgressBar" mode="indeterminate" id="progressIndicator" color="primary">
+        </mat-progress-bar>
+        <mat-card class="login-card">
+            <mat-card-content fxLayout="row">
+                <mat-horizontal-stepper linear #stepper fxFlex="1 1 430px" fxFlex.xs="1 1 auto">
+                    <mat-step>
+                        <div fxLayout="column">
+                            <div fxLayout="column">
 
-                            <img id="meetupImage" src="/assets/imgs/meetup_logo_with.png" alt="Meetup Logo" fxFlexOffset="20px">
-                
-                            <mat-label id="headerLabel" fxFlexOffset="10px">Sign In</mat-label>
-                
-                          </div>   
-                    <mat-form-field appearance="outline" fxFlex="1 1 auto" fxFlexOffset="30px">
-                        <mat-label>Email</mat-label>
-                        <input matInput type="email" placeholder="Enter a valid email address" formControlName="emailAddress">
-                        <mat-error *ngIf="emailAddress.touched && emailAddress.errors?.required">
-                            Enter your email address
-                        </mat-error>
-                        <mat-error *ngIf="emailAddress.touched && emailAddress.errors?.email">
-                            Enter a valid email address
-                        </mat-error>
-                        </mat-form-field>
-        
-                        <mat-form-field appearance="outline" fxFlex="1 1 auto" fxFlexOffset="10px">
-                        <mat-label>Password</mat-label>
-                        <input matInput autocomplete="new-password" type="password" formControlName="password" >
-                        
-                        <mat-error *ngIf="password.touched && password.errors?.required">
-                            Enter password
-                        </mat-error>
-                        </mat-form-field>
+                                <img id="meetupImage" src="/assets/imgs/meetup_logo_with.svg" alt="Meetup Logo"
+                                    fxFlexOffset="20px">
 
-                        <mat-label class="forgot-class bold-label" (click)="stepper.next()"  >Forgot Password?</mat-label>
-                        
+                                <mat-label id="headerLabel" fxFlexOffset="10px">Sign In</mat-label>
 
-                        <button class="login" mat-raised-button type="submit"  fxFlexOffset="30px" [disabled]="disableButtons" >Log In</button>
-
-                        <div class="hor-line"> </div>
-                       
-                        <button class="create-account green-button" mat-flat-button type="button" [disabled]="disableButtons" (click)="openBottomSheet()">Create Account</button>
-                    </div>
-                </mat-step>
-
-                <mat-step [stepControl]="sendResetEmail">
-                    <form [formGroup]="sendResetEmail" #resetForm="ngForm" (ngSubmit)="resetPasswordSubmit(resetForm)">
-                        
-                        <div fxLayout="column"  >
-                            <div fxLayout="column" >
-    
-                                <img id="meetupImage" src="/assets/imgs/meetup_logo_with.png" alt="Meetup Logo" fxFlexOffset="20px">
-                    
-                                <mat-label id="headerLabel" fxFlexOffset="10px">Reset Email</mat-label>
-                    
-                              </div>   
-                        <mat-form-field appearance="outline" fxFlex="1 1 auto" fxFlexOffset="30px">
-                            <mat-label>Email</mat-label>
-                            
-                            <input matInput type="email" placeholder="enter a valid email address" formControlName="resetrEmailAddress">
-
-                            <mat-error *ngIf="resetrEmailAddress.touched && resetrEmailAddress.errors?.required">
-                                Enter your email address
-                            </mat-error>
-                            <mat-error *ngIf="resetrEmailAddress.touched && resetrEmailAddress.errors?.email">
-                                Enter a valid email address
-                            </mat-error>
+                            </div>
+                            <mat-form-field appearance="outline" fxFlex="1 1 auto" fxFlexOffset="30px">
+                                <mat-label>Email</mat-label>
+                                <input matInput type="email" placeholder="Enter a valid email address"
+                                    formControlName="emailAddress">
+                                <mat-error *ngIf="emailAddress.touched && emailAddress.errors?.required">
+                                    Enter your email address
+                                </mat-error>
+                                <mat-error *ngIf="emailAddress.touched && emailAddress.errors?.email">
+                                    Enter a valid email address
+                                </mat-error>
                             </mat-form-field>
 
-                            <div fxLayout="row" fxFlexOffset="10px">
-                                <button class="back-button lighter-button" mat-flat-button matStepperPrevious type="button" >Back</button>
-                                <span fxFlex="1 1 auto"></span>
-                                <button class="next-button" mat-raised-button type="submit" >Send Reset Email</button>
-                              </div>
+                            <mat-form-field appearance="outline" fxFlex="1 1 auto" fxFlexOffset="10px">
+                                <mat-label>Password</mat-label>
+                                <input matInput autocomplete="new-password" type="password" formControlName="password">
+
+                                <mat-error *ngIf="password.touched && password.errors?.required">
+                                    Enter password
+                                </mat-error>
+                            </mat-form-field>
+
+                            <mat-label class="forgot-class bold-label" (click)="stepper.next()">Forgot Password?
+                            </mat-label>
+
+
+                            <button class="login" mat-raised-button type="submit" fxFlexOffset="30px"
+                                [disabled]="disableButtons">Log In</button>
+
+                            <div class="hor-line"> </div>
+
+                            <button class="create-account green-button" mat-flat-button type="button"
+                                [disabled]="disableButtons" (click)="openBottomSheet()">Create Account</button>
                         </div>
-                    </form>
-                </mat-step>
+                    </mat-step>
 
-            </mat-horizontal-stepper>
+                    <mat-step [stepControl]="sendResetEmail">
+                        <form [formGroup]="sendResetEmail" #resetForm="ngForm"
+                            (ngSubmit)="resetPasswordSubmit(resetForm)">
 
-        </mat-card-content>
+                            <div fxLayout="column">
+                                <div fxLayout="column">
 
-      </mat-card>
-      
-      </form>
+                                    <img id="meetupImage" src="/assets/imgs/meetup_logo_with.png" alt="Meetup Logo"
+                                        fxFlexOffset="20px">
+
+                                    <mat-label id="headerLabel" fxFlexOffset="10px">Reset Email</mat-label>
+
+                                </div>
+                                <mat-form-field appearance="outline" fxFlex="1 1 auto" fxFlexOffset="30px">
+                                    <mat-label>Email</mat-label>
+
+                                    <input matInput type="email" placeholder="enter a valid email address"
+                                        formControlName="resetrEmailAddress">
+
+                                    <mat-error
+                                        *ngIf="resetrEmailAddress.touched && resetrEmailAddress.errors?.required">
+                                        Enter your email address
+                                    </mat-error>
+                                    <mat-error *ngIf="resetrEmailAddress.touched && resetrEmailAddress.errors?.email">
+                                        Enter a valid email address
+                                    </mat-error>
+                                </mat-form-field>
+
+                                <div fxLayout="row" fxFlexOffset="10px">
+                                    <button class="back-button lighter-button" mat-flat-button matStepperPrevious
+                                        type="button">Back</button>
+                                    <span fxFlex="1 1 auto"></span>
+                                    <button class="next-button" mat-raised-button type="submit">Send Reset
+                                        Email</button>
+                                </div>
+                            </div>
+                        </form>
+                    </mat-step>
+
+                </mat-horizontal-stepper>
+
+            </mat-card-content>
+
+        </mat-card>
+
+    </form>
 </div>

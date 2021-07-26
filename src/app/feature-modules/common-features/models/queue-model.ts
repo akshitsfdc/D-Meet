@@ -40,12 +40,49 @@ export class QueueModel {
     private bookingStartRemaingTime: number;
     private bookingEndingRemaingTime: number;
     private consultingStartingRemaingTime: number;
+    private bookingCheckCompleted: boolean;
+    private liveMessage: string;
+    private timeOffset: number;
+    private queueStatusMessage: string;
 
 
     constructor() {
         this.bookings = [];
     }
 
+    public getTimeOffset(): number {
+        return this.timeOffset;
+    }
+
+    public setTimeOffset(timeOffset: number): void {
+        this.timeOffset = timeOffset;
+    }
+
+    public getQueueStatusMessage(): string {
+        return this.queueStatusMessage;
+    }
+
+    public setQueueStatusMessage(queueStatusMessage: string): void {
+        this.queueStatusMessage = queueStatusMessage;
+    }
+
+
+
+    public getLiveMessage(): string {
+        return this.liveMessage;
+    }
+
+    public setLiveMessage(liveMessage: string): void {
+        this.liveMessage = liveMessage;
+    }
+
+    public isBookingCheckCompleted(): boolean {
+        return this.bookingCheckCompleted;
+    }
+
+    public setBookingCheckCompleted(bookingCheckCompleted: boolean): void {
+        this.bookingCheckCompleted = bookingCheckCompleted;
+    }
 
     public getNextPatient(): BookedPatient {
         return this.nextPatient;

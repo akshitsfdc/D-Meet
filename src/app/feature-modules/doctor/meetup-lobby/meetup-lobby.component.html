@@ -27,11 +27,6 @@
 
             <div class="buffet-wrapper">
 
-              <!-- 
-              <ng-container *ngIf="!helper.isBookingAvailable(currentQueue)">
-                <mat-progress-bar mode="buffer"></mat-progress-bar>
-              </ng-container> -->
-
               <div class="process-container" fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="center center">
 
 
@@ -181,7 +176,7 @@
 
         <button mat-raised-button #nextButton class="start-button" (click)="finalizeCurrent(false)"
           [disabled]="!helper.shouldShowNextEndButton(currentQueue)">
-          {{(currentQueue.getNextId() && currentQueue.getNextId().length) === 0?"End":"Next"}}
+          {{!currentQueue.getNextPatient()?"End":"Next"}}
         </button>
       </div>
 
@@ -363,9 +358,39 @@
       <mat-label>#{{currentQueue.getBookings().length}}</mat-label>
     </mat-toolbar>
 
+
     <div #bookingList class="booking-list-wrapper">
 
       <div cdkDropList class="patient-list fancy-scrollbar" (cdkDropListDropped)="drop($event)">
+
+        <!-- Layout to show loading indicator -->
+        <ng-container *ngIf="!currentQueue.isBookingCheckCompleted()">
+
+          <div class="booking-loading-div" fxLayout="row" fxLayoutAlign="center center">
+            <div fxLayout="column" fxLayoutAlign="center center">
+              <mat-spinner diameter="25"></mat-spinner>
+
+              <mat-label fxFlexOffset="10px" class="loading-indicator-label">Loading appointments...
+              </mat-label>
+            </div>
+          </div>
+        </ng-container>
+        <!-- End of layout to show loading indicator -->
+
+
+        <!-- Layout to show empty bookings -->
+        <ng-container *ngIf="currentQueue.isBookingCheckCompleted() && currentQueue.getBookings().length === 0">
+
+          <div class="booking-loading-div" fxLayout="row" fxLayoutAlign="center center">
+            <div fxLayout="column" fxLayoutAlign="center center">
+              <img class="empty-girl" src="/assets/imgs/empty_list_girl.svg">
+
+              <mat-label fxFlexOffset="2px" class="loading-indicator-label">No appointments yet for this queue
+              </mat-label>
+            </div>
+          </div>
+        </ng-container>
+        <!-- End of layout to show empty bookings -->
 
         <div *ngFor="let booking of currentQueue.getBookings(); index as i"
           [ngClass]="{'patient-list-box': true, 'current-patient-bg':booking.isCurrentPatient()}" fxLayout="row"
@@ -375,8 +400,7 @@
 
           <mat-card-header class="patient-info-header">
 
-            <img mat-card-avatar
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4QcsAkyJy8YJXzB_ODAR9Q88d50--zfXfNw&usqp=CAU">
+            <img mat-card-avatar src="booking.getPicUrl()" src-fallback="{{session.profilePlaceholder}}">
 
             <mat-card-title fxLayout="row">
               <mat-label class="header-label">{{booking.getName()}}</mat-label>
