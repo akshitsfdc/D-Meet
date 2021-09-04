@@ -1,30 +1,30 @@
 <div id="parent" fxLayout="column" fxLayoutAlign="center center">
 
 
-  <form [formGroup]="queueForm" #f="ngForm" fxFlex.xs="100%" (ngSubmit)="onSubmit(f)" class="queue-form"
-    fxLayout="column">
+  <div fxLayout="column" [ngClass.xs]="{'registration-form-sm':true}" [ngClass]="{'registration-form':true}">
 
-    <mat-progress-bar *ngIf="showProgressBar" mode="indeterminate" id="progressIndicator" color="primary">
-    </mat-progress-bar>
+    <form [formGroup]="queueForm" #f="ngForm" (ngSubmit)="onSubmit(f)">
 
-    <mat-card class="reg-card">
 
-      <mat-card-header>
 
-        <div fxLayout="column" fxFlexOffset="-8px">
+      <div fxLayout="column" class="register-card" [class.mat-elevation-z2]="true">
+        <mat-progress-bar *ngIf="showProgressBar" mode="indeterminate" id="progressIndicator" color="primary">
+        </mat-progress-bar>
 
-          <img class="logo-form-top" src="/assets/imgs/meetup_logo_with.png" alt="Meetup Logo" fxFlexOffset="25px">
+        <div fxLayout="column" style="margin-left: 30px;">
 
-          <mat-label class="header-label" fxFlexOffset="10px">Create Queue</mat-label>
+          <img [ngClass]="{'splash-logo-md':true}" [ngClass.gt-md]="{'splash-logo-lg':true}"
+            [ngClass.lt-md]="{'splash-logo-sm':true}" [ngClass.md]="{'splash-logo-md':true}"
+            src="/assets/imgs/meetup_logo_with.svg" alt="Meetup Logo" fxFlexOffset="30px">
+
+          <mat-label [ngClass]="{'header-label-md':true , 'header-label':true}"
+            [ngClass.gt-md]="{'header-label-lg':true, 'header-label':true}"
+            [ngClass.lt-md]="{'header-label-sm':true, 'header-label':true}"
+            [ngClass.md]="{'header-label-md':true, 'header-label':true}" fxFlexOffset="10px">Create Queue</mat-label>
 
         </div>
-      </mat-card-header>
 
-      <mat-card-content fxLayout="column">
-
-
-
-        <div id="contentParent" fxLayout="row rwap" fxFlexOffset="30px" fxLayoutGap="20px">
+        <div fxLayout="row" fxLayout.xs="column" fxFlexOffset="30px" fxLayoutAlign="center center">
 
           <div id="contentLeft">
 
@@ -34,7 +34,7 @@
 
                 <div fxLayout="column" fxLayoutGap="8px">
 
-                  <div fxLayout="row" fxLayoutGap="10px">
+                  <div fxLayout="row wrap" fxLayoutGap="10px" class="item-class">
                     <mat-form-field appearance="outline" fxFlex="1 1 auto">
                       <mat-label>Consulting Type</mat-label>
                       <mat-select formControlName="type">
@@ -57,14 +57,14 @@
                     </mat-form-field>
                   </div>
 
-                  <mat-form-field appearance="outline">
+                  <mat-form-field appearance="outline" class="item-class">
                     <mat-label>Patients Limit</mat-label>
                     <input matInput type="number" placeholder="Queue Size e.g 100" [formControlName]="numberOfPatients">
                     <mat-error *ngIf="numberOfPatients.touched && numberOfPatients.errors?.required">
                       Enter patient limit
                     </mat-error>
                   </mat-form-field>
-                  <mat-form-field appearance="outline" fxFlex="1 1 auto">
+                  <mat-form-field appearance="outline" class="item-class">
                     <mat-label>Approximate time per patient</mat-label>
                     <input matInput type="number" placeholder="Example 5 minutes" [formControlName]="aTimePerPatient">
                     <mat-error *ngIf="aTimePerPatient.touched && aTimePerPatient.errors?.required">
@@ -81,7 +81,7 @@
                   </mat-form-field>
 
 
-                  <div fxLayout="row" fxLayoutGap="10px">
+                  <div fxLayout="row wrap" fxLayoutGap="10px" class="item-class">
                     <mat-form-field appearance="outline" fxFlex="1 1 auto">
                       <mat-label>Currency</mat-label>
                       <mat-select formControlName="currency" [(value)]="slectedCurrency">
@@ -103,7 +103,7 @@
 
                   <mat-label>{{feeStructureText}}</mat-label>
 
-                  <div fxLayout="row" fxFlexOffset="10px">
+                  <div fxLayout="row wrap" fxFlexOffset="10px" class="item-class">
                     <span fxFlex="1 1 auto"></span>
                     <button class="next-button" mat-flat-button matStepperNext type="button"
                       [disabled]="!firstForm.valid">Next</button>
@@ -168,7 +168,7 @@
 
                   </mat-form-field>
 
-                  <div fxLayout="row" fxFlexOffset="10px">
+                  <div fxLayout="row wrap" fxFlexOffset="10px">
 
                     <button class="lighter-button" mat-flat-button matStepperPrevious type="button">Back</button>
                     <span fxFlex="1 1 auto"></span>
@@ -186,7 +186,7 @@
 
                 <div fxLayout="column" fxLayoutGap="8px">
 
-                  <div fxLayout="row">
+                  <div fxLayout="row wrap">
                     <div class="example-container">
                       <h2>Working Days</h2>
 
@@ -225,18 +225,16 @@
           </div>
 
 
-          <div id="contentRight" fxFlexOffset.xs="0" fxFlexOffset="25px" fxFlex="1 1 auto" fxLayout="row"
-            fxLayoutAlign="center center">
-            <div fxLayout="column" class="img-wrapper">
-              <img class="right-image" matCardImageMedium src='assets/imgs/re_account_temp.svg' />
-              <mat-label class="right-label">Helps you connect your patients online</mat-label>
-            </div>
+          <div id="contentRight" fxLayout="row" fxLayoutAlign="center center">
+            <img [ngClass]="{'right-image':true}" [ngClass.gt-md]="{'right-image-lg':true}"
+              [ngClass.xs]="{'right-image-sm':true}" [ngClass.lt-md]="{'right-image-md':true}"
+              src='https://firebasestorage.googleapis.com/v0/b/doctorclientmeetup.appspot.com/o/web_pictures%2Fregister_side_image.svg?alt=media&token=79cf5825-6a17-4c98-9a50-06817f48b6e5' />
           </div>
         </div>
-      </mat-card-content>
-    </mat-card>
 
-  </form>
+      </div>
 
+    </form>
+  </div>
 
 </div>
