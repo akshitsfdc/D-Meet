@@ -140,7 +140,7 @@ export class SearchService {
     }
 
   }
-  private setDoctor(doctors: SearchedDoctor[], docs: QueryDocumentSnapshot<firebase.firestore.DocumentData>[]): void {
+  private setDoctor(doctors: SearchedDoctor[], docs: QueryDocumentSnapshot<firebase.default.firestore.DocumentData>[]): void {
 
     docs.forEach(document => {
 

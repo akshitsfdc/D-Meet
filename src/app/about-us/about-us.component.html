@@ -1,0 +1,411 @@
+<div class="parent-div" fxLayout="column" style="overflow: hidden;">
+
+    <div class="header-div">
+
+        <mat-toolbar class="tool-bar" [class.mat-elevation-z2]="true">
+            <mat-toolbar-row>
+                <img [ngClass.gt-md]="{'logo-big-lg':true}" [ngClass.md]="{'logo-big-md':true}"
+                    [ngClass.lt-md]="{'logo-big-sm':true}" fxFlexOffset="15px" src="/assets/imgs/meetup_logo_with.svg"
+                    (click)="openHome()">
+                <span fxFlex="1 1 auto"></span>
+                <!-- <mat-label [ngClass.gt-md]="{'contact-us-header-lg':true, 'contact-us-header':true}"
+                            [ngClass.md]="{'contact-us-header-md':true, 'contact-us-header':true}"
+                            [ngClass.lt-md]="{'contact-us-header-sm':true, 'contact-us-header':true}">Home</mat-label>
+                        <span fxFlex="1 1 15px"></span> -->
+                <mat-label [ngClass.gt-md]="{'contact-us-header-lg':true, 'contact-us-header':true}"
+                    [ngClass.md]="{'contact-us-header-md':true, 'contact-us-header':true}"
+                    [ngClass.lt-md]="{'contact-us-header-sm':true, 'contact-us-header':true}"
+                    (click)="openGetInTouch()">
+                    Contact
+                    Us</mat-label>
+            </mat-toolbar-row>
+        </mat-toolbar>
+
+    </div>
+    <div class="content-div" fxLayout="column">
+
+        <div class="header-content" fxLayout="column" fxLayoutAlign="center center" fxFlexOffset="75px">
+
+            <mat-label fxFlexOffset="40px"
+                [ngClass.gt-md]="{'about-header-lg':true, 'header-text-color':true, 'header-label':true}"
+                [ngClass.md]="{'about-header-md':true, 'header-text-color':true, 'header-label':true}"
+                [ngClass.lt-md]="{'about-header-sm':true, 'header-text-color':true, 'header-label':true}">Queue At
+                Clinic
+                Is Now Old Fashioned</mat-label>
+
+            <mat-label fxFlexOffset="50px"
+                [ngClass.gt-md]="{'header-label-lg':true, 'header-label-color':true, 'header-label':true}"
+                [ngClass.md]="{'header-label-md':true, 'header-label-color':true, 'header-label':true}"
+                [ngClass.lt-md]="{'header-label-sm':true, 'header-label-color':true, 'header-label':true}">Our Motive
+            </mat-label>
+
+            <mat-label fxFlexOffset="30px"
+                [ngClass.gt-md]="{'header-description-lg':true, 'header-description-color':true}"
+                [ngClass.md]="{'header-description-md':true, 'header-description-color':true}"
+                [ngClass.lt-md]="{'header-description-sm':true, 'header-description-color':true}">Doctor meetup is
+                platform, where we value the most precious commodity TIME.
+
+                Our vision is to get rid of long queue at clinics/hospitals. Make streamline medium for doctors and
+                patients
+                with
+                Realtime patient management and with higest level of Precision.
+
+
+                Doctor meetup is revolutionizing healthcare sector by realtime queue management digitally. Now Dont just
+                find Doctor online but see their live queue online.
+            </mat-label>
+
+
+        </div>
+
+
+        <mat-divider fxFlexOffset="100px"></mat-divider>
+
+        <div fxLayout="row wrap" fxFlexOffset="25px" fxLayoutGap="15px" fxLayoutAlign="space-around center">
+            <mat-card class="display-cards" *ngFor="let value of valueAddedCards">
+                <mat-card-content>
+                    <div class="value-added-card-content" fxLayout="row" fxLayoutAlign="center center">
+                        <mat-label class="display-cards-label  header-label">{{value}}</mat-label>
+                    </div>
+
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+        <mat-divider fxFlexOffset="25px"></mat-divider>
+
+
+
+
+        <div class="explainer1-div" fxFlexOffset="100px" fxLayoutAlign="center center" fxLayout.gt-md="row"
+            fxLayout.lt-md="column" fxLayout.md="column" fxLayout="row">
+
+            <img src="/assets/imgs/online_doctor.svg" class="explainer1-image" [class.mat-elevation-z8]="true"
+                fxFlex.gt-md="1 1 40%" fxFlex.lt-md="1 1 100%" fxFlex.md="1 1 100%" />
+
+            <mat-label [ngClass.gt-md]="{'explainer-text-lg':true, 'explainer-text':true, 'header-label':true}"
+                [ngClass.md]="{'explainer-text-md':true, 'explainer-text':true, 'header-label':true}"
+                [ngClass.lt-md]="{'explainer-text-sm':true, 'explainer-text':true, 'header-label':true}">Consultation is
+                now
+                online with
+                powerful realtime queue
+                management system</mat-label>
+            <!-- <div fxFlex="1 1 auto" fxLayout="column" fxLayoutAlign="center start" style="padding: 15px;">
+                    
+                </div> -->
+        </div>
+
+        <mat-accordion fxFlex="1 1 100%" fxFlexOffset="50px">
+            <mat-expansion-panel>
+
+
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <mat-label class="header-label"> Realtime Queue Management System</mat-label>
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        <span fxFlex="1 1 auto"></span>
+                        <mat-icon>info</mat-icon>
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <div fxLayout="column">
+                    <mat-label [ngClass.lt-md]="{'expansion-des-label-sm':true}"
+                        [ngClass.md]="{'expansion-label-md':true}" [ngClass.gt-md]="{'expansion-label-lg':true}">
+                        Using Realtime queue management system doctor and patients can save thier time by watching their
+                        realtime status in a Queue </mat-label>
+
+
+                    <ul>
+                        <li>Doctor can schedule his/her queue by setting it's attributes</li>
+                        <li>Doctor can schedule any number of queues for his/her clinic/hospital and can manage all of
+                            them
+                            concurrently</li>
+                        <li>Patients can book thier appointment based on state of the queue (live/booking/scheduled) and
+                            can
+                            get their appointment number assigned to them</li>
+                        <li>Doctor can manage states (Proessed/Pending/Sceduled/Rescheduled/Cancelled) of all his/her
+                            patients for a particular Queue</li>
+                        <li>Patients can watch live status of all appointments and can get thier correct waiting time so
+                            that they can do their other work till their appointment is not started</li>
+
+                    </ul>
+
+
+                </div>
+
+            </mat-expansion-panel>
+
+        </mat-accordion>
+
+        <div class="explainer1-div" fxLayout="row" fxFlexOffset="100px" fxLayoutAlign="center center"
+            fxLayout.gt-md="row" fxLayout.lt-md="column" fxLayout.md="column" fxLayout="row">
+
+            <img src="/assets/imgs/sick_meeting.svg" class="explainer1-image" [class.mat-elevation-z8]="true"
+                fxFlex.gt-md="1 1 40%" fxFlex.lt-md="1 1 100%" fxFlex.md="1 1 100%" />
+
+            <mat-label [ngClass.gt-md]="{'explainer-text-lg':true, 'explainer-text':true, 'header-label':true}"
+                [ngClass.md]="{'explainer-text-md':true, 'explainer-text':true, 'header-label':true}"
+                [ngClass.lt-md]="{'explainer-text-sm':true, 'explainer-text':true, 'header-label':true}">Online and
+                Offline
+                Queue booking facility
+            </mat-label>
+
+        </div>
+
+
+        <mat-accordion fxFlex="1 1 100%" fxFlexOffset="50px">
+            <mat-expansion-panel>
+
+
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <mat-label class="header-label">Online And Offline Queue Booking</mat-label>
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        <span fxFlex="1 1 auto"></span>
+                        <mat-icon>info</mat-icon>
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <div fxLayout="column">
+                    <mat-label [ngClass.lt-md]="{'expansion-des-label-sm':true}"
+                        [ngClass.md]="{'expansion-label-md':true}" [ngClass.gt-md]="{'expansion-label-lg':true}">
+                        Using Online and Offline Queue booking facility Doctor and patients can do following</mat-label>
+                    <ul>
+                        <li>Doctor and patients can meet in two ways :
+                            <ol>
+                                <li>Booking a meeting online and going to the Doctor's clinic/hospital physicaly and
+                                    consult
+                                    there, which is called offline Queue booking </li>
+                                <li>Booking a meeting online and consult using Video or audio call, which is called
+                                    online
+                                    Queue booking </li>
+                            </ol>
+                        </li>
+                        <li> We offer both, Online and Offline Queue booking facilities</li>
+                        <li>
+                            In both Online and Offline Queue booking Patient can see there live status in a Queue.
+                        </li>
+                    </ul>
+
+
+                </div>
+
+            </mat-expansion-panel>
+
+        </mat-accordion>
+
+        <div class="explainer1-div" fxLayout="row" fxFlexOffset="100px" fxLayoutAlign="center center"
+            fxLayout.gt-md="row" fxLayout.lt-md="column" fxLayout.md="column" fxLayout="row">
+
+            <img src="https://firebasestorage.googleapis.com/v0/b/doctorclientmeetup.appspot.com/o/web_pictures%2Fdoctor-group-an.svg?alt=media&token=088fd6ea-4794-42e7-ac6d-9606c9c2665a"
+                class="explainer1-image" [class.mat-elevation-z8]="true" fxFlex.gt-md="1 1 40%" fxFlex.lt-md="1 1 99%"
+                fxFlex.md="1 1 99%" />
+
+            <mat-label [ngClass.gt-md]="{'explainer-text-lg':true, 'explainer-text':true, 'header-label':true}"
+                [ngClass.md]="{'explainer-text-md':true, 'explainer-text':true, 'header-label':true}"
+                [ngClass.lt-md]="{'explainer-text-sm':true, 'explainer-text':true, 'header-label':true}">Find Best
+                high-rated Doctors Globally and Nearby
+            </mat-label>
+        </div>
+
+        <mat-accordion fxFlex="1 1 100%" fxFlexOffset="50px">
+            <mat-expansion-panel>
+
+
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <mat-label class="header-label">Rattings And Searching Of Doctors</mat-label>
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        <span fxFlex="1 1 auto"></span>
+                        <mat-icon>info</mat-icon>
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <div fxLayout="column">
+
+                    <ul>
+                        <li> Patients can rate their experience with the Doctor after Consultaion</li>
+                        <li> We have a powerful search
+                            engine which can help patients search best Doctors based on rattings, doctor's name, disease
+                            name
+                            etc</li>
+                        <li>
+                            Also patients can see Doctors available in nearby area.
+                        </li>
+                    </ul>
+
+
+                </div>
+
+            </mat-expansion-panel>
+
+        </mat-accordion>
+
+
+        <div class="header-content" fxLayout="column" fxLayoutAlign="center center" fxFlexOffset="100px">
+
+            <mat-label fxFlexOffset="25px"
+                [ngClass.gt-md]="{'header-label-lg':true, 'header-label-color':true, 'header-label':true}"
+                [ngClass.md]="{'header-label-md':true, 'header-label-color':true, 'header-label':true}"
+                [ngClass.lt-md]="{'header-label-sm':true, 'header-label-color':true, 'header-label':true}">Data privacy
+                and
+                security
+            </mat-label>
+
+            <mat-label fxFlexOffset="20px"
+                [ngClass.gt-md]="{'header-description-lg':true, 'header-description-color':true}"
+                [ngClass.md]="{'header-description-md':true, 'header-description-color':true}"
+                [ngClass.lt-md]="{'header-description-sm':true, 'header-description-color':true}">Your data is 100%
+                secure
+                with Doctormeetup. We do not access your data in any way. All the video/audio calls are encrypted. All
+                the
+                data you save on our server is 100% protected from hackers, also we do not sell or share your personal
+                or
+                professional
+                data/information with any third party.
+            </mat-label>
+
+            <!-- <mat-label fxFlexOffset="50px"
+            [ngClass.gt-md]="{'header-label-lg':true, 'header-label-color':true, 'header-label':true}"
+            [ngClass.md]="{'header-label-md':true, 'header-label-color':true, 'header-label':true}"
+            [ngClass.lt-md]="{'header-label-sm':true, 'header-label-color':true, 'header-label':true}">Values we add
+        </mat-label> -->
+
+
+
+        </div>
+
+        <div class="leadership-div" fxFlexOffset="125px" fxLayout="column" fxLayoutAlign="center center">
+            <div class="header-content" fxLayout="column" fxLayoutAlign="center center">
+
+                <mat-label fxFlexOffset="25px"
+                    [ngClass.gt-md]="{'header-label-lg':true, 'header-label-color':true, 'header-label':true}"
+                    [ngClass.md]="{'header-label-md':true, 'header-label-color':true, 'header-label':true}"
+                    [ngClass.lt-md]="{'header-label-sm':true, 'header-label-color':true, 'header-label':true}">Our
+                    Leadership
+                </mat-label>
+
+                <mat-label fxFlexOffset="20px"
+                    [ngClass.gt-md]="{'header-description-lg':true, 'header-description-color':true}"
+                    [ngClass.md]="{'header-description-md':true, 'header-description-color':true}"
+                    [ngClass.lt-md]="{'header-description-sm':true, 'header-description-color':true}">We're a modern
+                    healthcare modernization company
+                    who believe in the power of engineering and aim for 100% customer satisfaction.
+                </mat-label>
+
+            </div>
+
+            <!-- <div fxLayout="row wrap" fxFlexOffset="100px">
+        
+                    <div class="leader-div" *ngFor="let leader of leaders" fxLayout="column" fxLayoutAlign="center center">
+                        <img src={{leader.pic}} class="leader-pic" />
+                        <mat-label class="leader-name header-label" fxFlexOffset="20px">{{leader.name}}</mat-label>
+                        <mat-label class="leader-desg" fxFlexOffset="8px">{{leader.desg}}</mat-label>
+                    </div>
+                </div> -->
+
+            <span fxFlex="1 1 100px"></span>
+        </div>
+        <div class="footer-container" fxLayout="column" fxFlexOffset="75px">
+
+            <div fxLayout="row" fxLayout.lt-lg="row wrap" fxFlexOffset="75px" fxFlex="1 1 auto"
+                fxLayoutAlign="space-between start">
+
+
+
+                <div class="navigate-div" fxLayout="column" fxFlexOffset="20px" fxFlexOffset.gt-md="70px"
+                    fxFlexOffset.lt-md="10px" fxFlexOffset-md="20px">
+                    <mat-label class="foorter-header" fxFlexOffset="30px">Navigate</mat-label>
+                    <mat-label class="footer-navigate-items" fxFlexOffset="30px" (click)="openHome()">Home</mat-label>
+                    <mat-label class="footer-navigate-items" fxFlexOffset="30px" (click)="openGetInTouch()">Contact Us
+                    </mat-label>
+                    <mat-label class="footer-navigate-items" fxFlexOffset="30px" (click)="openTerms()">Policies & Terms
+                    </mat-label>
+                    <mat-label class="footer-navigate-items" fxFlexOffset="30px" (click)="openJoinUs()">Join Us
+                    </mat-label>
+
+
+
+
+                </div>
+                <div class="navigate-div" fxLayout="column" fxFlexOffset="20px" fxFlexOffset.gt-md="70px"
+                    fxFlexOffset.lt-md="10px" fxFlexOffset-md="20px">
+                    <mat-label class="foorter-header" fxFlexOffset="30px">Contact</mat-label>
+                    <mat-label class="footer-contact-items" fxFlexOffset="30px">+911342-796952</mat-label>
+                    <mat-label class="footer-contact-items" fxFlexOffset="30px">+918888985133</mat-label>
+                    <mat-label class="footer-contact-items" fxFlexOffset="30px">support@doctormeetup.com</mat-label>
+
+                    <mat-label class="foorter-header" fxFlexOffset="60px">Our Offices</mat-label>
+                    <mat-label class="footer-contact-items" fxFlexOffset="30px">Plot No. 496, Manacher Software
+                        Solutions
+                        Pvt. Ltd, Near L.I.C Delhi road Bijnor (U.P)
+                    </mat-label>
+
+                </div>
+
+
+                <div class="navigate-div" fxLayout="column" fxFlex.gt-md="1 1 30%" fxFlex.lt-md="1 1 auto"
+                    fxFlex-md="1 1 25%" fxFlexOffset.gt-md="70px" fxFlexOffset="20px" fxFlexOffset.lt-md="10px"
+                    fxFlexOffset-md="20px">
+                    <mat-label class="foorter-header" fxFlexOffset="30px">About</mat-label>
+                    <mat-label class="footer-about-items" fxFlexOffset="30px">Doctormeetup is a product of Manacher
+                        Software
+                        Solutions Pvt. Ltd. Doctormeetup as a product of healthcare industry, provides digital
+                        transformation to all Practitioner so that they can work more conveniently. Our expertise lies
+                        in
+                        the area of healthcare industry, we apply the latest cutting edge engineering principles in
+                        healthcare industry so that we can bring real revolutionary digital transformation in this
+                        industry.
+                        We are growing day by day and embracing bleeding-edge technology to deliver deep engineering
+                        service
+                        with craftsmanship. We strive to build customer relationships and create delight with design at
+                        heart. Furthermore, we are on mission of providing the best consultation service for our
+                        Patients
+                        from top specialized doctors from over all over the world without any hurdle. We believe
+                        everyone's
+                        time has value, be it our Doctors or Patients. Considering that, on Doctormeetup we make the
+                        best
+                        use of it by offering real-time data and transparency.</mat-label>
+
+                </div>
+
+                <span fxFlex.gt-md="1 1 50px" fxFlex.lt-md="1 1 10px" fxFlex-md="1 1 20px">
+
+                </span>
+
+            </div>
+
+            <span fxFlex="1 1 100px">
+
+            </span>
+            <div fxLayout="row" fxFlexOffset.gt-md="70px" fxFlexOffset.lt-md="10px" fxFlexOffset-md="20px">
+
+
+
+
+                <mat-label class="footer-copyright-text" fxFlexOffset.gt-md="70px" fxFlexOffset.lt-md="10px"
+                    fxFlexOffset-md="20px">
+                    Copyright © 2021, Doctormeetup. All rights reserved.
+                </mat-label>
+
+
+                <!-- <img [ngClass.gt-md]="{'logo-big-lg':true}" [ngClass.md]="{'logo-big-md':true}"
+                [ngClass.lt-md]="{'logo-big-sm':true}" src="/assets/imgs/meetup_logo_with.svg">
+            <span fxFlex="1 1 auto"></span>
+            <span fxFlex.gt-md="1 1 135px" fxFlex-md="1 1 135px" fxFlex.lt-md="1 1 auto"></span>
+            <mat-label [ngClass.gt-md]="{'foorter-slogan-lg':true}" [ngClass.md]="{'foorter-slogan-md':true}"
+                [ngClass.lt-md]="{'foorter-slogan-sm':true}">World Is Not Created
+                It Is Engineered To
+                Perfection.
+            </mat-label> -->
+
+
+            </div>
+
+            <span fxFlex="1 1 40px"></span>
+        </div>
+    </div>
+</div>

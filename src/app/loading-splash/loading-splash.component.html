@@ -1,7 +1,9 @@
 <div id="parent" fxLayout="column" fxLayoutAlign="center center">
     <div id="loadingContainer" fxLayout="column" fxLayoutAlign="center center">
-        <img id="meetupImage" mat-card-image src="/assets/imgs/meetup_logo_with.svg" alt="Meetup Logo">
-        <mat-progress-bar   mode="indeterminate" id="progressIndicator" color="primary">
+        <img mat-card-image src="/assets/imgs/meetup_logo_with.svg" alt="Meetup Logo"
+            [ngClass]="{'splash-logo-md':true}" [ngClass.gt-md]="{'splash-logo-lg':true}"
+            [ngClass.lt-md]="{'splash-logo-sm':true}" [ngClass.md]="{'splash-logo-md':true}">
+        <mat-progress-bar mode="indeterminate" id="progressIndicator" color="primary">
         </mat-progress-bar>
     </div>
 </div>

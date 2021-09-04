@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist\\doctor-booking",
+    "public": "dist/doctor-booking",
     "ignore": [
       "firebase.json",
       "**/.*",

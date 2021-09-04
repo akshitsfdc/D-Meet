@@ -1,175 +1,181 @@
 /* You can add global styles to this file, and also import other style files */
-@import "./vars";
 @import "./theme";
+@import "./vars";
+
 @font-face {
-  font-family: 'roboto-regular';
+  font-family: "roboto-regular";
   src: url(/assets/fonts/roboto/Roboto-Regular.ttf) format("truetype");
 }
 @font-face {
-  font-family: 'roboto-bold';
+  font-family: "roboto-bold";
   src: url(/assets/fonts/roboto/Roboto-Bold.ttf) format("truetype");
 }
 @font-face {
-  font-family: 'hr-medium';
+  font-family: "hr-medium";
   src: url(/assets/fonts/caveat/Caveat-Medium.ttf) format("truetype");
 }
 
-html, body { height: 100%; width: 100%; }
-body { margin: 0;
-  
+html,
+body {
+  height: 100vh;
+  width: 100vw;
+}
+body {
+  margin: 0;
+  overflow: auto;
 }
 
-.hand-writting{
-  font-family: 'hr-medium'
+.hand-writting {
+  font-family: "hr-medium";
 }
-.parent-div{
+.parent-div {
   height: 100%;
 }
 
-.mat-raised-button{
+.mat-raised-button {
   color: white;
   background-color: $primary;
   outline: none;
   border: 0;
 }
-.mat-flat-button{
+.mat-flat-button {
   color: white;
   background-color: $primary;
   outline: none;
   border: 0;
 }
-.green-button{
+.green-button {
   color: white;
   background-color: $accent;
 }
-.lighter-button{
+.lighter-button {
   background-color: $grey-lighter;
   color: $textPrimary;
 }
-.medium-button{
+.medium-button {
   background-color: $grey-medium;
   color: $textPrimary;
 }
-.darker-button{
+.darker-button {
   background-color: $grey-darker;
   color: $textPrimary;
 }
-mat-label{
-  font-family: 'roboto-regular';
+mat-label {
+  font-family: "roboto-regular";
   color: $textPrimary;
+  line-height: normal;
 }
 
-.bold-label{
-  font-family: 'roboto-bold';
+.bold-label {
+  font-family: "roboto-bold";
 }
 
-mat-icon{
+mat-icon {
   color: $icon;
 }
 // mat-flat-button
 
-#parent{
+#parent {
   height: 100%;
   background-color: #ffffff;
-
 }
-.parent{
+.parent {
   height: 100%;
   background-color: #ffffff;
   padding: 15px 15px 0px 15px;
   overflow: auto;
 }
-.logo-form-top{
+.logo-form-top {
   max-width: 201.5px;
   max-height: 100.25px;
   min-width: 50px;
   min-height: 25px;
 }
-.header-label{
-  font-family: 'roboto-bold';
+.header-label {
+  font-family: "roboto-bold";
   font-size: large;
 }
 
-.success{
+.success {
   color: $accent;
 }
-.failure{
+.failure {
   color: $warn;
 }
-.alert-button{
+.alert-button {
   background-color: $warn;
   color: white;
 }
-.alert-icon{
+.alert-icon {
   color: $alert;
 }
-.small-warn-label{
+.small-warn-label {
   color: $warn;
   font-size: 12px;
 }
-.small-green-label{
+.small-green-label {
   color: $accent;
   font-size: 12px;
 }
-.google-black-button{
+.google-black-button {
   background-color: $icon;
   color: $grey-lighter;
 }
 div::-webkit-scrollbar {
   width: 0;
   background: inherit;
-} 
-div::-webkit-scrollbar-thumb { 
-  border-radius: 10px; 
-  box-shadow: inset 0 0 6px rgba(0,0,0,.3); 
-  background-color:$grey-lighter; 
-  // border: 1px solid #000; 
-} 
+}
+div::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: $grey-lighter;
+  // border: 1px solid #000;
+}
 
-.link-label{
+.link-label {
   color: $primary;
   font-size: small;
   cursor: pointer;
 }
-.green-label{
+.green-label {
   color: $accent;
 }
-.red-label{
+.red-label {
   color: $warn;
 }
-.green-icon{
+.green-icon {
   color: $accent;
 }
-.warning-icon{
+.warning-icon {
   color: $warn;
 }
-.small-label{
+.small-label {
   font-size: smaller;
 }
-.big-label{
+.big-label {
   font-size: x-large;
 }
 
-.highlighted-text{
+.highlighted-text {
   color: $icon;
 }
 
-.conference-bg{
+.conference-bg {
   background-color: $conferenceBg;
   height: 100%;
   width: 100%;
 }
-.conference-bottom-bar{
+.conference-bottom-bar {
   width: 100%;
   height: 75px;
   background-color: $conferenceBottomBg;
   // position:absolute;
   // bottom: 0;
 }
-.callee-bg{
-  background-color: $conferenceBottomBg;;
+.callee-bg {
+  background-color: $conferenceBottomBg;
 }
-.conference-center-image{
+.conference-center-image {
   height: 200px;
   width: 200px;
   z-index: 10px;
@@ -178,18 +184,16 @@ div::-webkit-scrollbar-thumb {
   border-style: solid;
   border-color: $grey-lighter;
   border-width: 2px;
- 
 }
 
-.call-status-label{
-
+.call-status-label {
   font-size: small;
 }
-.call-header-label{
+.call-header-label {
   color: white;
   font-size: 24px;
 }
-.conference-status-div{
+.conference-status-div {
   width: fit-content;
   height: fit-content;
   position: absolute;
@@ -197,11 +201,10 @@ div::-webkit-scrollbar-thumb {
   top: 20px;
 }
 
-.media-botton-container{
+.media-botton-container {
   width: fit-content;
   height: fit-content;
 }
-
 
 .timer-box {
   width: fit-content;
@@ -215,25 +218,71 @@ div::-webkit-scrollbar-thumb {
   position: relative;
   z-index: 1;
   transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
-  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
-              0 2px 2px 0 rgba(0, 0, 0, 0.14),
-              0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
 
 .timer-box:active {
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-              0 8px 10px 1px rgba(0, 0, 0, 0.14),
-              0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
-.expansion-panel-icon{
+.expansion-panel-icon {
   font-size: 24px;
   width: fit-content;
   height: fit-content;
-
 }
-.loading-indicator-label{
+.loading-indicator-label {
   font-size: 12px;
 }
 // .link-label:hover {
 //   text-decoration: underline;
 // }
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.footer-container {
+  background-color: $accent;
+}
+.foorter-header {
+  color: $grey-darker;
+  font-family: "roboto-bold";
+  font-size: 22px;
+}
+.footer-navigate-items {
+  color: $grey-lighter;
+  font-size: 18px;
+  cursor: pointer;
+}
+.footer-contact-items {
+  color: $grey-lighter;
+  font-size: 15px;
+  max-width: 350px;
+}
+.footer-about-items {
+  color: $grey-lighter;
+  font-size: 15px;
+}
+.footer-copyright-text {
+  color: $grey-lighter;
+  font-size: 12px;
+}
+// this about is on footer of login/register card
+.about-label {
+  font-size: 12px;
+  cursor: pointer;
+}
+.app-logo {
+  width: 160px;
+  height: auto;
+}
+.app-logo-without {
+  width: 55px;
+  height: auto;
+}

@@ -38,22 +38,22 @@ export class FirestoreService {
     return documentRef.update(data);
   }
 
-  public getEqualsObs(collection: string, key: string, value: string): Observable<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
+  public getEqualsObs(collection: string, key: string, value: string): Observable<firebase.default.firestore.QuerySnapshot<firebase.default.firestore.DocumentData>> {
     return this.firestore.collection(collection, ref => ref.where(key, '==', value)).get();
   }
-  public getEquals(collection: string, key: string, value: string): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
+  public getEquals(collection: string, key: string, value: string): Promise<firebase.default.firestore.QuerySnapshot<firebase.default.firestore.DocumentData>> {
     return this.firestore.collection(collection, ref => ref.where(key, '==', value)).get().toPromise();
   }
-  public getEqualsDouble(collection: string, key1: string, value1: string, key2: string, value2: string): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
+  public getEqualsDouble(collection: string, key1: string, value1: string, key2: string, value2: string): Promise<firebase.default.firestore.QuerySnapshot<firebase.default.firestore.DocumentData>> {
     return this.firestore.collection(collection, ref => ref.where(key1, '==', value1).where(key2, '==', value2)).get().toPromise();
   }
-  public get(collection: string, document: string): Promise<firebase.firestore.DocumentSnapshot> {
+  public get(collection: string, document: string): Promise<firebase.default.firestore.DocumentSnapshot> {
 
     return this.firestore.collection(collection).doc(document).get().toPromise();
 
   }
 
-  public getObs(collection: string, document: string): Observable<firebase.firestore.DocumentSnapshot> {
+  public getObs(collection: string, document: string): Observable<firebase.default.firestore.DocumentSnapshot> {
 
     return this.firestore.collection(collection).doc(document).get();
 
@@ -161,5 +161,16 @@ export class FirestoreService {
   //   }
 
   // }
+
+
+  public getInTouchRequest(object: any): Promise<void> {
+
+    return this.firestore.collection('contact_us_queries').doc("" + new Date().getTime()).set(object);
+  }
+
+  public joinUsRequest(object: any): Promise<void> {
+
+    return this.firestore.collection('join_us_requests').doc("" + new Date().getTime()).set(object);
+  }
 
 }

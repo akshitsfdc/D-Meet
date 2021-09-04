@@ -1,113 +1,155 @@
-#parent{
-    height: 100%;
-    background-color: #ffffff;
+#parent {
+  height: 100%;
+  background-color: #ffffff;
 }
-#leftContainer{
-    
-    height: 100%;
-    overflow: auto;
+#leftContainer {
+  height: 100%;
+  overflow: auto;
 }
-#rightContainer{
-    background-color: thistle;
-    height: 100%;
-    z-index: 10px;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
+#rightContainer {
+  background-color: thistle;
+  height: 100%;
+  z-index: 10px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
-.header-label{
-    font-size: 30px;
-    font-family: roboto-bold;
+.header-label {
+  font-size: 30px;
+  font-family: roboto-bold;
 }
-.register-button{
-    margin-left: 10px;
-    margin-right: 10px;
-    background-color: #0F9D58;
-    color: white;
+.register-button {
+  margin-left: 10px;
+  margin-right: 10px;
+  background-color: #0f9d58;
+  color: white;
 }
 
 /* new layout */
-#meetupImage{
-    max-width: 201.5px;
-    max-height: 100.25px;
-    min-width: 50px;
-    min-height: 25px;
+#meetupImage {
+  max-width: 201.5px;
+  max-height: 100.25px;
+  min-width: 50px;
+  min-height: 25px;
 }
-#headerLabel{
-    font-family: 'roboto-regular';
-    font-size: large;
+#headerLabel {
+  font-family: "roboto-regular";
+  font-size: large;
 }
 
 ::ng-deep .mat-form-field {
-    font-size: 12px; 
+  font-size: 12px;
 }
-.registration-form{
-    width: fit-content;
-    height: fit-content;
+.registration-form {
+  width: fit-content;
+  height: fit-content;
 }
-.icon-button{
-    background-color: transparent;
-    outline: none;
-    border: 0;
-    margin-top: 5px;
-} 
-.mat-icon{
-    color: #476282;
+.registration-form-sm {
+  width: 85%;
+  height: 85%;
 }
-.temp{
-    background-color: blueviolet;
+.icon-button {
+  background-color: transparent;
+  outline: none;
+  border: 0;
+  margin-top: 5px;
 }
-.back-button{
-    width: fit-content;
-    color:#476282;
-    outline: none;
-    border: 0;
+.mat-icon {
+  color: #476282;
 }
-.next-button{
-    width: fit-content;
-    color: white;
-    background-color: #4285F4;
-    align-self: flex-end;
-    outline: none;
-    border: 0;
+.temp {
+  background-color: blueviolet;
 }
-.about-textarea{
-    max-height: 200px;
+.back-button {
+  width: fit-content;
+  color: #476282;
+  outline: none;
+  border: 0;
+}
+.next-button {
+  width: fit-content;
+  color: white;
+  background-color: #4285f4;
+  align-self: flex-end;
+  outline: none;
+  border: 0;
+}
+.about-textarea {
+  max-height: 200px;
 }
 ::ng-deep .mat-horizontal-stepper-header-container {
-    display: none !important;
-  }
+  display: none !important;
+}
 
-.right-image{
-    min-width: 250px;
-    min-height: 250px;
-    max-width: 400px;
-    max-height: 400px;
-} 
-#contentRight{
-    height: 100%;
+.right-image {
+  height: 251px;
+  width: auto;
 }
-.right-label{
-    width: 250px;
-    text-align: center;
-    font-size: medium;
-    font-family: 'roboto-regular';
+.right-image-lg {
+  height: 351px;
+  width: auto;
 }
-.img-wrapper{
-    width: fit-content;
-    height: fit-content;
+.right-image-md {
+  height: 251px;
+  width: auto;
 }
-.reg-card{
-    background-color: #ffffff;
-    height: fit-content;
-    width: fit-content;
-    overflow: auto;
+.right-image-sm {
+  width: 90%;
+  height: auto;
 }
-.location-map{
-    width: 500px;
-    height: 450px;
+#contentRight {
+  height: 100%;
+  padding: 20px;
+  width: auto;
 }
-.location-icon{
-    color: #DB4437;
-    font-size: 16px;
+.right-label {
+  width: 250px;
+  text-align: center;
+  font-size: medium;
+  font-family: "roboto-regular";
+}
+// .img-wrapper {
+//   width: fit-content;
+//   height: fit-content;
+// }
+.reg-card {
+  background-color: #ffffff;
+  height: fit-content;
+  width: fit-content;
+  overflow: auto;
+}
+.location-map {
+  width: 500px;
+  height: 450px;
+}
+.location-icon {
+  color: #db4437;
+  font-size: 16px;
+}
+
+.splash-logo-lg {
+  width: 150px;
+}
+.splash-logo-md {
+  width: 120px;
+}
+.splash-logo-sm {
+  width: 90px;
+}
+
+.header-label-lg {
+  font-size: larger;
+}
+.header-label-md {
+  font-size: medium;
+}
+.header-label-sm {
+  font-size: small;
+}
+.register-card {
+  background-color: #ffffff;
+  height: fit-content;
+  width: 100%;
+  overflow: auto;
+  border-radius: 12px;
 }

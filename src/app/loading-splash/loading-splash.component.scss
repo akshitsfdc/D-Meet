@@ -1,18 +1,24 @@
-#parent{
-    height: 100%;
-    width: 100%;
+#parent {
+  height: 100%;
+  width: 100%;
 }
 
-#loadingContainer{
-    height: fit-content;
-    width: fit-content;
-    z-index: 10px;
+#loadingContainer {
+  height: fit-content;
+  width: fit-content;
+  z-index: 10px;
 }
-#progressIndicator{
-    max-width: 40%;
-    margin-top: 20px;
+#progressIndicator {
+  max-width: 40%;
+  margin-top: 20px;
 }
-#meetupImage{
-    max-width: 403px;
-    height: 100.5px;
+
+.splash-logo-lg {
+  height: 100px;
+}
+.splash-logo-md {
+  height: 80px;
+}
+.splash-logo-sm {
+  height: 40px;
 }

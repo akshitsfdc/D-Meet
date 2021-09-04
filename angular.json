@@ -5,7 +5,7 @@
   "projects": {
     "doctor-booking": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": { "@schematics/angular:component": { "style": "scss" } },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -18,14 +18,9 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "aot": true, 
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/scss/styles.scss"
-            ],
+            "aot": true,
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/scss/styles.scss"],
             "scripts": [
               "./node_modules/jquery/dist/jquery.js",
               "./node_modules/bootstrap/dist/js/bootstrap.js"
@@ -87,14 +82,9 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            
-            "styles": [
-              "src/scss/styles.scss"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
+
+            "styles": ["src/scss/styles.scss"],
 
             "scripts": []
           }
@@ -107,9 +97,7 @@
               "tsconfig.spec.json",
               "e2e/tsconfig.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         },
         "e2e": {
@@ -131,9 +119,5 @@
   "cli": {
     "analytics": "d62d6994-a56b-430a-9749-3a1c1a82865b"
   },
-  "schematics": {
-    "@schematics/angular:component": {
-      "styleext": "scss"
-    }
-  }
+  "schematics": { "@schematics/angular:component": { "style": "scss" } }
 }

@@ -1,13 +1,14 @@
+
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, NgForm } from '@angular/forms';
 import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from 'src/app/services/auth.service';
+import { Router } from '@angular/router';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
 import { MessageDialogComponent } from 'src/app/message-dialog/message-dialog.component';
 import { QueueModel } from '../../common-features/models/queue-model';
+import { SessionService } from '../services/session.service';
 
 @Component({
   selector: 'app-create-queue',
@@ -32,9 +33,6 @@ export class CreateQueueComponent implements OnInit {
   feeStructureText: string = "";
   serviceChargePercent: number = 5;
   defaultFees = 300;
-
-  private currentUser: firebase.User;
-
   disableSubmit: boolean = false;
   showProgressBar = false;
 
@@ -68,7 +66,9 @@ export class CreateQueueComponent implements OnInit {
     'Sunday'
   ];
 
-  constructor(private authService: AuthService, private firestore: FirestoreService, private router: Router, private route: ActivatedRoute, private matDialog: MatDialog) {
+  constructor(private session: SessionService,
+    private firestore: FirestoreService,
+    private router: Router, private matDialog: MatDialog) {
 
 
 
@@ -85,9 +85,9 @@ export class CreateQueueComponent implements OnInit {
     }
   }
 
-  async getUserdata() {
-    this.currentUser = await this.authService.getUser();
-  }
+  // async getUserdata() {
+  //   this.currentUser = await this.authService.getUser();
+  // }
 
   ngOnInit(): void {
 
@@ -109,7 +109,6 @@ export class CreateQueueComponent implements OnInit {
 
     });
     this.setFeeStructureText(this.defaultFees);
-    this.getUserdata();
 
   }
 
@@ -251,7 +250,7 @@ export class CreateQueueComponent implements OnInit {
   }
 
 
-  onSubmit(queueForm: NgForm) {
+  onSubmit(queueForm: FormGroup) {
     if (!this.validateForm()) {
       return;
     }
@@ -281,10 +280,11 @@ export class CreateQueueComponent implements OnInit {
   }
   private constructQueueObject(): QueueModel {
 
-    if (!this.currentUser) {
-      alert('You seems to be logged out because of some reason, please login again or wait for some time or try to refresh this page!');
-      return;
-    }
+    // if (!this.currentUser) {
+    //   alert('You seems to be logged out because of some reason, please login again or wait for some time or try to refresh this page!');
+    //   return;
+    // }
+
     const bookingStartTime = this.convertToMiliSeconds(this.bookStartTime);
     const bookingEndTime = this.convertToMiliSeconds(this.bookEndTime);
     const consultingStartTime = this.convertToMiliSeconds(this.consultingStartTime);
@@ -300,7 +300,7 @@ export class CreateQueueComponent implements OnInit {
     queue.setPatientLimit(this.numberOfPatients.value);
     queue.setTimePerPatient(this.aTimePerPatient.value);
     queue.setActive(true);
-    queue.setOwnerId(this.currentUser.uid); // to be changed
+    queue.setOwnerId(this.session.getUserData().getUserId()); // to be changed
     queue.setCurrency(this.currency.value);
     queue.setFees(this.fees.value);
     queue.setBookingStarting(bookingStartTime);
@@ -327,7 +327,7 @@ export class CreateQueueComponent implements OnInit {
   private saveQueue(queue: QueueModel): void {
 
     this.showProgress();
-    this.firestore.save('users/' + this.currentUser.uid + '/queues', queue.getQueueId(), Object.assign({}, queue))
+    this.firestore.save('users/' + this.session.getUserData().getUserId() + '/queues', queue.getQueueId(), Object.assign({}, queue))
       .then(() => {
         this.hideProgress();
         this.showMessageDialog('success', 'Your queue has been created and activated now patients can book online/offline appointments in this queue as per timings provided by you!', 'Close');

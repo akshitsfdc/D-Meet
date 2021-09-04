@@ -27,7 +27,7 @@ export class DoctorUserData {
     // private latitude:number;
     // private longitude:number;
     private nearbyAddress: string;
-    private coordinates: firebase.firestore.GeoPoint;
+    private coordinates: firebase.default.firestore.GeoPoint;
     private status: string;
     private doctor: boolean;
 
@@ -60,11 +60,11 @@ export class DoctorUserData {
         this.status = status;
     }
 
-    public getCoordinates(): firebase.firestore.GeoPoint {
+    public getCoordinates(): firebase.default.firestore.GeoPoint {
         return this.coordinates;
     }
 
-    public setCoordinates(coordinates: firebase.firestore.GeoPoint): void {
+    public setCoordinates(coordinates: firebase.default.firestore.GeoPoint): void {
         this.coordinates = coordinates;
     }
 

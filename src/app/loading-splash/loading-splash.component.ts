@@ -20,7 +20,7 @@ export class LoadingSplashComponent implements OnInit {
   private async checkLogin(): Promise<void> {
 
     // tslint:disable-next-line:no-shadowed-variable
-    const user: firebase.User = await this.authService.getUser().then(user => user)
+    const user: firebase.default.User = await this.authService.getUser().then(user => user)
       .catch(error => {
         console.log('error occured in getting current user : ' + error);
         return null;
@@ -32,7 +32,7 @@ export class LoadingSplashComponent implements OnInit {
     }
   }
 
-  private loadUserData(user: firebase.User): void {
+  private loadUserData(user: firebase.default.User): void {
 
     const userId = user.uid;
 

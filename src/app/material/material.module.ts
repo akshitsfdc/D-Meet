@@ -21,17 +21,17 @@ import { MatTreeModule } from '@angular/material/tree';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { CdkScrollableModule, ScrollingModule } from '@angular/cdk/scrolling';
-import {MatBadgeModule} from '@angular/material/badge';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
-import {MatDialogModule} from '@angular/material/dialog';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
 
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
-import {MatChipsModule} from '@angular/material/chips';
-import {MatTooltipModule} from '@angular/material/tooltip';
-import {MatStepperModule} from '@angular/material/stepper';
-import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
-
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @NgModule({
   declarations: [
@@ -69,7 +69,8 @@ import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
     MatChipsModule,
     MatTooltipModule,
     MatStepperModule,
-    MatBottomSheetModule
+    MatBottomSheetModule,
+    MatExpansionModule
   ]
 
 })

@@ -1,27 +1,43 @@
 <div id="parent" fxLayout="column" fxLayoutAlign="center center">
 
-  <form [formGroup]="registrationForm" #f="ngForm" fxFlex.xs="100%" (ngSubmit)="onSubmit(f)" class="registration-form"
+
+  <div fxLayout="column" [ngClass.xs]="{'registration-form-sm':true}" [ngClass]="{'registration-form':true}">
+
+
+
+    <form [formGroup]="registrationForm" #f="ngForm" (ngSubmit)="onSubmit(f)">
+
+      <!-- <mat-card class="login-card">
+        <mat-card-content fxLayout="row"> -->
+      <div fxLayout="column" class="register-card" [class.mat-elevation-z2]="true">
+
+        <mat-progress-bar *ngIf="showProgressBar" mode="indeterminate" id="progressIndicator" color="primary">
+        </mat-progress-bar>
+
+        <!-- <form [formGroup]="registrationForm" #f="ngForm" fxFlex.xs="100%" (ngSubmit)="onSubmit(f)" class="registration-form"
     fxLayout="column">
     <mat-progress-bar *ngIf="showProgressBar" mode="indeterminate" id="progressIndicator" color="primary">
     </mat-progress-bar>
     <mat-card class="reg-card">
 
-      <mat-card-header>
+      <mat-card-header> -->
 
-        <div fxLayout="column" fxFlexOffset="-8px">
+        <div fxLayout="column" style="margin-left: 30px;">
 
-          <img id="meetupImage" src="/assets/imgs/meetup_logo_with.svg" alt="Meetup Logo" fxFlexOffset="25px">
+          <img [ngClass]="{'splash-logo-md':true}" [ngClass.gt-md]="{'splash-logo-lg':true}"
+            [ngClass.lt-md]="{'splash-logo-sm':true}" [ngClass.md]="{'splash-logo-md':true}"
+            src="/assets/imgs/meetup_logo_with.svg" alt="Meetup Logo" fxFlexOffset="30px">
 
-          <mat-label id="headerLabel" fxFlexOffset="10px">Patient Registration</mat-label>
+          <mat-label [ngClass]="{'header-label-md':true , 'header-label':true}"
+            [ngClass.gt-md]="{'header-label-lg':true, 'header-label':true}"
+            [ngClass.lt-md]="{'header-label-sm':true, 'header-label':true}"
+            [ngClass.md]="{'header-label-md':true, 'header-label':true}" fxFlexOffset="10px">Patient Registration
+          </mat-label>
 
         </div>
-      </mat-card-header>
-
-      <mat-card-content fxLayout="column">
 
 
-
-        <div id="contentParent" fxLayout="row rwap" fxFlexOffset="30px" fxLayoutGap="20px">
+        <div id="contentParent" fxLayout="row" fxLayout.xs="column" fxFlexOffset="30px" fxLayoutAlign="center center">
 
           <div id="contentLeft">
             <mat-horizontal-stepper linear #stepper>
@@ -108,7 +124,8 @@
                     </button>
                   </div>
                   <div fxLayout="row" fxFlexOffset="10px">
-                    <button class="register-button" mat-raised-button matStepperNext type="submit">Register Now</button>
+                    <button class="register-button" mat-raised-button matStepperNext type="submit">Register
+                      Now</button>
                   </div>
                 </div>
               </mat-step>
@@ -118,18 +135,25 @@
           </div>
 
 
-          <div id="contentRight" fxFlexOffset.xs="0" fxFlexOffset="25px" fxFlex="1 1 auto" fxLayout="row"
-            fxLayoutAlign="center center">
-            <div *ngIf="stepper.selectedIndex !== 2" fxLayout="column" class="img-wrapper">
-              <img class="right-image" matCardImageMedium src='assets/imgs/re_account_temp.svg' />
-              <mat-label class="right-label">Helps you connect your doctors online</mat-label>
-            </div>
+          <div id="contentRight" fxLayout="row" fxLayoutAlign="center center">
+            <ng-container *ngIf="stepper.selectedIndex !== 2">
+
+              <img [ngClass]="{'right-image':true}" [ngClass.gt-md]="{'right-image-lg':true}"
+                [ngClass.xs]="{'right-image-sm':true}" [ngClass.lt-md]="{'right-image-md':true}"
+                src='https://firebasestorage.googleapis.com/v0/b/doctorclientmeetup.appspot.com/o/web_pictures%2Fregister_side_image.svg?alt=media&token=79cf5825-6a17-4c98-9a50-06817f48b6e5' />
+
+            </ng-container>
           </div>
         </div>
-      </mat-card-content>
-    </mat-card>
-
-  </form>
-
-
-</div>
+      </div>
+      <!-- </mat-card-content>
+    </mat-card> -->
+    </form>
+    <div fxLayout="row" fxLayoutGap="15px" fxFlexOffset="15px">
+      <span fxFlex="1 1 auto"></span>
+      <mat-label class="about-label" (click)="openAbout()">About Us</mat-label>
+      <mat-label class="about-label" (click)="openTerms()">Policies & Terms</mat-label>
+      <mat-label class="about-label" (click)="openGetInTouch()">Contact Us</mat-label>
+    </div>
+    <span fxFlex.xs="1 1 1px" fxFlexOffset.xs="30px"></span>
+  </div>

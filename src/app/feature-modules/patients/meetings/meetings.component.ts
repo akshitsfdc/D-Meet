@@ -88,13 +88,13 @@ export class MeetingsComponent implements OnInit, OnDestroy {
     end: new FormControl()
   });
   constructor(public session: SessionService,
-              private firestore: PatientFirestoreService,
-              private http: HttpService, public utills: UtilsService,
-              private matDialog: MatDialog,
-              public searchService: SearchService,
-              public utils: UtilsService,
-              public calculation: CalculationService,
-              private router: Router) {
+    private firestore: PatientFirestoreService,
+    private http: HttpService, public utills: UtilsService,
+    private matDialog: MatDialog,
+    public searchService: SearchService,
+    public utils: UtilsService,
+    public calculation: CalculationService,
+    private router: Router) {
 
     this.liveBookings.bookings = [];
     this.myBokings.bookings = [];
@@ -616,7 +616,7 @@ export class MeetingsComponent implements OnInit, OnDestroy {
   }
 
   private loadingActions(firstRequest: boolean,
-                         snapshots: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>, wrapper: BookingWrapper): void {
+    snapshots: firebase.default.firestore.QuerySnapshot<firebase.default.firestore.DocumentData>, wrapper: BookingWrapper): void {
 
     if (firstRequest) {
       wrapper.bookings = [];

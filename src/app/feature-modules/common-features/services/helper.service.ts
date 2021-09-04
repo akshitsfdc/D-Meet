@@ -156,6 +156,10 @@ export class HelperService {
             liveMessage = "Boooking not started yet";
         } else if (bookingStarted && !consultingStarted && bookings.length > 0) {
             liveMessage = "Waiting for doctor to start consulting";
+        } else if (bookingStarted && consultingStarted && !consultingEnded && bookings.length === 0) {
+            liveMessage = "Queue is live, be the first one in this queue";
+        } else if (bookingStarted && !consultingStarted && !bookingEnded && bookings.length === 0) {
+            liveMessage = "Booking is open, be the first one, in this queue";
         } else if (bookingEnded && consultingEnded && queueNoDue && bookings.length > 0) {
             liveMessage = "Queue processing has been completed for today";
         } else if (!currentPatient && consultingStarted && !queueNoDue) {
@@ -190,6 +194,7 @@ export class HelperService {
         queue.setQueueStatusMessage(statusMessage);
 
     }
+
 
     public getDateStringForQuery(millis: number): string {
 

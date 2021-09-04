@@ -17,16 +17,16 @@ export class GeoService {
   geocollection: GeoCollectionReference;
 
   constructor() {
-    this.geofirestore = new GeoFirestore(firebase.firestore());
+    this.geofirestore = new GeoFirestore(firebase.default.firestore());
   }
 
   public setGeoCollection(collectionName: string): void {
     this.geocollection = this.geofirestore.collection(collectionName);
   }
 
-  getGeopoints(lat: number, long: number): firebase.firestore.GeoPoint {
+  getGeopoints(lat: number, long: number): firebase.default.firestore.GeoPoint {
 
-    return new firebase.firestore.GeoPoint(lat, long);
+    return new firebase.default.firestore.GeoPoint(lat, long);
   }
 
   saveInGeoCollection(documentId: string, data: any): Promise<void> {
@@ -35,7 +35,7 @@ export class GeoService {
 
   getnearbyDoctors(lat: number, long: number, rad: number, limit: number): Promise<any> {
 
-    const query: GeoQuery = this.geocollection.near({ center: new firebase.firestore.GeoPoint(lat, long), radius: rad });
+    const query: GeoQuery = this.geocollection.near({ center: new firebase.default.firestore.GeoPoint(lat, long), radius: rad });
 
     return query.limit(limit).get();
   }

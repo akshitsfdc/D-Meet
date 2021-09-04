@@ -10,9 +10,9 @@ import { LoadingDialogComponent } from '../loading-dialog/loading-dialog.compone
 import { stringToKeyValue } from '@angular/flex-layout/extended/typings/style/style-transforms';
 import { Router } from '@angular/router';
 import { getLocaleDateFormat } from '@angular/common';
-import { Timestamp } from 'rxjs/internal/operators/timestamp';
 import { DoctorUserData } from '../models/doctor-user-data';
 import { error } from 'protractor';
+import { GetInTouchComponent } from '../get-in-touch/get-in-touch.component';
 
 @Component({
   selector: 'app-doctor-registration',
@@ -505,4 +505,31 @@ export class DoctorRegistrationComponent implements OnInit {
     this.selectedAddress = address.formatted_address;
 
   }
+
+
+  public openAbout() {
+    this.router.navigate(['about-us']);
+  }
+  public openTerms() {
+    this.router.navigate(['terms-and-policies']);
+  }
+
+  public openGetInTouch(): void {
+
+    const dialogData = {
+
+    };
+
+
+    const dialog = this.matDialog.open(GetInTouchComponent, { data: dialogData, disableClose: false });
+
+    dialog.afterClosed().subscribe(result => {
+
+      if (result && !result.canceled) {
+
+      }
+
+    });
+  }
+
 }

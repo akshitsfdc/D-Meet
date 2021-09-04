@@ -1,0 +1,90 @@
+<mat-sidenav-container class="sidenav-container">
+
+    <mat-sidenav #drawer class="sidenav" fixedInViewport [mode]="(isHandset$ | async) ? 'over' : 'over'"
+        [opened]="true">
+
+        <div style="height: 100%;" fxLayout="column">
+
+
+            <mat-toolbar fxLayout="row" class="menu-toolbar">
+
+                <img [ngClass.gt-md]="{'logo-big-lg':true}" [ngClass.md]="{'logo-big-md':true}"
+                    [ngClass.lt-md]="{'logo-big-sm':true}" fxFlexOffset="15px" src="/assets/imgs/privacy_and_terms.svg">
+
+                <!-- <span fxFlex="1 1 auto"></span>
+                                <button mat-icon-button (click)="drawer.toggle()">
+                                    <mat-icon class="white-icon">arrow_back</mat-icon>
+                                </button> -->
+            </mat-toolbar>
+
+            <mat-divider></mat-divider>
+
+            <mat-nav-list>
+
+                <mat-list-item routerLink="/terms-and-policies/terms-and-condition"
+                    (click)="termsAndConditions(drawer)">
+                    <mat-label>Terms & Conditions</mat-label>
+                </mat-list-item>
+                <mat-list-item routerLink="/terms-and-policies/privacy-policy" (click)="termsPrivacy(drawer)">
+                    <mat-label>Privacy Policy</mat-label>
+                </mat-list-item>
+                <mat-list-item routerLink="/terms-and-policies/refund-and-cancellation-policy" (click)="refund(drawer)">
+                    <mat-label>Refund & Cancellation Policy</mat-label>
+                </mat-list-item>
+                <mat-list-item routerLink="/terms-and-policies/pricing-and-booking-policy" (click)="pricing(drawer)">
+                    <mat-label>Pricing and Booking Policy</mat-label>
+                </mat-list-item>
+
+            </mat-nav-list>
+
+        </div>
+    </mat-sidenav>
+
+
+    <mat-sidenav-content fxFlex="1 1 auto" fxLayout="column">
+
+        <!-- <div class="sidenave-inner-container" fxLayout="column"> -->
+
+
+
+        <mat-toolbar class="toolbar-class" fxLayout="row" fxFlex="1 1 75px">
+
+            <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
+                <mat-icon class="white-icon">subject</mat-icon>
+            </button>
+
+
+
+            <!-- <img [ngClass.gt-md]="{'logo-big-lg':true}" [ngClass.md]="{'logo-big-md':true}"
+                    [ngClass.lt-md]="{'logo-big-sm':true}" fxFlexOffset="15px" src="/assets/imgs/privacy_and_terms.svg"> -->
+
+            <mat-label class="term-name-header">{{headerName}}</mat-label>
+
+            <span fxFlex="1 1 auto"></span>
+
+
+            <mat-label [ngClass.gt-md]="{'contact-us-header-lg':true, 'contact-us-header':true}"
+                [ngClass.md]="{'contact-us-header-md':true, 'contact-us-header':true}"
+                [ngClass.lt-md]="{'contact-us-header-sm':true, 'contact-us-header':true}" (click)="openHome(drawer)">
+                Home</mat-label>
+            <span fxFlex="1 1 15px"></span>
+
+            <mat-label [ngClass.gt-md]="{'contact-us-header-lg':true, 'contact-us-header':true}"
+                [ngClass.md]="{'contact-us-header-md':true, 'contact-us-header':true}"
+                [ngClass.lt-md]="{'contact-us-header-sm':true, 'contact-us-header':true}"
+                (click)="openGetInTouch(drawer)">
+                Contact
+                Us</mat-label>
+        </mat-toolbar>
+
+        <div class="router-class" fxLayout="column">
+            <span fxFlex="1 1 75px"></span>
+            <mat-divider class="divider-class"></mat-divider>
+            <span fxFlex="1 1 25px"></span>
+            <router-outlet></router-outlet>
+        </div>
+
+        <!-- </div> -->
+
+    </mat-sidenav-content>
+</mat-sidenav-container>

@@ -426,9 +426,11 @@
           <span fxFlex="1 1 auto"></span>
           <div fxLayout="row" fxLayoutAlign="start center">
             <mat-card
-              [ngClass]="{'position-card': true, 'position-card-1': i==0, 'position-card-2': i==1, 'position-card-3': i==2}">
+              [ngClass]="{'position-card': true, 'position-card-1': booking.getQueuePlace() === 1, 'position-card-2': booking.getQueuePlace()===2, 'position-card-3': booking.getQueuePlace()==3}">
               <mat-card-content>
-                <mat-label [ngClass]="{'first-label': i===0 || i===1 || i===2}">#{{i+1}}</mat-label>
+                <mat-label
+                  [ngClass]="{'first-label': booking.getQueuePlace()===1 || booking.getQueuePlace()===2 || booking.getQueuePlace()===3}">
+                  #{{booking.getQueuePlace()}}</mat-label>
                 <!-- [ngClass]="{'live-label': (queue.getStatus() !=='scheduled')}" -->
               </mat-card-content>
             </mat-card>

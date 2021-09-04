@@ -6,6 +6,7 @@ import { FormControl, FormGroup, Validators, AbstractControl } from '@angular/fo
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { GetInTouchComponent } from '../get-in-touch/get-in-touch.component';
 
 @Component({
   selector: 'app-login',
@@ -113,6 +114,31 @@ export class LoginComponent implements OnInit {
 
   openBottomSheet(): void {
     this._bottomSheet.open(CreateAccountBottomSheetComponent);
+  }
+
+  public openAbout() {
+    this.route.navigate(['about-us']);
+  }
+  public openTerms() {
+    this.route.navigate(['terms-and-policies']);
+  }
+
+  public openGetInTouch(): void {
+
+    const dialogData = {
+
+    };
+
+
+    const dialog = this.matDialog.open(GetInTouchComponent, { data: dialogData, disableClose: false });
+
+    dialog.afterClosed().subscribe(result => {
+
+      if (result && !result.canceled) {
+
+      }
+
+    });
   }
 
 }

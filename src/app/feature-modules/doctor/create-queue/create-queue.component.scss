@@ -1,108 +1,168 @@
-.queue-form-parent{
-    height: 100%;
-    width: 100%;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    /* display: flex; */
-    align-items: center;
-    justify-content: center;
-     
+#parent {
+  height: 100%;
+  background-color: #ffffff;
+  overflow-y: auto;
 }
-.create-queue-container{
-     margin-left: 10%;
-     margin-right: 10%;
-    padding : 20px 50px 20px 50px; 
-    z-index: 10px;
+.queue-form-parent {
+  height: 100%;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  /* display: flex; */
+  align-items: center;
+  justify-content: center;
+}
+.create-queue-container {
+  margin-left: 10%;
+  margin-right: 10%;
+  padding: 20px 50px 20px 50px;
+  z-index: 10px;
+}
+.cancel-queue-button {
+  background-color: whitesmoke;
+}
+.next-patient-button-button {
+  background-color: #0f9d58;
+  color: white;
+}
 
-}
-.cancel-queue-button{
-    background-color: whitesmoke;
-}
-.next-patient-button-button{
-    background-color: #0F9D58;
-    color: white;
-}
-
-.queue-form{
-    width: fit-content;
-    height: fit-content;
+.queue-form {
+  width: fit-content;
+  height: fit-content;
 }
 ::ng-deep .mat-horizontal-stepper-header-container {
-    display: none !important;
+  display: none !important;
 }
-#contentRight{
-    height: 100%;
+#contentRight {
+  height: 100%;
+  padding: 20px;
+  width: auto;
 }
-.img-wrapper{
-    width: fit-content;
-    height: fit-content;
+.img-wrapper {
+  width: fit-content;
+  height: fit-content;
 }
-.right-image{
-    min-width: 250px;
-    min-height: 250px;
-    max-width: 400px;
-    max-height: 400px;
+.right-image {
+  min-width: 250px;
+  min-height: 250px;
+  max-width: 400px;
+  max-height: 400px;
 }
-.next-button{
-    width: fit-content;
-    align-self: flex-end;
+.next-button {
+  width: fit-content;
+  align-self: flex-end;
 }
 
 // Drag and drop start
 
 .example-container {
-    width: 250px;
-    max-width: 100%;
-    margin: 0 25px 25px 0;
-    display: inline-block;
-    vertical-align: top;
-  }
-  
-  .example-list {
-    border: solid 1px #ccc;
-    min-height: 60px;
-    background: white;
-    border-radius: 4px;
-    overflow: hidden;
-    display: block;
-  }
-  
-  .example-box {
-    padding: 20px 10px;
-    border-bottom: solid 1px #ccc;
-    color: rgba(0, 0, 0, 0.87);
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    box-sizing: border-box;
-    cursor: move;
-    background: white;
-    font-size: 14px;
-  }
-  
-  .cdk-drag-preview {
-    box-sizing: border-box;
-    border-radius: 4px;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-                0 8px 10px 1px rgba(0, 0, 0, 0.14),
-                0 3px 14px 2px rgba(0, 0, 0, 0.12);
-  }
-  
-  .cdk-drag-placeholder {
-    opacity: 0;
-  }
-  
-  .cdk-drag-animating {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-  }
-  
-  .example-box:last-child {
-    border: none;
-  }
-  
-  .example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-  }
+  width: 250px;
+  max-width: 100%;
+  margin: 0 25px 25px 0;
+  display: inline-block;
+  vertical-align: top;
+}
 
-  //Drag and drop end
+.example-list {
+  border: solid 1px #ccc;
+  min-height: 60px;
+  background: white;
+  border-radius: 4px;
+  overflow: hidden;
+  display: block;
+}
+
+.example-box {
+  padding: 20px 10px;
+  border-bottom: solid 1px #ccc;
+  color: rgba(0, 0, 0, 0.87);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  cursor: move;
+  background: white;
+  font-size: 14px;
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.example-box:last-child {
+  border: none;
+}
+
+.example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.splash-logo-lg {
+  width: 150px;
+}
+.splash-logo-md {
+  width: 120px;
+}
+.splash-logo-sm {
+  width: 90px;
+}
+
+.header-label-lg {
+  font-size: larger;
+}
+.header-label-md {
+  font-size: medium;
+}
+.header-label-sm {
+  font-size: small;
+}
+.register-card {
+  background-color: #ffffff;
+  height: fit-content;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.right-image {
+  height: 251px;
+  width: auto;
+}
+.right-image-lg {
+  height: 351px;
+  width: auto;
+}
+.right-image-md {
+  height: 251px;
+  width: auto;
+}
+.right-image-sm {
+  width: 90%;
+  height: auto;
+}
+.registration-form {
+  width: fit-content;
+  height: fit-content;
+  padding: 10px;
+}
+.registration-form-sm {
+  width: 85%;
+  height: 85%;
+  padding: 10px;
+}
+.item-class {
+  width: 100%;
+}
+//Drag and drop end

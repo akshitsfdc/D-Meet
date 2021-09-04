@@ -1,0 +1,23 @@
+.header-label {
+  font-size: 24px;
+}
+mat-form-field {
+  width: 100%;
+}
+.button-container {
+  width: 100%;
+}
+
+/* Mobile */
+@media screen and (max-width: 768px) {
+  .parent {
+    padding: 20px;
+    min-width: 90%;
+  }
+}
+@media screen and (min-width: 768px) {
+  .parent {
+    padding: 20px;
+    min-width: 400px;
+  }
+}

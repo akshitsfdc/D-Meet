@@ -14,7 +14,7 @@ export class ManagementService {
 
         // Create a reference to this user's specific status node.
         // This is where we will store data about being online/offline.
-        const userStatusDatabaseRef = firebase.database().ref('/status/' + userId);
+        const userStatusDatabaseRef = firebase.default.database().ref('/status/' + userId);
 
         // We'll create two constants which we will write to
         // the Realtime database when this device is offline
@@ -22,19 +22,19 @@ export class ManagementService {
         const isOfflineForDatabase = {
             status: 'offline',
             doctor: isDoctor,
-            last_changed: firebase.database.ServerValue.TIMESTAMP,
+            last_changed: firebase.default.database.ServerValue.TIMESTAMP,
         };
 
         const isOnlineForDatabase = {
             status: 'online',
             doctor: isDoctor,
-            last_changed: firebase.database.ServerValue.TIMESTAMP,
+            last_changed: firebase.default.database.ServerValue.TIMESTAMP,
         };
 
         // Create a reference to the special '.info/connected' path in
         // Realtime Database. This path returns `true` when connected
         // and `false` when disconnected.
-        firebase.database().ref('.info/connected').on('value', snapshot => {
+        firebase.default.database().ref('.info/connected').on('value', snapshot => {
 
             // If we're not currently connected, don't do anything.
             if (snapshot.val() === false) {

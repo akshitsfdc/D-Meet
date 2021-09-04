@@ -1,3 +1,5 @@
+import { JoinUsComponent } from './join-us/join-us.component';
+import { GetInTouchComponent } from './get-in-touch/get-in-touch.component';
 import { DoctorRegistrationComponent } from './doctor-registration/doctor-registration.component';
 import { RouterModule } from '@angular/router';
 import { AuthService } from './services/auth.service';
@@ -12,7 +14,7 @@ import { LandingPageComponent } from './landing-page/landing-page.component';
 import { FlexLayoutModule } from "@angular/flex-layout"
 import { AngularFireModule } from '@angular/fire';
 import { LoadingDialogComponent } from './loading-dialog/loading-dialog.component';
-import {NgxImageCompressService} from 'ngx-image-compress';
+import { NgxImageCompressService } from 'ngx-image-compress';
 import { LoadingSplashComponent } from './loading-splash/loading-splash.component';
 import { AgmCoreModule } from '@agm/core';
 import { ImageCropperModule } from 'ngx-image-cropper';
@@ -23,10 +25,11 @@ import { LoginComponent } from './login/login.component';
 import { MessageDialogComponent } from './message-dialog/message-dialog.component';
 import { AuthActionComponent } from './auth-action/auth-action.component';
 import { CreateAccountBottomSheetComponent } from './create-account-bottom-sheet/create-account-bottom-sheet.component';
-import { PatientRegistrationComponent } from './patient-registration/patient-registration.component'; 
+import { PatientRegistrationComponent } from './patient-registration/patient-registration.component';
 import { HttpClientModule } from '@angular/common/http';
 import { MediaAlertDialogComponent } from './media-alert-dialog/media-alert-dialog.component';
 import { PrescriptionDialogComponent } from './prescription-dialog/prescription-dialog.component';
+import { AboutUsComponent } from './about-us/about-us.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +44,10 @@ import { PrescriptionDialogComponent } from './prescription-dialog/prescription-
     CreateAccountBottomSheetComponent,
     PatientRegistrationComponent,
     MediaAlertDialogComponent,
-    PrescriptionDialogComponent
+    PrescriptionDialogComponent,
+    AboutUsComponent,
+    GetInTouchComponent,
+    JoinUsComponent
   ],
   imports: [
     FlexLayoutModule,

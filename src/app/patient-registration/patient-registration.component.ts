@@ -6,11 +6,12 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { LoadingDialogComponent } from '../loading-dialog/loading-dialog.component';
+import { GetInTouchComponent } from '../get-in-touch/get-in-touch.component';
 
 @Component({
   selector: 'app-patient-registration',
   templateUrl: './patient-registration.component.html',
-  styleUrls: ['./patient-registration.component.css']
+  styleUrls: ['./patient-registration.component.scss']
 })
 
 export class PatientRegistrationComponent implements OnInit {
@@ -162,5 +163,31 @@ export class PatientRegistrationComponent implements OnInit {
     }
 
   }
+
+  public openAbout() {
+    this.router.navigate(['about-us']);
+  }
+  public openTerms() {
+    this.router.navigate(['terms-and-policies']);
+  }
+
+  public openGetInTouch(): void {
+
+    const dialogData = {
+
+    };
+
+
+    const dialog = this.matDialog.open(GetInTouchComponent, { data: dialogData, disableClose: false });
+
+    dialog.afterClosed().subscribe(result => {
+
+      if (result && !result.canceled) {
+
+      }
+
+    });
+  }
+
 
 }

@@ -1,0 +1,60 @@
+<form [formGroup]="requestForm" #f="ngForm" (ngSubmit)="requestFormSubmit(f)">
+    <div class="parent" fxLayout="column" fxLayoutAlign="center center">
+
+
+        <mat-label class="header-label">Join Us</mat-label>
+
+        <mat-form-field appearance="outline" fxFlex="1 1 auto" fxFlexOffset="30px">
+            <mat-label>Name</mat-label>
+            <input matInput type="text" placeholder="Your Name" formControlName="name">
+            <mat-error *ngIf="name?.touched && name?.errors?.required">
+                Please enter your Name
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" fxFlex="1 1 auto" fxFlexOffset="10px">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" placeholder="Email Addess" formControlName="emailAddress">
+
+
+            <mat-error *ngIf="emailAddress?.touched && emailAddress?.errors?.required">
+                Please enter your email address
+            </mat-error>
+            <mat-error *ngIf="emailAddress?.touched && emailAddress?.errors?.email">
+                Please enter a valid email address
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" fxFlex="1 1 auto" fxFlexOffset="10px">
+            <mat-label>Phone Number</mat-label>
+            <input matInput type="text" placeholder="Phone number" formControlName="phone" minlength="10"
+                maxlength="15">
+            <mat-error *ngIf="phone?.touched && phone?.errors?.required">
+                Please enter your phone number
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" fxFlex="1 1 auto">
+            <mat-label>Select Resume</mat-label>
+            <input matInput placeholder="KYC Document" readonly formControlName="resume">
+            <label for="upload" matSuffix>
+                <mat-icon>folder</mat-icon>
+                <input type="file" id="upload" style="display:none"
+                    accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf"
+                    (change)="handleFileInput($event)">
+            </label>
+            <mat-error *ngIf="resume?.touched && resume?.errors?.required">
+                You must select your Resume
+            </mat-error>
+        </mat-form-field>
+
+
+        <div class="button-container" fxLayout="row" fxLayoutGap="10px">
+            <button mat-flat-button fxFlex="1 1 40%" class="grey-button" (click)="canceled()"
+                type="button">Cancel</button>
+            <button mat-raised-button fxFlex="1 1 auto" class="green-button">Submit</button>
+        </div>
+        <!-- <span fxFlex="1 1 10px"></span> -->
+
+    </div>
+</form>

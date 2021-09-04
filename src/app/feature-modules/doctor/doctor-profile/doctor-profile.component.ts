@@ -16,7 +16,7 @@ declare var google: any;
 export class DoctorProfileComponent implements OnInit {
 
 
-  private currentUser: firebase.User;
+  private currentUser: firebase.default.User;
   currentUserData: DoctorUserData = new DoctorUserData();
   paymentData: KYCModel = new KYCModel();
 

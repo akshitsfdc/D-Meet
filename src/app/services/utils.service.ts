@@ -277,6 +277,7 @@ export class UtilsService {
   public showLoading(message: string): void {
     this.loadingIndicator = this.matDialog.open(LoadingDialogComponent, { disableClose: true, data: { message } });
   }
+
   public hideLoading(): void {
     if (this.loadingIndicator) {
       this.loadingIndicator.close();

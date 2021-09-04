@@ -13,7 +13,7 @@ import { DoctorUserData } from '../../common-features/models/doctor-user-data';
 @Component({
   selector: 'app-main-navigation',
   templateUrl: './main-navigation.component.html',
-  styleUrls: ['./main-navigation.component.css']
+  styleUrls: ['./main-navigation.component.scss']
 })
 export class MainNavigationComponent implements OnInit {
 

@@ -1,6 +1,13 @@
-<div class="parent" fxLayout="column" fxLayoutGap="15px">
+<div class="parent" fxLayout="column" fxLayoutGap="25px">
 
   <mat-label class="header-label">Scheduled Queues</mat-label>
+
+  <ng-container *ngIf="!doctorHelper.showQueuesOnDashboard(session)">
+    <div class="no-queue-div" fxFlex="1 1 175px" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px">
+      <mat-label class="no-queue">You have not created any booking queue yet</mat-label>
+      <mat-label class="create-now header-label" (click)="navCreateQueue()">create one now</mat-label>
+    </div>
+  </ng-container>
 
   <ng-container *ngIf="doctorHelper.showQueuesOnDashboard(session)">
 
@@ -134,7 +141,7 @@
 
   </ng-container>
 
-  <mat-label class="header-label">Earning Graph</mat-label>
+  <mat-label class="header-label" fxFlexOffset="25px">Earning Graph</mat-label>
 
   <mat-card #myDiv class="graph-card" fxLayout="row" fxLayoutAlign="center center">
     <mat-card-content id="graphContent" fxLayout="row">
@@ -143,7 +150,7 @@
   </mat-card>
 
 
-  <mat-label class="header-label">Live Payments</mat-label>
+  <mat-label class="header-label" fxFlexOffset="25px">Live Payments</mat-label>
 
   <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8 payment-tabel"
     fxFlex="1 1 auto">

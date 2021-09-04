@@ -215,6 +215,7 @@ mat-card-footer {
 
 .current-patient-bg {
   background-color: $light-green;
+  border: solid 5px $accent;
 }
 .processed-icon {
   font-size: 16px;
@@ -260,9 +261,18 @@ mat-card-footer {
 .live-queue-status-label {
   color: white;
 }
+.white-label {
+  color: white;
+}
 .my-booking-bg {
-  background-color: $grey-lighter;
+  background-color: $white;
   border: dashed 2px $primary;
+}
+.booking-list-inner-row {
+  width: 100%;
+}
+.my-booking-info-pannel {
+  padding-bottom: 10px;
 }
 // .temp{
 //     width: 0;

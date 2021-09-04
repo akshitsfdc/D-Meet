@@ -271,6 +271,10 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['doctor/meetup-lobby']);
   }
 
+  public navCreateQueue(): void {
+    this.router.navigate(['doctor/queues/createQueue']);
+  }
+
 }
 
 

@@ -14,7 +14,7 @@ export class PatientFirestoreService {
   ) {
   }
 
-  public getByRef(docRef: DocumentReference): Promise<firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>> {
+  public getByRef(docRef: DocumentReference): Promise<firebase.default.firestore.DocumentSnapshot<firebase.default.firestore.DocumentData>> {
     return docRef.get();
   }
   public getScheduledMeetings(patientId: string, dateStr: string, limit: number): Observable<DocumentChangeAction<unknown>[]> {
@@ -35,7 +35,7 @@ export class PatientFirestoreService {
   }
 
   public getMyBookings(patientId: string, limit: number,
-    firstRequest: boolean, document?: DocumentData): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
+    firstRequest: boolean, document?: DocumentData): Promise<firebase.default.firestore.QuerySnapshot<firebase.default.firestore.DocumentData>> {
 
     const collectionPath = 'queue-bookings';
 
@@ -65,7 +65,7 @@ export class PatientFirestoreService {
   public getMyFilteredBookings(patientId: string, limit: number,
     firstRequest: boolean,
     fromTime?: number, toTime?: number,
-    document?: DocumentData): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
+    document?: DocumentData): Promise<firebase.default.firestore.QuerySnapshot<firebase.default.firestore.DocumentData>> {
 
     const collectionPath = 'queue-bookings';
 
@@ -100,7 +100,7 @@ export class PatientFirestoreService {
   public getCancelledBookings(patientId: string,
     limit: number,
     firstRequest: boolean,
-    document?: DocumentData): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
+    document?: DocumentData): Promise<firebase.default.firestore.QuerySnapshot<firebase.default.firestore.DocumentData>> {
 
     const collectionPath = 'queue-bookings';
 
@@ -132,7 +132,7 @@ export class PatientFirestoreService {
     firstRequest: boolean,
     fromTime?: number,
     toTime?: number,
-    document?: DocumentData): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
+    document?: DocumentData): Promise<firebase.default.firestore.QuerySnapshot<firebase.default.firestore.DocumentData>> {
 
     const collectionPath = 'queue-bookings';
 
@@ -167,7 +167,7 @@ export class PatientFirestoreService {
   public getUnhandledBookings(patientId: string,
     limit: number,
     firstRequest: boolean,
-    document?: DocumentData): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
+    document?: DocumentData): Promise<firebase.default.firestore.QuerySnapshot<firebase.default.firestore.DocumentData>> {
 
     const collectionPath = 'queue-bookings';
 
@@ -201,7 +201,7 @@ export class PatientFirestoreService {
     firstRequest: boolean,
     fromTime?: number,
     toTime?: number,
-    document?: DocumentData): Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>> {
+    document?: DocumentData): Promise<firebase.default.firestore.QuerySnapshot<firebase.default.firestore.DocumentData>> {
 
     const collectionPath = 'queue-bookings';
 

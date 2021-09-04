@@ -12,7 +12,7 @@ export class DoctorFirestoreService {
     ) {
     }
 
-    public getByRef(docRef: DocumentReference): Promise<firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>> {
+    public getByRef(docRef: DocumentReference): Promise<firebase.default.firestore.DocumentSnapshot<firebase.default.firestore.DocumentData>> {
 
         return docRef.get();
 

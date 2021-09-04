@@ -1,0 +1,164 @@
+@import "src/scss/vars";
+
+.logo-big-lg {
+  height: 35px;
+  cursor: pointer;
+}
+.logo-big-md {
+  height: 35px;
+  cursor: pointer;
+}
+.logo-big-sm {
+  height: 30px;
+  cursor: pointer;
+}
+
+.parent {
+  width: 100%;
+  height: 100%;
+  // position: relative;
+  padding: 0px;
+}
+.tool-bar {
+  // position: fixed;
+  // z-index: 2;
+  // top: 0;
+  // left: 0;
+  // right: 0;
+}
+
+.header-content {
+  width: 100%;
+  padding: 15px;
+  height: auto;
+}
+
+//responsive
+.header-text-color {
+  color: $primary;
+  line-height: normal;
+  text-align: center;
+}
+.about-header-lg {
+  font-size: 75px;
+}
+.about-header-md {
+  font-size: 60px;
+}
+.about-header-sm {
+  font-size: 25px;
+}
+
+.header-label-color {
+  line-height: normal;
+  // color: $meetup-brand-black;
+}
+.header-label-lg {
+  font-size: 30px;
+}
+.header-label-md {
+  font-size: 25px;
+}
+.header-label-sm {
+  font-size: 15px;
+}
+
+.header-description-color {
+  line-height: normal;
+  text-align: center;
+}
+.header-description-lg {
+  font-size: 20px;
+  max-width: 55%;
+}
+.header-description-md {
+  font-size: 14px;
+  max-width: 70%;
+}
+
+.header-description-sm {
+  font-size: 12px;
+  max-width: 95%;
+}
+
+.value-added-card-content {
+  height: 200px;
+  width: 200px;
+}
+.display-cards {
+  background-color: #083c91;
+  background-image: url("/assets/imgs/card_bg_tile.jpg");
+  margin: 15px;
+}
+.display-cards-label {
+  color: white;
+  text-align: center;
+  font-size: larger;
+}
+
+.explainer1-div {
+  width: 100%;
+  padding: 20px;
+}
+.explainer1-image {
+  border-radius: 15px;
+}
+.explainer-text {
+  color: $meetup-brand-black;
+  text-align: center;
+  margin: 25px;
+}
+.explainer-text-lg {
+  font-size: 65px;
+}
+.explainer-text-md {
+  font-size: 50px;
+}
+.explainer-text-sm {
+  font-size: 35px;
+}
+
+.expansion-des-label-sm {
+  font-size: 16px;
+}
+.solution-label-md {
+  font-size: 16px;
+}
+.expansion-label-lg {
+  font-size: 16px;
+}
+.leadership-div {
+  width: 100%;
+  background-color: $grey-lighter;
+}
+.leader-pic {
+  height: 220px;
+  width: 220px;
+}
+.leader-name {
+  font-size: 18px;
+  color: $meetup-brand-black;
+}
+.leader-desg {
+  font-size: 16px;
+}
+mat-accordion {
+  margin: 20px;
+}
+.contact-us-header {
+  color: $primary;
+  cursor: pointer;
+}
+.contact-us-header-lg {
+  font-size: 16px;
+}
+.contact-us-header-md {
+  font-size: 14px;
+}
+.contact-us-header-sm {
+  font-size: 12px;
+}
+
+.content-div {
+  overflow: auto;
+}

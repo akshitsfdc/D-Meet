@@ -1,0 +1,105 @@
+#parent {
+  height: 100%;
+  background-color: #ffffff;
+}
+#meetupImage {
+  max-width: 201.5px;
+  max-height: 100.25px;
+  min-width: 50px;
+  min-height: 25px;
+}
+#headerLabel {
+  font-family: "roboto-regular";
+  font-size: large;
+}
+
+::ng-deep .mat-form-field {
+  font-size: 12px;
+}
+.header-label {
+  font-size: 30px;
+  font-family: roboto-bold;
+}
+.registration-form {
+  width: fit-content;
+  height: fit-content;
+}
+.registration-form-sm {
+  width: 85%;
+  height: 85%;
+}
+.icon-button {
+  background-color: transparent;
+  outline: none;
+  border: 0;
+  margin-top: 5px;
+}
+.mat-icon {
+  color: #476282;
+}
+
+.back-button {
+  width: fit-content;
+  color: #476282;
+  outline: none;
+  border: 0;
+}
+.register-button {
+  width: 100%;
+  border-radius: 8px;
+}
+.about-textarea {
+  max-height: 200px;
+}
+::ng-deep .mat-horizontal-stepper-header-container {
+  display: none !important;
+}
+
+.right-image {
+  height: 251px;
+  width: auto;
+}
+.right-image-lg {
+  height: 351px;
+  width: auto;
+}
+.right-image-md {
+  height: 251px;
+  width: auto;
+}
+.right-image-sm {
+  width: 90%;
+  height: auto;
+}
+#contentRight {
+  height: 100%;
+  padding: 20px;
+  width: auto;
+}
+
+.splash-logo-lg {
+  width: 150px;
+}
+.splash-logo-md {
+  width: 120px;
+}
+.splash-logo-sm {
+  width: 90px;
+}
+
+.header-label-lg {
+  font-size: larger;
+}
+.header-label-md {
+  font-size: medium;
+}
+.header-label-sm {
+  font-size: small;
+}
+.register-card {
+  background-color: #ffffff;
+  height: fit-content;
+  width: 100%;
+  overflow: auto;
+  border-radius: 12px;
+}

@@ -1,3 +1,6 @@
+import { AboutUsComponent } from './about-us/about-us.component';
+import { TermsAndPoliciesModule } from './feature-modules/terms-and-policies/terms-and-policies.module';
+
 import { PatientRegistrationComponent } from './patient-registration/patient-registration.component';
 import { LoginComponent } from './login/login.component';
 import { DoctorModule } from './feature-modules/doctor/doctor.module';
@@ -23,10 +26,16 @@ const routes: Routes = [
     path: 'patient',
     loadChildren: () => PatientsModule
   },
+
   {
     path: 'doctor',
     loadChildren: () => DoctorModule
-  }
+  },
+  {
+    path: 'terms-and-policies',
+    loadChildren: () => TermsAndPoliciesModule
+  },
+  { path: 'about-us', component: AboutUsComponent }
 ];
 
 @NgModule({

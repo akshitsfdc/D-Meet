@@ -1,10 +1,8 @@
 
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { User } from 'firebase';
-import { first } from 'rxjs/operators';
-
 import * as firebase from 'firebase';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +41,7 @@ export class AuthService {
   }
 
   // Sign in with email/password
-  signIn(email, password): Promise<firebase.auth.UserCredential> {
+  signIn(email, password): Promise<firebase.default.auth.UserCredential> {
     return this.afAuth.signInWithEmailAndPassword(email, password);
   }
   signOut() {
@@ -54,8 +52,8 @@ export class AuthService {
     return this.afAuth.authState;
   }
 
-  getUser(): Promise<User> {
-    return this.afAuth.authState.pipe(first()).toPromise();
+  getUser(): Promise<firebase.default.User> {
+    return firstValueFrom(this.afAuth.authState);
   }
 
   sendPasswordResetMail(email: string): Promise<void> {
@@ -69,17 +67,17 @@ export class AuthService {
   }
 
   public changeUserStatusOnLogout(userId: string): void {
-    const userStatusDatabaseRef = firebase.database().ref('/status/' + userId);
+    const userStatusDatabaseRef = firebase.default.database().ref('/status/' + userId);
     userStatusDatabaseRef.update({
       status: 'offline',
-      last_changed: firebase.database.ServerValue.TIMESTAMP,
+      last_changed: firebase.default.database.ServerValue.TIMESTAMP,
     });
   }
   public changeUserStatusOnLogin(userId: string): void {
-    const userStatusDatabaseRef = firebase.database().ref('/status/' + userId);
+    const userStatusDatabaseRef = firebase.default.database().ref('/status/' + userId);
     userStatusDatabaseRef.update({
       status: 'online',
-      last_changed: firebase.database.ServerValue.TIMESTAMP,
+      last_changed: firebase.default.database.ServerValue.TIMESTAMP,
     });
   }
 
